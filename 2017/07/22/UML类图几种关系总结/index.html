@@ -20,13 +20,14 @@
     
     
     <meta name="keywords" content="UML">
-    <meta name="description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  [TOC] 泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带">
+    <meta name="description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带三角箭头的实">
 <meta name="keywords" content="UML">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UML类图几种关系总结">
-<meta property="og:url" content="http://yoursite.com/2017/07/22/UML类图几种关系总结/index.html">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/index.html">
 <meta property="og:site_name" content="温治康">
-<meta property="og:description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  [TOC] 泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带">
+<meta property="og:description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带三角箭头的实">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201104/22/0_1303436788Qi60.gif">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201104/22/0_13034367939K49.gif">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201104/22/0_1303436801W1kf.gif">
@@ -34,10 +35,10 @@
 <meta property="og:image" content="http://hi.csdn.net/attachment/201104/22/0_1303436817mqXK.gif">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201104/22/0_130343682580L6.gif">
 <meta property="og:image" content="http://hi.csdn.net/attachment/201202/29/0_1330497855hqk2.gif">
-<meta property="og:updated_time" content="2017-07-22T14:36:12.922Z">
+<meta property="og:updated_time" content="2017-07-22T14:51:00.880Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UML类图几种关系总结">
-<meta name="twitter:description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  [TOC] 泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带">
+<meta name="twitter:description" content="在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)  泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带三角箭头的实">
 <meta name="twitter:image" content="http://hi.csdn.net/attachment/201104/22/0_1303436788Qi60.gif">
     
         <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
@@ -77,16 +78,16 @@
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="/归档"  >
+              <a href="/archives"  >
                 <i class="icon icon-lg icon-archives"></i>
-                Archives
+                归档
               </a>
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="/标签"  >
+              <a href="/tags"  >
                 <i class="icon icon-lg icon-tags"></i>
-                Tags
+                标签
               </a>
             </li>
         
@@ -128,7 +129,7 @@
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -193,7 +194,6 @@
             <blockquote>
 <p>在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)</p>
 </blockquote>
-<p>[TOC]</p>
 <h2 id="泛化（Generalization）"><a href="#泛化（Generalization）" class="headerlink" title="泛化（Generalization）"></a>泛化（Generalization）</h2><p>【泛化关系】：是一种<strong>继承</strong>关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。<br>【箭头指向】：带三角箭头的实线，箭头指向父类。</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -260,16 +260,16 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2017-07-22T14:36:12.922Z" itemprop="dateUpdated">2017-07-22 22:36:12</time>
+    最后更新时间：<time datetime="2017-07-22T14:51:00.880Z" itemprop="dateUpdated">2017-07-22 22:51:00</time>
 </span><br>
 
 
         
-        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2017/07/22/UML类图几种关系总结/" target="_blank" rel="external">http://yoursite.com/2017/07/22/UML类图几种关系总结/</a>
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/22/UML类图几种关系总结/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/</a>
         
     </div>
     <footer>
-        <a href="http://yoursite.com">
+        <a href="https://startwithwzk.github.io">
             <img src="/img/avatar.jpg" alt="温治康">
             温治康
         </a>
@@ -295,7 +295,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -305,22 +305,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/07/22/UML类图几种关系总结/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UML类图几种关系总结》 — 温治康&url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&via=http://yoursite.com" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UML类图几种关系总结》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&via=https://startwithwzk.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -340,6 +340,19 @@
     </div>
 
     
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/22/第一章 Activity的生命周期与启动模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第一章 Activity的生命周期与启动模式</h4>
+      </a>
+    </div>
+  
+
+  
+</nav>
+
 
 
     
@@ -406,7 +419,7 @@
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
         </p>
     </div>
     <div class="bottom">
@@ -428,7 +441,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -438,22 +451,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&title=《UML类图几种关系总结》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/07/22/UML类图几种关系总结/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UML类图几种关系总结》 — 温治康&url=http://yoursite.com/2017/07/22/UML类图几种关系总结/&via=http://yoursite.com" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UML类图几种关系总结》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/&via=https://startwithwzk.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2017/07/22/UML类图几种关系总结/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -464,7 +477,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACH0lEQVR42u3ay46DMAwF0P7/T3e2XRR6bcNIJCerijKQ05Gs+PF6xev9sY6uf377Plif3+ZvuWxhYGA8lvE+Xcl2jzZRheU/xxcqBgbGBoyjCHZ+z/n9eWBNPv/YMwYGBkYxOFavVH8+DAwMjDwINl95+i0GBgbGJInNt/Uj4YyLerfk4hgYGA9k5C/4/8+39DcwMDAexXgX16Sd2UuPo11hYGAszagW/XuNzEkQLwx/YGBgbMOoht37prPy4I6BgbE2ozoMcX7IqwbW6rHy8O0YGBibMXqp6fxo2LsHAwNjZ0Y1EPcwvedE0yIYGBjLMXrls+rfXtW8xMDA2JmRBMTJsNdksONHCo2BgbEB46oAOjneVQP6YWMAAwNjM0aylfz6vEUaDYRhYGAsx6iW2O5oRvYapYf/EwwMjOUYUYp4aZqaJMz5oAYGBsYOjGqRK6cmkb63dQwMjJ0ZUaI4GIzIBziqbQMMDIydGdUCWd7szI+k1aMkBgbGqozeQbBXhrv2ymHVEAMDYwNGL7wmT5unrIVTLQYGxqKMvGSWbHHeEC1gMDAwFmVMQm31CXlxv3xUxcDAWJqRr16QTUa+qo0HDAyMPRlJoMwLbfPfsnl8xMDA2IAxD3zVkDpJgzEwMDASxhxf3e4tARcDA2NRRhJkq22GHulLEouBgbE0I0liJwOs1YS2PBqLgYGxNGOUOl5aSkuOkpPjJgYGxgMZf1F4A/Gft/+bAAAAAElFTkSuQmCC" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuElEQVR42u3a0YobMQwF0Pz/T6fQp0K7k3sti93CmacQJhMdByxH0usVX+/fV3LPn3e+/7pe5TV/Ah4eHt4G7/14Pd+TI5Ogk0/lMePh4eFt856TQRJQspU/v58kmDxmPDw8vJ/Am7yeB42Hh4f3v/OSA/HzO23JAw8PD++n8ZJiRF4yeD405/fnS3yh1oKHh4cX89oG2E94vdjfw8PDwxt01fN2V77FT7byOlo8PDy8tY0wb27l7f8zdjI0kI984eHh4W3wJm3+yXhWCz4b/MLDw8Pb4OUbcR7i3RGrtpH2ZXrAw8PDu8TLN9m2EXWr1nr2i+Hh4eHt8fKNvk0A7WH6rDxRLCgeHh7eMm++WbdJJR8UOFs4PDw8vFu8SejFcfbo8P18cI/iwcPDw1vgtYfpUTkgeOZZ0+vDD4OHh4e3zMvLAfMhgLwonET4YXQADw8P7xIvB7QDBBvDB+0y4eHh4W3w5iMC7aLkJd32SP0hKjw8PLxLvPaP/bw9djY+lT/5y7yHh4eHd4mXNLfaI/IruNpFTJ7Ttu7w8PDwznjzw25byJgUFOqSMR4eHt4ar23Jt1t5u3DFQNXZTBkeHh7eAq89TE8YddB5+sHDw8Nb4+Xl1DwNJPfni5s33l7574CHh4d3xGsLo22BtT2szxfoQ2x4eHh4Y147CnCWQs62+zZtRP8Y8PDw8K7y2tAn4wJ5QSFf9H88Hw8PD2+BNwko377PSsCjogMeHh7eGu9dXvOC79nwVl6SwMPDw9vm3eoctQfldmnOSht4eHh4e7y2qNoWEXL8/KhdZz88PDy8Ae/u17dDAGeH7CiN4eHh4X0rL2+J5cWCeWqJunx4eHh438pLQmkb/MlQwtl4AR4eHt4erx0eTVpibdpoSx5ResDDw8Nb4E0GsPKUcOu72iYcHh4e3lXeL1AT2k89ZIjFAAAAAElFTkSuQmCC" alt="微信分享二维码">
 </div>
 
 

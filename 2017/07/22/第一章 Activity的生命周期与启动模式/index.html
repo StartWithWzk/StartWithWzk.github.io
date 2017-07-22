@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第一章 Activity的生命周期与启动模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="生命周期典型情况下的生命周期分析 onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在前台，还无法与用户交互，即其已经出现，只是用户还看不见。 onResume：表示Activity已经出现在前台并开始活动。 onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPause方法">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一章 Activity的生命周期与启动模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="生命周期典型情况下的生命周期分析 onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在前台，还无法与用户交互，即其已经出现，只是用户还看不见。 onResume：表示Activity已经出现在前台并开始活动。 onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPause方法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-22T15:33:15.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第一章 Activity的生命周期与启动模式">
+<meta name="twitter:description" content="生命周期典型情况下的生命周期分析 onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在前台，还无法与用户交互，即其已经出现，只是用户还看不见。 onResume：表示Activity已经出现在前台并开始活动。 onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPause方法">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第一章 Activity的生命周期与启动模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第一章 Activity的生命周期与启动模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-22T15:14:00.000Z" itemprop="datePublished" class="page-time">
+  2017-07-22
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#生命周期"><span class="post-toc-number">1.</span> <span class="post-toc-text">生命周期</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#典型情况下的生命周期分析"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">典型情况下的生命周期分析</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#异常情况下生命周期分析"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">异常情况下生命周期分析</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#启动模式"><span class="post-toc-number">2.</span> <span class="post-toc-text">启动模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#LaunchMode"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">LaunchMode</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IntentFilter"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">IntentFilter</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#判断"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">判断</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第一章 Activity的生命周期与启动模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第一章 Activity的生命周期与启动模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-22 23:14:00" datetime="2017-07-22T15:14:00.000Z"  itemprop="datePublished">2017-07-22</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><h3 id="典型情况下的生命周期分析"><a href="#典型情况下的生命周期分析" class="headerlink" title="典型情况下的生命周期分析"></a>典型情况下的生命周期分析</h3><ul>
+<li>onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在<strong>前台</strong>，还无法与用户交互，即其已经出现，只是用户还看不见。</li>
+<li>onResume：表示Activity已经出现在<strong>前台</strong>并开始活动。</li>
+<li>onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPause方法执行完毕，新Activity的才开始启动。==</li>
+<li>onStop：表示Activity即将停止，可以做一些稍微重量级的回收工作。<h3 id="异常情况下生命周期分析"><a href="#异常情况下生命周期分析" class="headerlink" title="异常情况下生命周期分析"></a>异常情况下生命周期分析</h3></li>
+<li>当系统配置发生改变的时候，系统会调用<code>onSaveInstance</code>来保存当前Activity的状态，这个方式调用时机是在<code>onStop</code>之前，与<code>onPause</code>没有特定的关系，有时会在它之前，有时在它之后；当Activity被重建的时候，系统会调用<code>onRestoreInstance</code>，并且会把<code>onSaveInstance</code>方法所保存的<code>Bundle</code>对象传递给<code>onCreate</code>和<code>onRestoreInstance</code>，从时序上说，<code>onRestoreInstance</code>的调用时机在<code>onStart</code>之后。</li>
+<li>虽然两种方法都可以恢复数据，但是正常启动的时候<code>onCreate</code>的参数为<code>null</code>，必须要添加额外判断，而<code>onRestoreInstance</code>方法一旦被调用，其参数必定有值。官网文档建议是采用<code>onRestoreInstance</code>去恢复数据。</li>
+<li>每个View都有<code>onSaveInstance</code>和<code>onRestoreInstance</code>这两个方法，可以看一下它们的具体实现，就可以知道它们在系统配置变化时会自动恢复哪一些数据。</li>
+<li>可以通过指定Activity的<code>configChanges</code>属性来避免特定属性改变导致的重建，取而代之是系统会调用<code>onConfigurationChanged</code>,这是就可以做一些特殊处理；我们平时常用的有locale（系统本地位置，一般指系统语言）、orientation（屏幕方向发生改变）、keyboardHidden（键盘访问性发生了改变）<h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><h3 id="LaunchMode"><a href="#LaunchMode" class="headerlink" title="LaunchMode"></a>LaunchMode</h3></li>
+<li>standard：每启动一个Activity就会重新创建一个实例，==谁启动就运行在谁的任务栈中==，此外特别注意一点，当用<code>ApplicationContext</code>去启动standard模式Activity的时候会报错，因为其不是Activity类型的Context，所以不具有任务栈，解决方式就是设定<code>FLAG_ACTIVITY_NEW_TASK</code>标志位，这个时候启动Activity实际上是以singleTask模式启动的。</li>
+<li>singleTop：栈顶复用模式，如果位于任务栈栈顶就不会再次创建，同时，<code>onNewIntent</code>方法会被回调。</li>
+<li>singleTask：栈内复用模式。只要特定Activity在一个栈中存在就不会创建，此外如果在所有栈中都不存在就会创建一个任务栈，并创建一个实例放入其中。</li>
+<li>singleInstance：单实例模式。具有这种模式的Activity只能单独位于一个任务栈中。</li>
+<li>当<code>TaskAffinity</code>和singleTask配合使用的时候，待启动的Activity会运行在名字和<code>TaskAffinity</code>相同的任务栈中。</li>
+<li>当<code>allowTaskReparenting</code>属性为true的时候，此Activity可以被重定向。<h3 id="IntentFilter"><a href="#IntentFilter" class="headerlink" title="IntentFilter"></a>IntentFilter</h3></li>
+<li>原则上一个Intent不应该既是显式调用又是隐式调用，如果共存以显式为准。</li>
+<li>一个Activity中可以有多个<code>&lt;intent-filter&gt;</code>，一个Intent只要能匹配任何一组<code>&lt;intent-filter&gt;</code>即可成功启动。</li>
+<li>要想匹配成功，action是要求Intent中必须要有一个action则必须能够和过滤规则中的某个action相同，data也是类似。此外当存在category的时候，每个都必须能够和过滤规则中任何一个category相同。</li>
+<li>如果Intent不设置category，当启动的时候，系统会默认添加<code>android.intent.category.DEFAULT</code>这个category。</li>
+<li>category中不含有<code>android.intent.category.DEFAULT</code>的Activity是无法接收隐式Intent的。</li>
+<li>data由mimeType与URI两部分组成，mimeType指媒体类型（image/jpeg、audio/mpeg4-generic、video/*等）,URI结构：`<scheme>://<host>:<port>/[<path></path>|<pathprefix>|<pathpattern>]，==当URI中scheme或者host未指定，则意味着此URI无效。==</pathpattern></pathprefix></port></host></scheme></li>
+<li>如果需要为intent指定完整的data，必须要调用<code>setDataAndType</code>方法，不能先调用<code>setData</code>再调用<code>setType</code>，因为这两个方法会彼此清除对方的值。<h4 id="判断"><a href="#判断" class="headerlink" title="判断"></a>判断</h4>当通过隐式方法启动Activity的时候，可以通过PackageManager或者Intent的<code>resolveActivity</code>方法查找匹配的Activity，找不到返回<code>null</code>。此外，PackageManager还提供<code>queryIntentActivity</code>方法，这个方法与<code>resolveActivity</code>不同的是，它不是返回<strong>最佳匹配</strong>的Activity，而是返回<strong>所有成功匹配</strong>的Activity信息。</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-22T15:33:15.441Z" itemprop="dateUpdated">2017-07-22 23:33:15</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/22/第一章 Activity的生命周期与启动模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&title=《第一章 Activity的生命周期与启动模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&title=《第一章 Activity的生命周期与启动模式》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第一章 Activity的生命周期与启动模式》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/22/第二章 Android中的多进程模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第二章 Android中的多进程模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/22/UML类图几种关系总结/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">UML类图几种关系总结</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&title=《第一章 Activity的生命周期与启动模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&title=《第一章 Activity的生命周期与启动模式》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第一章 Activity的生命周期与启动模式》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMUlEQVR42u3awU7jQBAEUP7/p7PSXrPrVPUYlDTPJ0RgPM+WaLp6vr7i6/H3ev7O8/X86f9+63nl55/P7/71HRc2Njb2h7Afl9f1jWef5g+ufSWJBRsbG3sru13uulBd4x+j6+RhYWNjY2O31Hxz18Uvb0iwsbGxsWcF7Jqd3OW8scHGxsbGbhuANujPo6I2zPqhLA0bGxv77dmzCP49v/7G+TY2Njb2W7JnAf3sCE4SCc2iolqBjY2NvYh9HtDfFfEnrUV7ZOdFecPGxsZewZ7FMbPjNe2m8zFD+5KwsbGxN7HbzeWtRXtoMs9/knFFtD42Njb2Cvb5GLVN4PNAP1+hfTTY2NjYm9izMjaL8vPidD61LlbDxsbGXsFuy0PebCTfb+P+Flm8Z2xsbOwPZOeFJ4+BZmWsHRXMSiY2Njb2PnZ++xsGqwdhU1uiihKIjY2N/eHs9l/8WZA0a2za9qYY/WJjY2MvYid/7tvRb37lTUXy8+1DwcbGxt7EvmuY2rYKSblqG6H6yA42Njb2Onb7Rz/fxGyonEdUeQiFjY2NvYmdb+58fDuLhGbDgBevBxsbG3sRuz0okxS8ewtVPjxoHwQ2Njb2JnZ0oieOh9qtnBziORkzYGNjY+9gt0dezoOke8vY8PAQNjY29iJ2O7jNw5188NCueXI8aDivxsbGxv4Qdh6+nxzWydcsuqjzwQY2Njb2OnbbfszGDG3b07Y6RcODjY2N/eHsk6h9Vk7y99AGT0VBxcbGxl7BzoOYWVgzK1p5CDULs7CxsbG3sttYPz+4c3KXtkWJdoiNjY29iH3Xv/tJGUsGuueHcooyiY2Njb2Cncc6bbPRDgaSMGv2W/9YARsbG3sduy0kbZQ/ay1mQ4Lo9WBjY2OvY7eBTl7AzgthcnCnPWaEjY2NvYk9KwB5rHMyNr6mzvZWPwhsbGzsD2G3rUIb+s8Kz8mgN3lY2NjY2PvY+bg0Lyrtptv25mTYjI2Njf072bNx7MmRnZPhwYv7YmNjY/9idl4k6q2UhXC2JjY2NvZWdtI8nBSSZJ12DychFzY2NvYm9vmg965jNO0Dyg8eYWNjYy9l/wFcuREk/fFwdAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

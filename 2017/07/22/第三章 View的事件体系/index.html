@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第三章 View的事件体系 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索,View">
+    <meta name="description" content="1. View的基础知识1.1 View的位置参数 View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。">
+<meta name="keywords" content="Android,Android开发艺术探索,View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章 View的事件体系">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="1. View的基础知识1.1 View的位置参数 View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20170220111655145?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSU9fRmllbGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2017-07-22T15:32:48.886Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第三章 View的事件体系">
+<meta name="twitter:description" content="1. View的基础知识1.1 View的位置参数 View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170220111655145?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSU9fRmllbGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第三章 View的事件体系</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第三章 View的事件体系</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-22T15:27:00.000Z" itemprop="datePublished" class="page-time">
+  2017-07-22
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-View的基础知识"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. View的基础知识</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-View的位置参数"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.1 View的位置参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-MotionEvent和TouchSlop"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1.2 MotionEvent和TouchSlop</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#MotionEvent"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">MotionEvent</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#TouchSlop"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">TouchSlop</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-3-VelocityTracker、GestureDetector和Scroller"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">1.3 VelocityTracker、GestureDetector和Scroller</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-View的滑动"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. View的滑动</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用scrollTo-scrollBy"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">使用scrollTo/scrollBy</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用动画"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">使用动画</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#改变布局参数"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">改变布局参数</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-弹性滑动"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 弹性滑动</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-View的事件分发机制"><span class="post-toc-number">4.</span> <span class="post-toc-text">4. View的事件分发机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-1-点击事件的传递规则"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">4.1 点击事件的传递规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-2-事件分发的源码解析"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">4.2 事件分发的源码解析</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-View的滑动冲突"><span class="post-toc-number">5.</span> <span class="post-toc-text">5. View的滑动冲突</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-常见的滑动冲突场景"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">5.1 常见的滑动冲突场景</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-解决方法"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">5.2 解决方法</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第三章 View的事件体系"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第三章 View的事件体系</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-22 23:27:00" datetime="2017-07-22T15:27:00.000Z"  itemprop="datePublished">2017-07-22</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="1-View的基础知识"><a href="#1-View的基础知识" class="headerlink" title="1. View的基础知识"></a>1. View的基础知识</h2><h3 id="1-1-View的位置参数"><a href="#1-1-View的位置参数" class="headerlink" title="1.1 View的位置参数"></a>1.1 View的位置参数</h3><ul>
+<li>View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://img.blog.csdn.net/20170220111655145?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSU9fRmllbGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>从Android3.0开始，View增加了几个参数：x、y、translationX和translationY，其中x和y是View左上角的的坐标，而translationX和translationY是View左上角相对于父容器的偏移量。这几个参数也是相对于父容器的坐标，并且translationX和translationY的默认值为0。它们的换算关系如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x = left + translationX</div></pre></td></tr></table></figure>
+</li>
+<li><p>View在平移过程中，top和left表示的是原始左上角的位置信息，其值并不会发生改变，此时发生改变的x、y、translationX和translationY这四个参数。</p>
+</li>
+</ul>
+<h3 id="1-2-MotionEvent和TouchSlop"><a href="#1-2-MotionEvent和TouchSlop" class="headerlink" title="1.2 MotionEvent和TouchSlop"></a>1.2 MotionEvent和TouchSlop</h3><h4 id="MotionEvent"><a href="#MotionEvent" class="headerlink" title="MotionEvent"></a>MotionEvent</h4><p>在手指接触屏幕后所产生的一系列事件中，典型的事件类型有如下几种：</p>
+<ul>
+<li>ACTION_DOWN—手指刚接触屏幕</li>
+<li>ACTION_MOVE—手指在屏幕上移动</li>
+<li>ACTION_UP—手指从屏幕上松开的一瞬间</li>
+</ul>
+<p>正常情况下，一次手指触碰屏幕的行为会触发<strong>一系列点击事件</strong>，通过MotionEvent对象我们可以得到点击事件发生的x和y坐标。为此，系统提供两种方法：getX/getY（返回相对于当前View左上角的x和y坐标）和getRawX/getRawY（返回的是相对于手机屏幕坐上角的x和y坐标）。</p>
+<h4 id="TouchSlop"><a href="#TouchSlop" class="headerlink" title="TouchSlop"></a>TouchSlop</h4><p>TouchSlop是系统所能识别的被认为是滑动的最小距离，通过<code>ViewConfiguraion.get(getContext()).getScaledTouchSlop()</code>，即可以获得这个常量，==当我们处理滑动时，可以利用这个常量来做一些过滤。==</p>
+<h3 id="1-3-VelocityTracker、GestureDetector和Scroller"><a href="#1-3-VelocityTracker、GestureDetector和Scroller" class="headerlink" title="1.3 VelocityTracker、GestureDetector和Scroller"></a>1.3 VelocityTracker、GestureDetector和Scroller</h3><ul>
+<li>VelocityTracker测量出的是一段时间内，手指所划过的<strong>像素数</strong>，计算公式和用法如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">speed = (finalPosition - startPosition) / interval</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// initialing</span></div><div class="line">VelocityTracker velocityTracker = VelocityTracker.obtian();</div><div class="line"><span class="comment">// add event tracking</span></div><div class="line">velocityTracker.addMovement(event);</div><div class="line"><span class="comment">// before get speed, need to compute it(here the time interval is 1000ms)</span></div><div class="line">velocityTracker.computeCurrentVelocity(<span class="number">1000</span>);</div><div class="line"><span class="comment">// after done it, and you can get velocityX/Y</span></div><div class="line"><span class="keyword">int</span> xVelocity = (<span class="keyword">int</span>) velocityTracker.getXVelocity();</div><div class="line"><span class="keyword">int</span> yVelocity = (<span class="keyword">int</span>) velocityTracker.getYVelocity();</div><div class="line"><span class="comment">// clear and recycle</span></div><div class="line">velocityTracker.clear();    <span class="comment">//一般在MotionEvent.ACTION_UP的时候调用</span></div><div class="line">velocityTracker.recycle();  <span class="comment">//一般在onDetachedFromWindow中调用</span></div></pre></td></tr></table></figure>
+<ul>
+<li>GestureDetector用于辅助检测用户的单击、滑动、长按、双击等行为。GestureDetector的使用比较简单，主要也是辅助检测常见的触屏事件。作者建议：如果只是监听滑动相关的事件就在onTouchEvent中自己实现；如果要监听双击这种行为的话，那么就使用GestureDetector。</li>
+<li>Scroller<br>Scroller本身无法让View弹性滑动，它需要和View的computeScroller方法配合使用才能共同完成这个功能。典型代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Scroller scroller = <span class="keyword">new</span> Scroller(mcontext);</div><div class="line"></div><div class="line"><span class="comment">// 缓慢滑动到指定位置</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">smoothScrollTo</span><span class="params">(<span class="keyword">int</span> destX, <span class="keyword">int</span> destY)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> scrollX = getScrollX();</div><div class="line">    <span class="keyword">int</span> delta = destX - scrollX;</div><div class="line">    <span class="comment">// 1000ms内滑向destX，效果就是慢慢滑动</span></div><div class="line">    mScroller.startScroll(scrollX, <span class="number">0</span>, delta, <span class="number">0</span>, <span class="number">1000</span>);</div><div class="line">    invalidata();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">computeScroll</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mScroller.computeScrollOffset()) &#123;</div><div class="line">        scrollTo(mScroller.getCurrX(), mScroller.getCurrY());</div><div class="line">        postInvalidate();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-View的滑动"><a href="#2-View的滑动" class="headerlink" title="2. View的滑动"></a>2. View的滑动</h2><h3 id="使用scrollTo-scrollBy"><a href="#使用scrollTo-scrollBy" class="headerlink" title="使用scrollTo/scrollBy"></a>使用scrollTo/scrollBy</h3><ul>
+<li>scrollBy方法内部实际利用了scrollTo，它实现基于当前位置的相对滑动。</li>
+<li>这两个方法实际移动不是View，而是画布本身，所以窗口是运动中的参照物。</li>
+<li>这两个方式实际上是通过更改View内部两个属性mScrollX和mScrollY然后重绘视图。</li>
+<li>在滑动过程中，mScrollX的值总是等于View左边缘和View内容左边缘在水平方向的距离。==View边缘是指View的位置，由四个顶点组成，而View内容边缘是指View中的内容的边缘，scrollTo/scrollBy这两个方法只能改变View内容的位置而不能改变View在布局中的位置。==</li>
+<li>mScrollX/Y的值为：oldPosition - newPosition</li>
+</ul>
+<h3 id="使用动画"><a href="#使用动画" class="headerlink" title="使用动画"></a>使用动画</h3><ul>
+<li>使用动画来移动view主要是操作view的translationX和translationY属性，既可以使用传统的view动画，也可以使用属性动画，使用后者需要考虑兼容性问题，如果要兼容Android 3.0以下版本系统的话推荐使用开源动画库<a href="http://nineoldandroids.com/" target="_blank" rel="external">nineoldandroids</a>。</li>
+<li>View动画是对View的<strong>影像</strong>做操作，并不能真正改变View的位置参数，如果希望动画结束后的状态得以保存，必须将fillAfter属性设为true，否则动画结束后其动画结果会消失（即恢复原来的位置和状态）。</li>
+<li>使用动画还存在一个交互问题：在android3.0以前的系统上，view动画和属性动画，新位置均无法触发点击事件，同时，老位置仍然可以触发单击事件。从3.0开始，属性动画的单击事件触发位置为移动后的位置，view动画仍然在原位置</li>
+</ul>
+<h3 id="改变布局参数"><a href="#改变布局参数" class="headerlink" title="改变布局参数"></a>改变布局参数</h3><p>通过改变View的LayoutParams参数，即可实现改变View的位置。</p>
+<h2 id="3-弹性滑动"><a href="#3-弹性滑动" class="headerlink" title="3. 弹性滑动"></a>3. 弹性滑动</h2><ul>
+<li><p>Scroller的工作原理：Scroller本身并不能实现view的滑动，它需要配合view的computeScroll方法才能完成弹性滑动的效果，它不断地让view重绘，而每一次重绘距滑动起始时间会有一个时间间隔，通过这个时间间隔Scroller就可以得出view的当前的滑动位置，知道了滑动位置就可以通过scrollTo方法来完成view的滑动。就这样，view的每一次重绘都会导致view进行小幅度的滑动，而多次的小幅度滑动就组成了弹性滑动，这就是Scroller的工作原理。</p>
+</li>
+<li><p>使用延时策略来实现弹性滑动，它的核心思想是通过发送一系列延时消息从而达到一种渐进式的效果，具体来说可以使用Handler的sendEmptyMessageDelayed(xxx)或view的postDelayed方法，也可以使用线程的sleep方法。</p>
+</li>
+</ul>
+<h2 id="4-View的事件分发机制"><a href="#4-View的事件分发机制" class="headerlink" title="4. View的事件分发机制"></a>4. View的事件分发机制</h2><h3 id="4-1-点击事件的传递规则"><a href="#4-1-点击事件的传递规则" class="headerlink" title="4.1 点击事件的传递规则"></a>4.1 点击事件的传递规则</h3><ol>
+<li><p>点击事件的分发过程由以下三个方法共同完成</p>
+<ul>
+<li>public boolean dispatchTouchEvent(MotionEvent ev)：用来进行事件的分发，如果事件能传递到当前View，那么此方法一定会被调用。返回结果受当前View的onTouchEvent和下级View的dispatchTouchEvent影响。</li>
+<li>public boolean onTnterceptTouchEvent(MotionEvent ev)：如果当前View拦截了某个事件，那么同一个<strong>事件序列</strong>当中，此方法不会再被调用。</li>
+<li>public boolean onTouchEvent(MotionEvent ev)：在dispatchTouchEvent中调用，用来处理点击事件。</li>
+<li>以下伪代码能够详细的表示出它们的关系<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> consume = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">if</span> (onInterceptTouchEvent(ev)) &#123;</div><div class="line">        consume = onTouchEvent(ev);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        consume = child.diapatchTouchEvent(event);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> consume;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>如果一个View设置了OntouchListener，那么它的onTouch将会被回调，而当前View的onTouchEvent调用与否取决于onTouch返回的是true还是false。平时我们给view设置的onClickListener的onClick方法调用在onTouchEvent中，所以它们的优先级是：OnTouchListener &gt; OnClickListener。</p>
+</li>
+<li>事件传递的一些结论：<ol>
+<li>同一个事件序列是指以down事件开始，中间含有数量不等的move事件，最终以up事件结束。</li>
+<li>正常情况下，一个事件序列只能被一个view拦截且消耗。</li>
+<li>某个View一旦决定拦截，那么这一个事件序列都只能由它来处理（如果事件序列能传递到的话，例如突然被父View拦截了，从而导致其无法收到后续，只能收到ACTION_CANCEL），并且他的onInterceptTouchEvent不会再被调用。</li>
+<li>某个View一旦开始处理事件，如果它不消耗ACTION_DOWN（onTouchEvent返回了false），那么同一事件序列中的其他事件都不会再交给它来处理，并且将事件交给父元素的onTouchEvent来处理。</li>
+<li>如果View不消耗除了ACTION_DOWN以外的其它事件，那么这个点击事件会消失，此时父元素的onTouchEvent并不会被调用，并且当前View可以持续收到后续的事件，最终这些消失的点击事件会传递给Activity处理。</li>
+<li>ViewGroup默认不拦截任何事件。源码中ViewGroup的onInterceptTouchEvent方法默认返回false。</li>
+<li>View（特指单独View，而不是其子类ViewGroup）没有onInterceptTouchEvent方法,一旦有点击传递给它，那么它的onTouchEvent方法就会被调用。</li>
+<li>View的onTouchEvent默认都会消耗事件，除非它是不可点击的（clickable和longClickable同时为false）。</li>
+<li>View的enable属性不影响onTouchEvent返回值。那么它是disable状态，只要它是可点击的，那么它的onTouchEvent就返回true。</li>
+<li>onClick会发生的前提是当前view是可点击的，并且它收到了down和up的事件。</li>
+<li>事件传递过程是由外向内的，即事件总是先传递给父元素，然后再由父元素分发给子View，通过requestDisallowInterceptTouchEvent方法可以在子元素中干预父元素的事件分发过程，但是ACTION_DOWN事件除外。</li>
+<li>ACTION_CANCEL事件是子View收到前驱事件后，后续事件被父控件拦截的情况下产生（例如在手指滑出子view范围，而它就会收到ACTION_CANCEL，而不是ACTION_UP），而它的后续事件（ACTION_MOVE &amp; UP会传递给它的父控件），onTouchEvent的事件回传到父控件只会发生在ACTION_DOWN事件中（这里可由iv和v得出），还有子View收到ACTION_CANCEL情况下的后续ACTION_MOVE 和 ACTION_UP。</li>
+</ol>
+</li>
+</ol>
+<h3 id="4-2-事件分发的源码解析"><a href="#4-2-事件分发的源码解析" class="headerlink" title="4.2 事件分发的源码解析"></a>4.2 事件分发的源码解析</h3><p>详细事件分发源码解析参考：<a href="http://blog.csdn.net/yanbober/article/details/45912661" target="_blank" rel="external">Android触摸屏事件派发机制详解与源码分析二(ViewGroup篇)</a></p>
+<p>详细事件处理源码解析参考：<a href="http://blog.csdn.net/yanbober/article/details/45887547" target="_blank" rel="external">Android触摸屏事件派发机制详解与源码分析一(View篇)</a></p>
+<h2 id="5-View的滑动冲突"><a href="#5-View的滑动冲突" class="headerlink" title="5. View的滑动冲突"></a>5. View的滑动冲突</h2><h3 id="5-1-常见的滑动冲突场景"><a href="#5-1-常见的滑动冲突场景" class="headerlink" title="5.1 常见的滑动冲突场景"></a>5.1 常见的滑动冲突场景</h3><ul>
+<li>场景一————外部滑动方向和内部滑动方向<strong>不一致</strong>；</li>
+<li>场景二————外部滑动方向和内部滑动方向<strong>一致</strong>；</li>
+<li>场景三————上面两种情况的嵌套</li>
+</ul>
+<h3 id="5-2-解决方法"><a href="#5-2-解决方法" class="headerlink" title="5.2 解决方法"></a>5.2 解决方法</h3><ol>
+<li><p>外部拦截法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 重写父容器的onInterceptTouchEvent</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> intercepted = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</div><div class="line">        <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</div><div class="line"></div><div class="line">        <span class="keyword">switch</span> (event.getAction()) &#123;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</div><div class="line">            intercepted = <span class="keyword">false</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</div><div class="line">            <span class="keyword">if</span> ( 父容器需要当前事件 ) &#123;</div><div class="line">                intercepted = <span class="keyword">true</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                intercepted = <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_UP: &#123;</div><div class="line">            intercepted = <span class="keyword">false</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        mLastXIntercept = x;</div><div class="line">        mLastYIntercept = y;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> intercepted;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>内部拦截法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 重写子元素</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</div><div class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (event.getAction()) &#123;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</div><div class="line">            parent.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</div><div class="line">            <span class="keyword">int</span> deltaX = x - mLastX;</div><div class="line">            <span class="keyword">int</span> deltaY = y - mLastY;</div><div class="line">            <span class="keyword">if</span> (父容器需要当前事件) &#123;</div><div class="line">                parent.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_UP: &#123;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mLastX = x;</div><div class="line">    mLastY = y;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(event);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 不仅如此，父容器也需要修改</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> action = event.getAction();</div><div class="line">    <span class="keyword">if</span> (action == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-22T15:32:48.886Z" itemprop="dateUpdated">2017-07-22 23:32:48</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/22/第三章 View的事件体系/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&title=《第三章 View的事件体系》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&title=《第三章 View的事件体系》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第三章 View的事件体系》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/22/第二章 IPC机制（Inter-Process Communication）/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第二章 IPC机制（Inter-Process Communication）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&title=《第三章 View的事件体系》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&title=《第三章 View的事件体系》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第三章 View的事件体系》 — 温治康&url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrklEQVR42u3aQY7bQAwEQP//07tAzpHVzRHtBCidDFmQp+YwpEm+XvH18+dK7l/duXpD8v7kDUcXHh4e3mjpV1fyTPJksuj3n/P14OHh4X2G9/6wbhd6HiRy/I0FDw8P76u8Wfq7HULw8PDw/hde/pPv0+JkJV8IDHh4eHgBLykxtOw2nOTbsVJrwcPDw4t5bQPsX/i82N/Dw8PDO+iq5yXak7ZZO5RQvBMPDw9vgXdSXJgVL9ozfBYF6n4aHh4eXslrj/un8tVZyEnYl8/g4eHhHfOSVLhtYuUl2lnanW8cHh4e3gavTVJnmDZGzZD1nwE8PDy8ES85spMBqVky3SboeVL+yheNh4eHN+K16WyCbAen8kGBAoyHh4e3wMtT53YsoD2lZ+Fq2BnDw8PD+9JU50mbavbOBP+XO3h4eHgLvOLv/WiWqT3ok1Zcknbj4eHhbfDaRLk9+k/uJFt8U8jAw8PDW+C1xdNni7NJADhJ1vHw8PA2eG25ti0Et6MDs6baTdzDw8PD+zhv1hKbFS/assjNqvDw8PDWeLNm1XlBtoXVaTceHh7eMi8/gqPiaVtsbQ/92bgVHh4e3kO8vBzQFhHaA33WDKtbX3h4eHiP8p4qRswS5WjwNP4WDw8Pb4M3W+h5KXa26LacgYeHh7fBa5tYM3YShGbJejR0hYeHh7fGa6/zsmzUxDrZVjw8PLwFXtvmzwsZSTPsvC1X/DoeHh7eQ7yTYDBrcbWDWXlCj4eHh/cZXn61ja5ng83JcAMeHh7eBq8NBvm3bUJ8MtxwU4bAw8PDW+DlY6BJ6rxd1MjDGB4eHt53eSfN/vwoHw4KnAcGPDw8vGXeY039h0LI5Vbi4eHhrfHaplebXufDWO2dm63Bw8PDW+DVf+/LTTmpqbbhZHjh4eHhpbxfxGwYPA3oAN0AAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

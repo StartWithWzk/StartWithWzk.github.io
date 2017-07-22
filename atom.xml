@@ -4,9 +4,9 @@
   <subtitle>nice man</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
-  <updated>2017-07-22T14:36:12.922Z</updated>
-  <id>http://yoursite.com/</id>
+  <link href="https://startwithwzk.github.io/"/>
+  <updated>2017-07-22T15:32:48.886Z</updated>
+  <id>https://startwithwzk.github.io/</id>
   
   <author>
     <name>温治康</name>
@@ -16,16 +16,384 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>第三章 View的事件体系</title>
+    <link href="https://startwithwzk.github.io/2017/07/22/%E7%AC%AC%E4%B8%89%E7%AB%A0%20View%E7%9A%84%E4%BA%8B%E4%BB%B6%E4%BD%93%E7%B3%BB/"/>
+    <id>https://startwithwzk.github.io/2017/07/22/第三章 View的事件体系/</id>
+    <published>2017-07-22T15:27:00.000Z</published>
+    <updated>2017-07-22T15:32:48.886Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-View的基础知识"><a href="#1-View的基础知识" class="headerlink" title="1. View的基础知识"></a>1. View的基础知识</h2><h3 id="1-1-View的位置参数"><a href="#1-1-View的位置参数" class="headerlink" title="1.1 View的位置参数"></a>1.1 View的位置参数</h3><ul>
+<li>View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://img.blog.csdn.net/20170220111655145?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSU9fRmllbGQ=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><p>从Android3.0开始，View增加了几个参数：x、y、translationX和translationY，其中x和y是View左上角的的坐标，而translationX和translationY是View左上角相对于父容器的偏移量。这几个参数也是相对于父容器的坐标，并且translationX和translationY的默认值为0。它们的换算关系如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x = left + translationX</div></pre></td></tr></table></figure>
+</li>
+<li><p>View在平移过程中，top和left表示的是原始左上角的位置信息，其值并不会发生改变，此时发生改变的x、y、translationX和translationY这四个参数。</p>
+</li>
+</ul>
+<h3 id="1-2-MotionEvent和TouchSlop"><a href="#1-2-MotionEvent和TouchSlop" class="headerlink" title="1.2 MotionEvent和TouchSlop"></a>1.2 MotionEvent和TouchSlop</h3><h4 id="MotionEvent"><a href="#MotionEvent" class="headerlink" title="MotionEvent"></a>MotionEvent</h4><p>在手指接触屏幕后所产生的一系列事件中，典型的事件类型有如下几种：</p>
+<ul>
+<li>ACTION_DOWN—手指刚接触屏幕</li>
+<li>ACTION_MOVE—手指在屏幕上移动</li>
+<li>ACTION_UP—手指从屏幕上松开的一瞬间</li>
+</ul>
+<p>正常情况下，一次手指触碰屏幕的行为会触发<strong>一系列点击事件</strong>，通过MotionEvent对象我们可以得到点击事件发生的x和y坐标。为此，系统提供两种方法：getX/getY（返回相对于当前View左上角的x和y坐标）和getRawX/getRawY（返回的是相对于手机屏幕坐上角的x和y坐标）。</p>
+<h4 id="TouchSlop"><a href="#TouchSlop" class="headerlink" title="TouchSlop"></a>TouchSlop</h4><p>TouchSlop是系统所能识别的被认为是滑动的最小距离，通过<code>ViewConfiguraion.get(getContext()).getScaledTouchSlop()</code>，即可以获得这个常量，==当我们处理滑动时，可以利用这个常量来做一些过滤。==</p>
+<h3 id="1-3-VelocityTracker、GestureDetector和Scroller"><a href="#1-3-VelocityTracker、GestureDetector和Scroller" class="headerlink" title="1.3 VelocityTracker、GestureDetector和Scroller"></a>1.3 VelocityTracker、GestureDetector和Scroller</h3><ul>
+<li>VelocityTracker测量出的是一段时间内，手指所划过的<strong>像素数</strong>，计算公式和用法如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">speed = (finalPosition - startPosition) / interval</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// initialing</span></div><div class="line">VelocityTracker velocityTracker = VelocityTracker.obtian();</div><div class="line"><span class="comment">// add event tracking</span></div><div class="line">velocityTracker.addMovement(event);</div><div class="line"><span class="comment">// before get speed, need to compute it(here the time interval is 1000ms)</span></div><div class="line">velocityTracker.computeCurrentVelocity(<span class="number">1000</span>);</div><div class="line"><span class="comment">// after done it, and you can get velocityX/Y</span></div><div class="line"><span class="keyword">int</span> xVelocity = (<span class="keyword">int</span>) velocityTracker.getXVelocity();</div><div class="line"><span class="keyword">int</span> yVelocity = (<span class="keyword">int</span>) velocityTracker.getYVelocity();</div><div class="line"><span class="comment">// clear and recycle</span></div><div class="line">velocityTracker.clear();    <span class="comment">//一般在MotionEvent.ACTION_UP的时候调用</span></div><div class="line">velocityTracker.recycle();  <span class="comment">//一般在onDetachedFromWindow中调用</span></div></pre></td></tr></table></figure>
+<ul>
+<li>GestureDetector用于辅助检测用户的单击、滑动、长按、双击等行为。GestureDetector的使用比较简单，主要也是辅助检测常见的触屏事件。作者建议：如果只是监听滑动相关的事件就在onTouchEvent中自己实现；如果要监听双击这种行为的话，那么就使用GestureDetector。</li>
+<li>Scroller<br>Scroller本身无法让View弹性滑动，它需要和View的computeScroller方法配合使用才能共同完成这个功能。典型代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Scroller scroller = <span class="keyword">new</span> Scroller(mcontext);</div><div class="line"></div><div class="line"><span class="comment">// 缓慢滑动到指定位置</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">smoothScrollTo</span><span class="params">(<span class="keyword">int</span> destX, <span class="keyword">int</span> destY)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> scrollX = getScrollX();</div><div class="line">    <span class="keyword">int</span> delta = destX - scrollX;</div><div class="line">    <span class="comment">// 1000ms内滑向destX，效果就是慢慢滑动</span></div><div class="line">    mScroller.startScroll(scrollX, <span class="number">0</span>, delta, <span class="number">0</span>, <span class="number">1000</span>);</div><div class="line">    invalidata();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">computeScroll</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mScroller.computeScrollOffset()) &#123;</div><div class="line">        scrollTo(mScroller.getCurrX(), mScroller.getCurrY());</div><div class="line">        postInvalidate();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-View的滑动"><a href="#2-View的滑动" class="headerlink" title="2. View的滑动"></a>2. View的滑动</h2><h3 id="使用scrollTo-scrollBy"><a href="#使用scrollTo-scrollBy" class="headerlink" title="使用scrollTo/scrollBy"></a>使用scrollTo/scrollBy</h3><ul>
+<li>scrollBy方法内部实际利用了scrollTo，它实现基于当前位置的相对滑动。</li>
+<li>这两个方法实际移动不是View，而是画布本身，所以窗口是运动中的参照物。</li>
+<li>这两个方式实际上是通过更改View内部两个属性mScrollX和mScrollY然后重绘视图。</li>
+<li>在滑动过程中，mScrollX的值总是等于View左边缘和View内容左边缘在水平方向的距离。==View边缘是指View的位置，由四个顶点组成，而View内容边缘是指View中的内容的边缘，scrollTo/scrollBy这两个方法只能改变View内容的位置而不能改变View在布局中的位置。==</li>
+<li>mScrollX/Y的值为：oldPosition - newPosition</li>
+</ul>
+<h3 id="使用动画"><a href="#使用动画" class="headerlink" title="使用动画"></a>使用动画</h3><ul>
+<li>使用动画来移动view主要是操作view的translationX和translationY属性，既可以使用传统的view动画，也可以使用属性动画，使用后者需要考虑兼容性问题，如果要兼容Android 3.0以下版本系统的话推荐使用开源动画库<a href="http://nineoldandroids.com/" target="_blank" rel="external">nineoldandroids</a>。</li>
+<li>View动画是对View的<strong>影像</strong>做操作，并不能真正改变View的位置参数，如果希望动画结束后的状态得以保存，必须将fillAfter属性设为true，否则动画结束后其动画结果会消失（即恢复原来的位置和状态）。</li>
+<li>使用动画还存在一个交互问题：在android3.0以前的系统上，view动画和属性动画，新位置均无法触发点击事件，同时，老位置仍然可以触发单击事件。从3.0开始，属性动画的单击事件触发位置为移动后的位置，view动画仍然在原位置</li>
+</ul>
+<h3 id="改变布局参数"><a href="#改变布局参数" class="headerlink" title="改变布局参数"></a>改变布局参数</h3><p>通过改变View的LayoutParams参数，即可实现改变View的位置。</p>
+<h2 id="3-弹性滑动"><a href="#3-弹性滑动" class="headerlink" title="3. 弹性滑动"></a>3. 弹性滑动</h2><ul>
+<li><p>Scroller的工作原理：Scroller本身并不能实现view的滑动，它需要配合view的computeScroll方法才能完成弹性滑动的效果，它不断地让view重绘，而每一次重绘距滑动起始时间会有一个时间间隔，通过这个时间间隔Scroller就可以得出view的当前的滑动位置，知道了滑动位置就可以通过scrollTo方法来完成view的滑动。就这样，view的每一次重绘都会导致view进行小幅度的滑动，而多次的小幅度滑动就组成了弹性滑动，这就是Scroller的工作原理。</p>
+</li>
+<li><p>使用延时策略来实现弹性滑动，它的核心思想是通过发送一系列延时消息从而达到一种渐进式的效果，具体来说可以使用Handler的sendEmptyMessageDelayed(xxx)或view的postDelayed方法，也可以使用线程的sleep方法。</p>
+</li>
+</ul>
+<h2 id="4-View的事件分发机制"><a href="#4-View的事件分发机制" class="headerlink" title="4. View的事件分发机制"></a>4. View的事件分发机制</h2><h3 id="4-1-点击事件的传递规则"><a href="#4-1-点击事件的传递规则" class="headerlink" title="4.1 点击事件的传递规则"></a>4.1 点击事件的传递规则</h3><ol>
+<li><p>点击事件的分发过程由以下三个方法共同完成</p>
+<ul>
+<li>public boolean dispatchTouchEvent(MotionEvent ev)：用来进行事件的分发，如果事件能传递到当前View，那么此方法一定会被调用。返回结果受当前View的onTouchEvent和下级View的dispatchTouchEvent影响。</li>
+<li>public boolean onTnterceptTouchEvent(MotionEvent ev)：如果当前View拦截了某个事件，那么同一个<strong>事件序列</strong>当中，此方法不会再被调用。</li>
+<li>public boolean onTouchEvent(MotionEvent ev)：在dispatchTouchEvent中调用，用来处理点击事件。</li>
+<li>以下伪代码能够详细的表示出它们的关系<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> consume = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">if</span> (onInterceptTouchEvent(ev)) &#123;</div><div class="line">        consume = onTouchEvent(ev);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        consume = child.diapatchTouchEvent(event);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> consume;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>如果一个View设置了OntouchListener，那么它的onTouch将会被回调，而当前View的onTouchEvent调用与否取决于onTouch返回的是true还是false。平时我们给view设置的onClickListener的onClick方法调用在onTouchEvent中，所以它们的优先级是：OnTouchListener &gt; OnClickListener。</p>
+</li>
+<li>事件传递的一些结论：<ol>
+<li>同一个事件序列是指以down事件开始，中间含有数量不等的move事件，最终以up事件结束。</li>
+<li>正常情况下，一个事件序列只能被一个view拦截且消耗。</li>
+<li>某个View一旦决定拦截，那么这一个事件序列都只能由它来处理（如果事件序列能传递到的话，例如突然被父View拦截了，从而导致其无法收到后续，只能收到ACTION_CANCEL），并且他的onInterceptTouchEvent不会再被调用。</li>
+<li>某个View一旦开始处理事件，如果它不消耗ACTION_DOWN（onTouchEvent返回了false），那么同一事件序列中的其他事件都不会再交给它来处理，并且将事件交给父元素的onTouchEvent来处理。</li>
+<li>如果View不消耗除了ACTION_DOWN以外的其它事件，那么这个点击事件会消失，此时父元素的onTouchEvent并不会被调用，并且当前View可以持续收到后续的事件，最终这些消失的点击事件会传递给Activity处理。</li>
+<li>ViewGroup默认不拦截任何事件。源码中ViewGroup的onInterceptTouchEvent方法默认返回false。</li>
+<li>View（特指单独View，而不是其子类ViewGroup）没有onInterceptTouchEvent方法,一旦有点击传递给它，那么它的onTouchEvent方法就会被调用。</li>
+<li>View的onTouchEvent默认都会消耗事件，除非它是不可点击的（clickable和longClickable同时为false）。</li>
+<li>View的enable属性不影响onTouchEvent返回值。那么它是disable状态，只要它是可点击的，那么它的onTouchEvent就返回true。</li>
+<li>onClick会发生的前提是当前view是可点击的，并且它收到了down和up的事件。</li>
+<li>事件传递过程是由外向内的，即事件总是先传递给父元素，然后再由父元素分发给子View，通过requestDisallowInterceptTouchEvent方法可以在子元素中干预父元素的事件分发过程，但是ACTION_DOWN事件除外。</li>
+<li>ACTION_CANCEL事件是子View收到前驱事件后，后续事件被父控件拦截的情况下产生（例如在手指滑出子view范围，而它就会收到ACTION_CANCEL，而不是ACTION_UP），而它的后续事件（ACTION_MOVE &amp; UP会传递给它的父控件），onTouchEvent的事件回传到父控件只会发生在ACTION_DOWN事件中（这里可由iv和v得出），还有子View收到ACTION_CANCEL情况下的后续ACTION_MOVE 和 ACTION_UP。</li>
+</ol>
+</li>
+</ol>
+<h3 id="4-2-事件分发的源码解析"><a href="#4-2-事件分发的源码解析" class="headerlink" title="4.2 事件分发的源码解析"></a>4.2 事件分发的源码解析</h3><p>详细事件分发源码解析参考：<a href="http://blog.csdn.net/yanbober/article/details/45912661" target="_blank" rel="external">Android触摸屏事件派发机制详解与源码分析二(ViewGroup篇)</a></p>
+<p>详细事件处理源码解析参考：<a href="http://blog.csdn.net/yanbober/article/details/45887547" target="_blank" rel="external">Android触摸屏事件派发机制详解与源码分析一(View篇)</a></p>
+<h2 id="5-View的滑动冲突"><a href="#5-View的滑动冲突" class="headerlink" title="5. View的滑动冲突"></a>5. View的滑动冲突</h2><h3 id="5-1-常见的滑动冲突场景"><a href="#5-1-常见的滑动冲突场景" class="headerlink" title="5.1 常见的滑动冲突场景"></a>5.1 常见的滑动冲突场景</h3><ul>
+<li>场景一————外部滑动方向和内部滑动方向<strong>不一致</strong>；</li>
+<li>场景二————外部滑动方向和内部滑动方向<strong>一致</strong>；</li>
+<li>场景三————上面两种情况的嵌套</li>
+</ul>
+<h3 id="5-2-解决方法"><a href="#5-2-解决方法" class="headerlink" title="5.2 解决方法"></a>5.2 解决方法</h3><ol>
+<li><p>外部拦截法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 重写父容器的onInterceptTouchEvent</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> intercepted = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</div><div class="line">        <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</div><div class="line"></div><div class="line">        <span class="keyword">switch</span> (event.getAction()) &#123;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</div><div class="line">            intercepted = <span class="keyword">false</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</div><div class="line">            <span class="keyword">if</span> ( 父容器需要当前事件 ) &#123;</div><div class="line">                intercepted = <span class="keyword">true</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                intercepted = <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_UP: &#123;</div><div class="line">            intercepted = <span class="keyword">false</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        mLastXIntercept = x;</div><div class="line">        mLastYIntercept = y;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> intercepted;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>内部拦截法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 重写子元素</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</div><div class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (event.getAction()) &#123;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</div><div class="line">            parent.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</div><div class="line">            <span class="keyword">int</span> deltaX = x - mLastX;</div><div class="line">            <span class="keyword">int</span> deltaY = y - mLastY;</div><div class="line">            <span class="keyword">if</span> (父容器需要当前事件) &#123;</div><div class="line">                parent.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_UP: &#123;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mLastX = x;</div><div class="line">    mLastY = y;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(event);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 不仅如此，父容器也需要修改</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> action = event.getAction();</div><div class="line">    <span class="keyword">if</span> (action == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-View的基础知识&quot;&gt;&lt;a href=&quot;#1-View的基础知识&quot; class=&quot;headerlink&quot; title=&quot;1. View的基础知识&quot;&gt;&lt;/a&gt;1. View的基础知识&lt;/h2&gt;&lt;h3 id=&quot;1-1-View的位置参数&quot;&gt;&lt;a href=&quot;#1-
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+      <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第二章 IPC机制（Inter-Process Communication）</title>
+    <link href="https://startwithwzk.github.io/2017/07/22/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20IPC%E6%9C%BA%E5%88%B6%EF%BC%88Inter-Process%20Communication%EF%BC%89/"/>
+    <id>https://startwithwzk.github.io/2017/07/22/第二章 IPC机制（Inter-Process Communication）/</id>
+    <published>2017-07-22T15:22:00.000Z</published>
+    <updated>2017-07-22T15:31:15.402Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="IPC基础概念介绍"><a href="#IPC基础概念介绍" class="headerlink" title="IPC基础概念介绍"></a>IPC基础概念介绍</h3><h3 id="Serializable接口"><a href="#Serializable接口" class="headerlink" title="Serializable接口"></a>Serializable接口</h3><ul>
+<li>Serializable是Java提供的一个序列化接口，它是一个空接口，为对象提供标准的序列化和反序列化操作。</li>
+<li>想要一个对象序列化只需要这个类实现Serializable接口并声明一个serialVersionUID即可，实际上，不声明这个serialVersionUID同样可以实现序列化（因为系统会自动根据当前类结构生成hash值并赋值给serialVersionUID），但是这将会对反序列化产生影响。比如当反序列化时当前类有所改变，比如增加或者删除了某些成员变量，那么系统就会重新计算当前类的hash值，并把它赋值给serialVersionUID，这个时候当前类的serialVersionUID就和序列化的数据中的serialVersionUID不一致，于是反序列化失败，程序出现crash。相反，如果我们手动指定了其值，当反序列的时候，即使类结构有所改变，也可以最大限度的恢复数据，<strong>但是如果类结构发生了非常规性改变，例如修改了类名或成员变量的类型</strong>，这个时候即使通过了验证，反序列化还是失败。</li>
+<li>静态成员变量属于类不属于对象，所以不会参与序列化过程</li>
+<li>用transient关键字标记的成员变量不参与序列化过程。（transient译为短暂的）</li>
+<li>系统的默认序列化过程是可以改变的，只需要重<code>writeObject()</code>和<code>readObject</code>方法即可。<h2 id="Parcelable接口"><a href="#Parcelable接口" class="headerlink" title="Parcelable接口"></a>Parcelable接口</h2></li>
+<li><p>一个典型的用法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> userId;</div><div class="line">    <span class="keyword">public</span> String userName;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">boolean</span> isMale;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> Book book;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(<span class="keyword">int</span> userId, String userName, <span class="keyword">boolean</span> isMale)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.userId = userId;</div><div class="line">        <span class="keyword">this</span>.userName = userName;</div><div class="line">        <span class="keyword">this</span>.isMale = isMale;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">User</span><span class="params">(Parcel in)</span> </span>&#123;</div><div class="line">        userId = in.readInt();</div><div class="line">        userName = in.readString();</div><div class="line">        isMale = in.readByte() != <span class="number">0</span>;</div><div class="line">        <span class="comment">// book = in.readParcelable(Thread.currentThread().getContextClassLoader())</span></div><div class="line">        book = in.readParcelable(Book.class.getClassLoader());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Creator&lt;User&gt; CREATOR = <span class="keyword">new</span> Creator&lt;User&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> User <span class="title">createFromParcel</span><span class="params">(Parcel in)</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> User(in);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="keyword">public</span> User[] newArray(<span class="keyword">int</span> size) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> User[size];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>&#123;</div><div class="line">        dest.writeInt(userId);</div><div class="line">        dest.writeString(userName);</div><div class="line">        dest.writeByte((<span class="keyword">byte</span>) (isMale ? <span class="number">1</span> : <span class="number">0</span>));</div><div class="line">        dest.writeParcelable(book, flags);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>特别需要注意的是在User(Parcel in)方法中，由于book是另一个可序列化对象，所以它的反序列化需要传递当前线程的上下文类加载器，否则会报无法找到类的错误。</p>
+</li>
+<li>Parcelable的方法说明</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>createFromParcel(Parcel in)</td>
+<td>从序列化后的对象中创建原始对象</td>
+</tr>
+<tr>
+<td>newArry(int size)</td>
+<td>创建指定长度的原始对象数组</td>
+</tr>
+<tr>
+<td>User(Parcel in)</td>
+<td>从序列化后的对象中创建原始对象</td>
+</tr>
+<tr>
+<td>writeToParcel(Parcel out, int flags)</td>
+<td>将当前对象写入序列化结构中，其中flags有两种值：0 或者1。为1时标识当前对象需要作为返回值返回，不能立即释放资源，几乎所有情况都为0</td>
+</tr>
+<tr>
+<td>describeContents</td>
+<td>返回当前对象的内容描述。如果含有文件描述符，返回1，否则返回0，几乎所有情况都返回0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>虽然Serializable接口使用简单，但是起开销很大（需要大量的I/O操作）。而Parcelable是Android中的序列化方式，因此更适合用于Android平台上，也是Android推荐的序列化方式，虽然使用麻烦，但是它的效率很高。Parceable接口主要用于内存序列化上，Serializable主要用于将对象序列化到存储设备或者通过网络传输（这两种情况下，Parcelable稍显复杂）。</li>
+</ul>
+<h3 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h3><ul>
+<li><p>概念</p>
+<ol>
+<li>直观来说，Binder是Android中的一个类，它实现了IBinder接口</li>
+<li>从IPC角度，Binder是Android中的一种跨进程通信方式</li>
+<li>Binder还可以理解为一种虚拟的物理设备，它的设备驱动是/dev/binder，该通信方式在Linux上没有</li>
+<li>从Android Framework角度来说，Binder是ServiceManager连接各种Manager（ActivityManager、WindowManager等等）和相应ManagerService的桥梁</li>
+<li>从Android应用层来说，Binder是客户端和服务端进行通信的媒介，当bindService的时候，服务端会返回一个包含了服务端业务调用的Binder对象，通过这个Binder对象，客户端就可以获取服务端提供的服务或者数据，<strong>这里的服务包括普通服务和基于ADIL的服务</strong></li>
+</ol>
+</li>
+<li><p>aidl工具会根据aidl文件自动生成的java文件的解析：它继承了IInterface这个接口，同时他自己也还是个借口，所有需要在Binder中传输的<strong>接口</strong>都需要继承IInterface这个接口。首先，它声明了几个接口方法，同时还声明了几个整型的id用于标识这些方法，id用于标识在transact过程中客户端所请求的到底是哪个方法；接着，它声明了一个内部类Stub，这个Stub就是一个Binder类，当客户端和服务端都位于同一个进程时，方法调用不会走跨进程的transact过程，而当两者位于不同进程时，方法调用需要走transact过程，这个逻辑由Stub内部的代理类Proxy来完成。所以，这个接口的核心就是它的内部类Stub和Stub内部的代理类Proxy。 下面分析其中的方法：</p>
+<ol>
+<li>asInterface(android.os.IBinderobj)：用于将服务端的Binder对象转换成客户端所需的AIDL接口类型的对象，这种转换过程是区分进程的，如果客户端和服务端是在同一个进程中，那么这个方法返回的是服务端的Stub对象本身，否则返回的是系统封装的Stub.Proxy对象。</li>
+<li>asBinder：返回当前Binder对象。</li>
+<li>onTransact：这个方法运行在服务端中的Binder线程池中，当客户端发起跨进程请求时，远程请求会通过系统底层封装后交由此方法来处理。这个方法的原型是<code>public Boolean onTransact(int code, Parcelable data, Parcelable reply, int flags)</code>服务端通过code可以知道客户端请求的目标方法，接着从data中取出所需的参数，然后执行目标方法，执行完毕之后，将结果写入到reply中。如果此方法返回false，说明客户端的请求失败，利用这个特性可以做权限验证(即验证是否有权限调用该服务)。</li>
+<li>Proxy#[Method]：代理类中的接口方法，这些方法运行在客户端，当客户端远程调用此方法时，它的内部实现是：首先创建该方法所需要的参数，然后把方法的参数信息写入到_data中，接着调用transact方法来发起RPC(远程过程调用)请求，同时当前线程挂起；然后服务端的onTransact方法会被调用，直到RPC过程返回后，当前线程继续执行，并从_reply中取出RPC过程的返回结果，最后返回_reply中的数据。</li>
+</ol>
+</li>
+<li><p>Binder的两个重要方法linkToDeath和unlinkToDeath<br>Binder运行在服务端，如果由于某种原因服务端异常终止了的话会导致客户端的远程调用失败，所以Binder提供了两个配对的方法linkToDeath和unlinkToDeath，通过linkToDeath方法可以给Binder设置一个死亡代理，当Binder死亡的时候客户端就会收到通知，然后就可以重新发起连接请求从而恢复连接了。如何给Binder设置死亡代理呢？首先声明一个DeathRecipient对象，DeathRecipient是一个接口，其内部只有一个方法bindeDied，实现这个方法就可以在Binder死亡的时候收到通知了。其次在客户端绑定远程服务成功之后，给binder设置死亡代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> IBinder.DeathRecipient mDeathRecipient = <span class="keyword">new</span> IBinder.DeathRecipient() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">binderDied</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mRemoteBookManager == <span class="keyword">null</span>) <span class="keyword">return</span>;</div><div class="line">        mRemoteBookManager.asBinder().unlinkToDeath(mDeathRecipient, <span class="number">0</span>);</div><div class="line">        mRemoteBookManager = <span class="keyword">null</span>;</div><div class="line">        <span class="comment">// <span class="doctag">TODO:</span>这里重新绑定远程Service</span></div><div class="line">        <span class="comment">//此处的binder是重新绑定Service之后返回的Binder对象</span></div><div class="line">        binder.linkToDeath(mDeathRecipient, <span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Android中的IPC方式"><a href="#Android中的IPC方式" class="headerlink" title="Android中的IPC方式"></a>Android中的IPC方式</h3><h3 id="1-使用Bundle"><a href="#1-使用Bundle" class="headerlink" title="1. 使用Bundle"></a>1. 使用Bundle</h3><ul>
+<li>由于Bundle实现了Parcelable接口，所以它可以方便地在不同进程之间传递。传输的数据必须能够被序列化，比如基本类型、实现了Parcelable接口的对象、实现了Serializable接口的对象以及一些Android支持的特殊对象。</li>
+<li>一种特殊的应用场景，当A进程正在进行一个计算，计算完成后它要启动B进程的一个组件并把计算结果传递给它，但是遗憾的是计算结果并不能放入Bundle，因此无法使用Intent来传输，这个时候使用其他IPC方式就会略显复杂。可以考虑以下方式：通过Intent启动进程B的一个Service组件，让Service后台进行计算，计算完毕后再启动进程B中真正要启动的目标组件，由于Service也运行在进程B中，所以目标组件就可以直接获取计算结果，这样一来就轻松解决了。</li>
+</ul>
+<h3 id="2-使用文件共享"><a href="#2-使用文件共享" class="headerlink" title="2. 使用文件共享"></a>2. 使用文件共享</h3><ul>
+<li>两个进程通过读/写同一个文件来交换数据。适合在对数据同步要求不高的进程之间进行通信。</li>
+<li>SharedPreference是个特例，它通过键值对的方式存储文件，底层实现上就是采用的XML文件来存储键值对，每个应用的SharedPreference文件可以在/data/data/package name/shared_prefs目录下。虽然它也是一种文件，但是<strong>系统对它的读/写有一定的缓存策略</strong>，即在内存会有一份它的缓存，因此在多进程模式下，它就变得相当不可靠。所以不建议在进程间通过其共享数据。</li>
+</ul>
+<h3 id="3-使用Messenger"><a href="#3-使用Messenger" class="headerlink" title="3. 使用Messenger"></a>3. 使用Messenger</h3><ul>
+<li>Messenger译为信使，它可以在不同进程中传递Message对象，是一种轻量化的IPC方案。它的底层实现是AIDL，只不过系统为我们做了封装从而方便上层调用。它是以<strong>串行</strong>的方式处理客户端发过来的消息。</li>
+<li>Messenger和Message都实现了Parcelable接口，通过Messenger来传输Message，Message中能使用的载体只有what、arg1、arg2、Bundle以及replyTo。此外，还有一个object字段，在<strong>同一个进程</strong>中是很实用的，但是在进程间通信的时候，在Android2.2以前object字段不支持跨进程传输，即使是2.2以后，也仅仅是系统提供的实现了Parcelable接口的对象才能通过它来传输，自定义的对象是无法传输的，这也导致了object字段的实用性大大下降。</li>
+<li>实现一个Messenger有以下几个步骤<h4 id="1-服务端进程"><a href="#1-服务端进程" class="headerlink" title="1. 服务端进程"></a>1. 服务端进程</h4>  首先需要在服务端创建一个Service来处理客户端的连接请求，同时创建一个Handler并通过它创建一个Messenger对象，然后在Service的onBind中返回这个Messenger对象底层的Binder即可。如<code>public IBinder onBind(Intent intent) { return mMessenger.getBinder(); }</code><h4 id="2-客户端进程中"><a href="#2-客户端进程中" class="headerlink" title="2.客户端进程中"></a>2.客户端进程中</h4>  首先需要绑定服务端的Service，绑定成功后用服务端返回的Ibinder对象创建一个Messenger，通过这个Messenger就可以向服务端发送信息了，发消息类型为Message对象。如果需要服务端能够回应客户端，就和服务端一样，创建一个Handler并通过它创建一个新的Messenger，并把这个Messenger对象通过Message的replyTo参数传递给服务端，服务端通过这个replyTo参数就可以回应客户端。如服务端获得传递过来的Messenger对象：<code>Messenger client = msg.replyTo;</code></li>
+</ul>
+<h3 id="4-使用AIDL"><a href="#4-使用AIDL" class="headerlink" title="4. 使用AIDL"></a>4. 使用AIDL</h3><p>使用AIDL可以实现跨进程的<strong>方法调用</strong>。主要是分为服务端和客户端两方面。</p>
+<h4 id="1-服务端"><a href="#1-服务端" class="headerlink" title="1. 服务端"></a>1. 服务端</h4><p>首先要创建一个Service用于监听客户端的连接请求，然后创建一个AIDL文件，将暴露给客户端的接口在这个AIDL文件中声明，最后在Service中实现这个AIDL接口即可。</p>
+<h4 id="2-客户端"><a href="#2-客户端" class="headerlink" title="2. 客户端"></a>2. 客户端</h4><p>首先绑定服务端的Service，绑定成功后用服务端返回的Ibinder对象转化成AIDL接口所属类型，接着就可以调用AIDL中的方法了。</p>
+<h4 id="3-AIDL接口的创建"><a href="#3-AIDL接口的创建" class="headerlink" title="3. AIDL接口的创建"></a>3. AIDL接口的创建</h4><p>在AIDL文件中，只有6种数据类型得到支持。如下所示</p>
+<ul>
+<li>基本数据类型（int、long、char、boolean、double等）</li>
+<li>String 和 CharSequence</li>
+<li>List：只支持ArrayList，里面每个元素都必须能够被AIDL支持</li>
+<li>Map：只支持HashMap，里面每个元素都必须能够被AIDL支持，包括key和value</li>
+<li>Parcelable：所有实现了这个接口的对象</li>
+<li>AIDL：所有的AIDL接口本身也可以在AIDL文件中使用</li>
+</ul>
+<p>特别需要注意的是</p>
+<ol>
+<li>自定义的Parcelable对象和AIDL对象必须要显式import进来，不管它们是否和当前AIDL文件位于同一个包中。</li>
+<li>如果AIDL文件中用到了自定义的Parcelable对象，必须新建一个和它同名的AIDL文件，并在其中声明它为Parcelable类型。</li>
+<li>除了基本类型和接口之外，其它类型参数必须标上方向：in、out或者inout，in表示输入型参数，out表示输出型参数，inout标志输入输出型参数，不能一概使用out或者inout，因为这在底层实现是有开销的。</li>
+<li>AIDL接口中只支持方法，不支持声明静态常量</li>
+<li>为了方便AIDL的开发，建议把所有和AIDL相关的类和文件全部放入同一个包中，这样做的好处是，当客户端是另一个应用的时候，可以直接把整个包复制到客户端工程中。</li>
+<li>CopyOnWriteArrayList支持并发读/写</li>
+<li>RemoteCallbackList是系统专门提供的用于删除跨进程Listener的接口。RemoteCallbackList是一个泛型，支持管理任意的AIDL接口。它的内部有一个Map结构专门用来保存所有的AIDL回调，这个Map的key是IBinder类型，value是Callback类型。另外它还有一个很有用的功能，就是当客户端进程终止后，它能够自动一处客户端所注册的listener，此外RemoteCallbackList内部自动实现了线程同步的功能。</li>
+<li>当调用远程方法的时候，调用方会被挂起，此时，如果被调用方的方法是耗时的，就会导致调用方长时间地阻塞，又如果调用方调用方法时的线程是UI线程，将会导致ANR。</li>
+</ol>
+<h3 id="5-使用ContentProvider"><a href="#5-使用ContentProvider" class="headerlink" title="5. 使用ContentProvider"></a>5. 使用ContentProvider</h3><ul>
+<li>底层实现是Binder</li>
+<li>一个自定义的ContentProvider只需要继承并实现六个抽象方法即可。onCreate代表创建；getType用来返回一个Uri请求所对应的MIME类型（媒体类型）,比如图片、视频等，如果不关注这个，只需要返回null或者*/*。除了onCreate有系统回调并运行在主线程，其它方法都是由外界回调并运行在Binder线程池中。</li>
+<li>ContentProvider主要以表格的形式来组织数据，并且可以包含多个表；</li>
+<li>ContentProvider还支持文件数据，比如图片、视频等，系统提供的MediaStore就是文件类型的ContentProvider；</li>
+<li>ContentProvider对底层的数据存储方式没有任何要求，可以是SQLite、文件，甚至是内存中的一个对象都行；</li>
+<li>要观察ContentProvider中的数据变化情况，可以通过ContentResolver的registerContentObserver方法来注册观察者；</li>
+<li>ContentProvider还支持自定义调用，这个过程是通过ContentProvider和ContentResolver的Call方法来完成的。</li>
+</ul>
+<h3 id="6-使用Socket"><a href="#6-使用Socket" class="headerlink" title="6. 使用Socket"></a>6. 使用Socket</h3><ul>
+<li>Socket是网络通信中“套接字”的概念，分为流式套接字和用户数据报套接字两种，分别对应网络的传输控制层的TCP和UDP协议</li>
+</ul>
+<h2 id="Binder连接池"><a href="#Binder连接池" class="headerlink" title="Binder连接池"></a>Binder连接池</h2><ol>
+<li><p>当项目规模很大的时候，创建很多个Service是不对的做法，因为service是系统资源，太多的service会使得应用看起来很重量级，所以最好是将所有的AIDL放在同一个Service中去管理。</p>
+</li>
+<li><p>整个工作机制是：每个业务模块创建自己的AIDL接口并实现此接口，这个时候不同业务模块之间是不能有耦合的，所有实现细节我们要单独开来，然后向服务端提供自己的唯一标识和其对应的Binder对象；对于服务端来说，只需要一个Service，服务端提供一个queryBinder接口，这个接口能够根据业务模块的特征来返回相应的Binder对象给它们，不同的业务模块拿到所需的Binder对象后就可以进行远程方法调用了。Binder连接池的主要作用就是将每个业务模块的Binder请求统一转发到远程Service去执行，从而避免了重复创建Service的过程。</p>
+</li>
+<li><p>作者实现的Binder连接池<a href="https://github.com/singwhatiwanna/android-art-res/blob/master/Chapter_2/src/com/ryg/chapter_2/binderpool/BinderPool.java" target="_blank" rel="external">BinderPool</a>的实现源码，建议在AIDL开发工作中引入BinderPool机制。</p>
+</li>
+</ol>
+<h3 id="IPC方式的优缺点和适用场景"><a href="#IPC方式的优缺点和适用场景" class="headerlink" title="IPC方式的优缺点和适用场景"></a>IPC方式的优缺点和适用场景</h3><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hujiaweibujidao.github.io/images/androidart_ipc.png?_=5028970" alt="IPC方式的优缺点和适用场景" title="">
+                </div>
+                <div class="image-caption">IPC方式的优缺点和适用场景</div>
+            </figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;IPC基础概念介绍&quot;&gt;&lt;a href=&quot;#IPC基础概念介绍&quot; class=&quot;headerlink&quot; title=&quot;IPC基础概念介绍&quot;&gt;&lt;/a&gt;IPC基础概念介绍&lt;/h3&gt;&lt;h3 id=&quot;Serializable接口&quot;&gt;&lt;a href=&quot;#Serializabl
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第二章 Android中的多进程模式</title>
+    <link href="https://startwithwzk.github.io/2017/07/22/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20Android%E4%B8%AD%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>https://startwithwzk.github.io/2017/07/22/第二章 Android中的多进程模式/</id>
+    <published>2017-07-22T15:20:00.000Z</published>
+    <updated>2017-07-22T15:31:40.008Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Android中的多进程模式"><a href="#Android中的多进程模式" class="headerlink" title="Android中的多进程模式"></a>Android中的多进程模式</h2><h3 id="开启多进程模式"><a href="#开启多进程模式" class="headerlink" title="开启多进程模式"></a>开启多进程模式</h3><ul>
+<li>通常情况下，在Android中的多进程指的是一个应用存在多个进程，而不是指的是两个应用之间的多进程通信。</li>
+<li>在Android中使用多进程只有一种方法，就是给四大组件（Activity、Service、Receiver、ContentProvider）在AndroidManifest中指定<code>android:process</code>属性，也就是说无法给一个线程或者一个实体类指定其运行时所在线程。<em>Ps:其实还有一种非常规方法，那就是通过JNI（Java Native Interface）在native层去fork一个新的进程。</em></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application</span></span></div><div class="line">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></div><div class="line">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></div><div class="line">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span>/&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span>/&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".SecondActivity"</span> </span></div><div class="line">                  <span class="attr">android:process</span>=<span class="string">":remote"</span>/&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".ThirdActivity"</span></span></div><div class="line">                  <span class="attr">android:process</span>=<span class="string">"com.example.ricco.myapplication.remote"</span> /&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://i1.piimg.com/567571/3ac137dd8d27ed69.png" alt="进程名" title="">
+                </div>
+                <div class="image-caption">进程名</div>
+            </figure>
+<p>上方代码和图片分别描述了如何在Android中创建多进程，其中MainActivity没有指定<code>android:process</code>属性，那么它运行在默认进程中，默认进程名为包名。而另外两个分别指定了“<code>:remote</code>”和“<code>com.example.ricco.myapplication.remote</code>”，首先，“：”的含义是==指要在当前进程名前面附加上当前的包名==，而对于ThirdActivity中的声明方式，它是一种完整的命名方式，不会附加包名信息；其次，进程名以“：”开头的进程属于当前应用的私有进程，其他应用组件不可以和它跑在同一个进程中，而其他进程属于全局进程，其他应用通过ShareUID方式可以和它跑在同一进程中。</p>
+<ul>
+<li>Android会为每个应用分配一个唯一的UID，具有相同UID的应用才能共享数据。两个应用通过ShareUID跑在同一个进程中时，需要这两个应用有相同的ShareUID并且签名相同才可以。在这种情况下，不管它们是否跑在同一个进程中，它们可以互相访问对方的私有数据（data目录，组件信息等），如果它们跑在同一进程中，还可以共享内存数据，或者说它们看起来像是一个应用的两个部分。==其实可以这样理解同一个应用间的多进程：它就相当于两个不同的应用采用了ShareUID的模式==<h3 id="多进程模式的运行机制"><a href="#多进程模式的运行机制" class="headerlink" title="多进程模式的运行机制"></a>多进程模式的运行机制</h3></li>
+<li>Android会为每一个应用分配了一个独立的虚拟机，或者说为每个进程都分配一个独立的虚拟机，不同虚拟机在内存分配上有不同的地址空间。</li>
+<li>一般来说使用多进程会造成如下几方面的问题：<ol>
+<li>静态成员和单例模式完全失效</li>
+<li>线程同步机制完全失效</li>
+<li>SharePreference的可靠性下降（SharePreference底层是通过读/写XML文件来实现的，并发读写可能会出现问题）</li>
+<li>Application会多次创建（运行在同一个进程中的组件属于同一个虚拟机和同一个Application，所以运行在不同进程中组件是属于两个不同的虚拟机和Application的）</li>
+</ol>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Android中的多进程模式&quot;&gt;&lt;a href=&quot;#Android中的多进程模式&quot; class=&quot;headerlink&quot; title=&quot;Android中的多进程模式&quot;&gt;&lt;/a&gt;Android中的多进程模式&lt;/h2&gt;&lt;h3 id=&quot;开启多进程模式&quot;&gt;&lt;a href=
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第一章 Activity的生命周期与启动模式</title>
+    <link href="https://startwithwzk.github.io/2017/07/22/%E7%AC%AC%E4%B8%80%E7%AB%A0%20Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/"/>
+    <id>https://startwithwzk.github.io/2017/07/22/第一章 Activity的生命周期与启动模式/</id>
+    <published>2017-07-22T15:14:00.000Z</published>
+    <updated>2017-07-22T15:33:15.441Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><h3 id="典型情况下的生命周期分析"><a href="#典型情况下的生命周期分析" class="headerlink" title="典型情况下的生命周期分析"></a>典型情况下的生命周期分析</h3><ul>
+<li>onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在<strong>前台</strong>，还无法与用户交互，即其已经出现，只是用户还看不见。</li>
+<li>onResume：表示Activity已经出现在<strong>前台</strong>并开始活动。</li>
+<li>onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPause方法执行完毕，新Activity的才开始启动。==</li>
+<li>onStop：表示Activity即将停止，可以做一些稍微重量级的回收工作。<h3 id="异常情况下生命周期分析"><a href="#异常情况下生命周期分析" class="headerlink" title="异常情况下生命周期分析"></a>异常情况下生命周期分析</h3></li>
+<li>当系统配置发生改变的时候，系统会调用<code>onSaveInstance</code>来保存当前Activity的状态，这个方式调用时机是在<code>onStop</code>之前，与<code>onPause</code>没有特定的关系，有时会在它之前，有时在它之后；当Activity被重建的时候，系统会调用<code>onRestoreInstance</code>，并且会把<code>onSaveInstance</code>方法所保存的<code>Bundle</code>对象传递给<code>onCreate</code>和<code>onRestoreInstance</code>，从时序上说，<code>onRestoreInstance</code>的调用时机在<code>onStart</code>之后。</li>
+<li>虽然两种方法都可以恢复数据，但是正常启动的时候<code>onCreate</code>的参数为<code>null</code>，必须要添加额外判断，而<code>onRestoreInstance</code>方法一旦被调用，其参数必定有值。官网文档建议是采用<code>onRestoreInstance</code>去恢复数据。</li>
+<li>每个View都有<code>onSaveInstance</code>和<code>onRestoreInstance</code>这两个方法，可以看一下它们的具体实现，就可以知道它们在系统配置变化时会自动恢复哪一些数据。</li>
+<li>可以通过指定Activity的<code>configChanges</code>属性来避免特定属性改变导致的重建，取而代之是系统会调用<code>onConfigurationChanged</code>,这是就可以做一些特殊处理；我们平时常用的有locale（系统本地位置，一般指系统语言）、orientation（屏幕方向发生改变）、keyboardHidden（键盘访问性发生了改变）<h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><h3 id="LaunchMode"><a href="#LaunchMode" class="headerlink" title="LaunchMode"></a>LaunchMode</h3></li>
+<li>standard：每启动一个Activity就会重新创建一个实例，==谁启动就运行在谁的任务栈中==，此外特别注意一点，当用<code>ApplicationContext</code>去启动standard模式Activity的时候会报错，因为其不是Activity类型的Context，所以不具有任务栈，解决方式就是设定<code>FLAG_ACTIVITY_NEW_TASK</code>标志位，这个时候启动Activity实际上是以singleTask模式启动的。</li>
+<li>singleTop：栈顶复用模式，如果位于任务栈栈顶就不会再次创建，同时，<code>onNewIntent</code>方法会被回调。</li>
+<li>singleTask：栈内复用模式。只要特定Activity在一个栈中存在就不会创建，此外如果在所有栈中都不存在就会创建一个任务栈，并创建一个实例放入其中。</li>
+<li>singleInstance：单实例模式。具有这种模式的Activity只能单独位于一个任务栈中。</li>
+<li>当<code>TaskAffinity</code>和singleTask配合使用的时候，待启动的Activity会运行在名字和<code>TaskAffinity</code>相同的任务栈中。</li>
+<li>当<code>allowTaskReparenting</code>属性为true的时候，此Activity可以被重定向。<h3 id="IntentFilter"><a href="#IntentFilter" class="headerlink" title="IntentFilter"></a>IntentFilter</h3></li>
+<li>原则上一个Intent不应该既是显式调用又是隐式调用，如果共存以显式为准。</li>
+<li>一个Activity中可以有多个<code>&lt;intent-filter&gt;</code>，一个Intent只要能匹配任何一组<code>&lt;intent-filter&gt;</code>即可成功启动。</li>
+<li>要想匹配成功，action是要求Intent中必须要有一个action则必须能够和过滤规则中的某个action相同，data也是类似。此外当存在category的时候，每个都必须能够和过滤规则中任何一个category相同。</li>
+<li>如果Intent不设置category，当启动的时候，系统会默认添加<code>android.intent.category.DEFAULT</code>这个category。</li>
+<li>category中不含有<code>android.intent.category.DEFAULT</code>的Activity是无法接收隐式Intent的。</li>
+<li>data由mimeType与URI两部分组成，mimeType指媒体类型（image/jpeg、audio/mpeg4-generic、video/*等）,URI结构：`<scheme>://<host>:<port>/[<path></path>|<pathprefix>|<pathpattern>]，==当URI中scheme或者host未指定，则意味着此URI无效。==</pathpattern></pathprefix></port></host></scheme></li>
+<li>如果需要为intent指定完整的data，必须要调用<code>setDataAndType</code>方法，不能先调用<code>setData</code>再调用<code>setType</code>，因为这两个方法会彼此清除对方的值。<h4 id="判断"><a href="#判断" class="headerlink" title="判断"></a>判断</h4>当通过隐式方法启动Activity的时候，可以通过PackageManager或者Intent的<code>resolveActivity</code>方法查找匹配的Activity，找不到返回<code>null</code>。此外，PackageManager还提供<code>queryIntentActivity</code>方法，这个方法与<code>resolveActivity</code>不同的是，它不是返回<strong>最佳匹配</strong>的Activity，而是返回<strong>所有成功匹配</strong>的Activity信息。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;生命周期&quot;&gt;&lt;a href=&quot;#生命周期&quot; class=&quot;headerlink&quot; title=&quot;生命周期&quot;&gt;&lt;/a&gt;生命周期&lt;/h2&gt;&lt;h3 id=&quot;典型情况下的生命周期分析&quot;&gt;&lt;a href=&quot;#典型情况下的生命周期分析&quot; class=&quot;headerlink&quot; 
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
     <title>UML类图几种关系总结</title>
-    <link href="http://yoursite.com/2017/07/22/UML%E7%B1%BB%E5%9B%BE%E5%87%A0%E7%A7%8D%E5%85%B3%E7%B3%BB%E6%80%BB%E7%BB%93/"/>
-    <id>http://yoursite.com/2017/07/22/UML类图几种关系总结/</id>
+    <link href="https://startwithwzk.github.io/2017/07/22/UML%E7%B1%BB%E5%9B%BE%E5%87%A0%E7%A7%8D%E5%85%B3%E7%B3%BB%E6%80%BB%E7%BB%93/"/>
+    <id>https://startwithwzk.github.io/2017/07/22/UML类图几种关系总结/</id>
     <published>2017-07-22T14:33:52.000Z</published>
-    <updated>2017-07-22T14:36:12.922Z</updated>
+    <updated>2017-07-22T14:51:00.880Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)</p>
 </blockquote>
-<p>[TOC]</p>
 <h2 id="泛化（Generalization）"><a href="#泛化（Generalization）" class="headerlink" title="泛化（Generalization）"></a>泛化（Generalization）</h2><p>【泛化关系】：是一种<strong>继承</strong>关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。<br>【箭头指向】：带三角箭头的实线，箭头指向父类。</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -96,7 +464,7 @@
     </summary>
     
     
-      <category term="UML" scheme="http://yoursite.com/tags/UML/"/>
+      <category term="UML" scheme="https://startwithwzk.github.io/tags/UML/"/>
     
   </entry>
   
