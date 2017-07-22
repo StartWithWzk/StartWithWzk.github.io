@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-21T15:44:34.171Z</updated>
+  <updated>2017-07-22T14:36:12.922Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,29 +16,87 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2017/07/21/hello-world/"/>
-    <id>http://yoursite.com/2017/07/21/hello-world/</id>
-    <published>2017-07-21T15:44:34.170Z</published>
-    <updated>2017-07-21T15:44:34.171Z</updated>
+    <title>UML类图几种关系总结</title>
+    <link href="http://yoursite.com/2017/07/22/UML%E7%B1%BB%E5%9B%BE%E5%87%A0%E7%A7%8D%E5%85%B3%E7%B3%BB%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2017/07/22/UML类图几种关系总结/</id>
+    <published>2017-07-22T14:33:52.000Z</published>
+    <updated>2017-07-22T14:36:12.922Z</updated>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+    <content type="html"><![CDATA[<blockquote>
+<p>在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)</p>
+</blockquote>
+<p>[TOC]</p>
+<h2 id="泛化（Generalization）"><a href="#泛化（Generalization）" class="headerlink" title="泛化（Generalization）"></a>泛化（Generalization）</h2><p>【泛化关系】：是一种<strong>继承</strong>关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。<br>【箭头指向】：带三角箭头的实线，箭头指向父类。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_1303436788Qi60.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="实现（Realization）"><a href="#实现（Realization）" class="headerlink" title="实现（Realization）"></a>实现（Realization）</h2><p>【实现关系】：是一种类于接口的关系，表示类是接口所有特性和行为的实现<br>【箭头指向】：带三角箭头的虚线，箭头指向接口</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_13034367939K49.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="关联（Association）"><a href="#关联（Association）" class="headerlink" title="关联（Association）"></a>关联（Association）</h2><p>【关联关系】：是一种拥有关系，它使一个类知道另一个类的属性和方法。关联可以使双向的，也可以使单向的。双向的关联可以有两个箭头或者没有箭头，单向的关联有一个箭头。如：老师与学生、学生与课程<br>【代码体现】：成员变量<br>【箭头指向】：带普通箭头的实心线，指向被拥有者</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_1303436801W1kf.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>上图中，老师与学生是双向关联，老师有多名学生，学生也可能有多名老师。但学生与某课程间的关系为单向关联，一名学生可能要上多门课程，课程是个抽象的东西他不拥有学生。</p>
+<h2 id="聚合（Aggregation）"><a href="#聚合（Aggregation）" class="headerlink" title="聚合（Aggregation）"></a>聚合（Aggregation）</h2><p>【聚合关系】：是整体与部分的关系。聚合关系是关联关系的一种，是<strong>强的关联关系</strong>。并且关联和聚合在<strong>语法</strong>上无法区分，必须考察具体的逻辑关系。如：车和轮胎<br>【代码体现】：成员变量<br>【箭头指向】：带空心菱形的实心线，菱形指向整体</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_1303436811y36B.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="组合（Composition）"><a href="#组合（Composition）" class="headerlink" title="组合（Composition）"></a>组合（Composition）</h2><p>【组合关系】：是整体与部分的关系，没有公司就不存在部门。组合关系是关联关系的一种，是比聚合关系还要强的关系，它要求普通的聚合关系中代表整体的对象负责代表部分的对象的生命周期<br>【代码体现】：成员变量<br>【箭头指向】：带实心菱形的实线，菱形指向整体</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_1303436817mqXK.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="依赖（Dependency）"><a href="#依赖（Dependency）" class="headerlink" title="依赖（Dependency）"></a>依赖（Dependency）</h2><p>【依赖关系】：是一种使用的关系,所以要尽量不使用双向的互相依赖。<br>【代码表现】：局部变量、方法的参数或者对静态方法的调用<br>【箭头及指向】：带箭头的虚线，指向被使用者</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201104/22/0_130343682580L6.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<hr>
+<p>各种关系的强弱顺序：<strong>泛化 = 实现 &gt; 组合 &gt; 聚合 &gt; 关联 &gt; 依赖</strong></p>
+<p>下面这张UML图，比较形象地展示了各种类图的关系：<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://hi.csdn.net/attachment/201202/29/0_1330497855hqk2.gif" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+<hr>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      &lt;blockquote&gt;
+&lt;p&gt;在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)&lt;/p&gt;
+&lt;/b
     
     </summary>
     
+    
+      <category term="UML" scheme="http://yoursite.com/tags/UML/"/>
     
   </entry>
   
