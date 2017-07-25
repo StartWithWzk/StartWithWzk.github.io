@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Android的线程和线程池 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="11.1 主线程和子线程 在Java中默认情况下一个进程只有一个线程，也就是主线程，其他线程都是子线程。Android中的主线程主要处理和界面相关的事情，而子线程则往往用于执行耗时操作。  在Android中除了Thread，还有HandlerThread、AsyncTask以及IntentService等也都扮演着线程的角色。AsyncTask封装了线程池和Handler，它主要是为了方便开发者">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android的线程和线程池">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="11.1 主线程和子线程 在Java中默认情况下一个进程只有一个线程，也就是主线程，其他线程都是子线程。Android中的主线程主要处理和界面相关的事情，而子线程则往往用于执行耗时操作。  在Android中除了Thread，还有HandlerThread、AsyncTask以及IntentService等也都扮演着线程的角色。AsyncTask封装了线程池和Handler，它主要是为了方便开发者">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T11:25:32.952Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android的线程和线程池">
+<meta name="twitter:description" content="11.1 主线程和子线程 在Java中默认情况下一个进程只有一个线程，也就是主线程，其他线程都是子线程。Android中的主线程主要处理和界面相关的事情，而子线程则往往用于执行耗时操作。  在Android中除了Thread，还有HandlerThread、AsyncTask以及IntentService等也都扮演着线程的角色。AsyncTask封装了线程池和Handler，它主要是为了方便开发者">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android的线程和线程池</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android的线程和线程池</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:16:20.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#11-1-主线程和子线程"><span class="post-toc-number">1.</span> <span class="post-toc-text">11.1 主线程和子线程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#11-2-Android中的线程形态"><span class="post-toc-number">2.</span> <span class="post-toc-text">11.2 Android中的线程形态</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-2-1-AsyncTask"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">11.2.1 AsyncTask</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#AsyncTask使用限制"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">AsyncTask使用限制</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#AsyncTask的原理"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">AsyncTask的原理</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-2-2-HandlerThread"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">11.2.2 HandlerThread</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-2-3-IntentService"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">11.2.3 IntentService</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#11-3-Android中的线程池"><span class="post-toc-number">3.</span> <span class="post-toc-text">11.3 Android中的线程池</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-3-1-使用线程池的好处"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">11.3.1 使用线程池的好处</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-3-2-ThreadPoolExecutor"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">11.3.2 ThreadPoolExecutor</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-3-3-线程池的分类"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">11.3.3 线程池的分类</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第十一章-第十一章 Android的线程和线程池"
+  class="post-article article-type-第十一章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android的线程和线程池</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:16:20" datetime="2017-07-25T11:16:20.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="11-1-主线程和子线程"><a href="#11-1-主线程和子线程" class="headerlink" title="11.1 主线程和子线程"></a>11.1 主线程和子线程</h2><ol>
+<li><p>在Java中默认情况下一个进程只有一个线程，也就是主线程，其他线程都是子线程。Android中的主线程主要处理和界面相关的事情，而子线程则往往用于执行耗时操作。</p>
+</li>
+<li><p>在Android中除了Thread，还有<code>HandlerThread</code>、<code>AsyncTask</code>以及<code>IntentService</code>等也都扮演着线程的角色。<code>AsyncTask</code>封装了线程池和Handler，它主要是为了方便开发者在子线程中更新UI。<code>HandlerThread</code>是一种具有消息循环的线程，在它的内部可以使用Handler。<code>IntentService</code>是一个服务，它内部采用HandlerThread来执行任务，当任务执行完毕后就会自动退出。因为它是服务的缘故，所以和后台线程相比，它比较不容易被系统杀死。</p>
+</li>
+<li><p>从Android3.0开始，系统要求网络访问必须要在子线程中进行，否则网络访问将会失败并抛出<code>NetWorkOnMainThreadException</code>这个异常。</p>
+</li>
+<li><p>AsyncTask是一个抽象泛型类，它提供了<code>Params</code>、<code>Progress</code>、<code>Result</code>三个泛型参数，如果task确实不需要传递具体的参数，那么都可以设置为<code>void</code>。下面是它的四个核心方法，其中<code>doInBackground</code>不是在主线程执行的。<code>onPreExecute、doInBackground、onProgressUpdate、onPostResult</code></p>
+</li>
+</ol>
+<h2 id="11-2-Android中的线程形态"><a href="#11-2-Android中的线程形态" class="headerlink" title="11.2 Android中的线程形态"></a>11.2 Android中的线程形态</h2><h3 id="11-2-1-AsyncTask"><a href="#11-2-1-AsyncTask" class="headerlink" title="11.2.1 AsyncTask"></a>11.2.1 AsyncTask</h3><h4 id="AsyncTask使用限制"><a href="#AsyncTask使用限制" class="headerlink" title="AsyncTask使用限制"></a>AsyncTask使用限制</h4><ol>
+<li>AsyncTask的类必须要在主线程中加载，这个过程在Android4.1以上版本已经被系统自动完成。</li>
+<li>AsyncTask的对象必须在主线程中创建，<code>execute</code>方法必须要在UI线程中调用，并且只能执行一次，否则会报运行时异常。</li>
+<li>在Android 1.6之前，AsyncTask是<strong>串行执行任务的</strong>，Android1.6的时候AsyncTask开始采用线程池并行处理任务，但是从Android3.0开始，为了避免AsyncTask带来的并发错误，AsyncTask又采用一个线程来串行执行任务。==尽管如此，在Android3.0以及后续版本中，我们可以使用AsyncTask的executeOnExecutor方法来并行执行任务。但是这个方法是Android3.0新添加的方法，并不能在低版本上使用。==</li>
+</ol>
+<h4 id="AsyncTask的原理"><a href="#AsyncTask的原理" class="headerlink" title="AsyncTask的原理"></a>AsyncTask的原理</h4><ol>
+<li><p>AsyncTask中有两个线程池：<code>SerialExecutor</code>和<code>THREAD_POOL_EXECUTOR</code>。前者是用于任务的排队，<strong>默认是串行的线程池</strong>；后者用于真正执行任务。AsyncTask中还有一个Handler，即InternalHandler，用于将执行环境从线程池切换到主线程。AsyncTask内部就是通过InternalHandler来发送任务执行的进度以及执行结束等消息。</p>
+</li>
+<li><p>AsyncTask排队执行过程：系统先把参数<code>Params</code>封装为<code>FutureTask</code>对象，它相当于Runnable；接着将FutureTask交给SerialExecutor的<code>execute</code>方法，它先把FutureTask插入到任务队列tasks中，如果这个时候没有正在活动的AsyncTask任务，那么就会执行下一个AsyncTask任务，同时当一个AsyncTask任务执行完毕之后，AsyncTask会继续执行其他任务直到所有任务都被执行为止。 </p>
+</li>
+</ol>
+<h3 id="11-2-2-HandlerThread"><a href="#11-2-2-HandlerThread" class="headerlink" title="11.2.2 HandlerThread"></a>11.2.2 HandlerThread</h3><ul>
+<li><code>HandlerThread</code>就是一种可以使用Handler的Thread，它的实现就是在run方法中通过<code>Looper.prepare()</code>来创建消息队列，并通过Looper.loop()来开启消息循环，这样在实际的使用中就允许在HandlerThread中创建Handler了，外界可以通过Handler的消息方式通知HandlerThread执行一个具体的任务。HandlerThread的run方法是一个无限循环，因此当明确不需要再使用HandlerThread的时候，可以通过它的<code>quit</code>或者<code>quitSafely</code>方法来终止线程的执行。HandlerThread的最主要的应用场景就是用在IntentService中。</li>
+</ul>
+<h3 id="11-2-3-IntentService"><a href="#11-2-3-IntentService" class="headerlink" title="11.2.3 IntentService"></a>11.2.3 IntentService</h3><ul>
+<li><code>IntentService</code>是一个继承自Service的抽象类，要使用它就要创建它的子类。IntentService适合执行一些<strong>高优先级</strong>的后台任务，这样不容易被系统杀死。IntentService的<code>onCreate</code>方法中会创建HandlerThread，并使用HandlerThread的Looper来构造一个Handler对象ServiceHandler，这样通过ServiceHandler对象发送的消息最终都会在HandlerThread中执行。IntentService会将Intent封装到Message中，通过ServiceHandler发送出去，在ServiceHandler的<code>handleMessage</code>方法中会调用IntentService的抽象方法<code>onHandleIntent</code>，所以IntentService的子类都要是实现这个方法。</li>
+</ul>
+<h2 id="11-3-Android中的线程池"><a href="#11-3-Android中的线程池" class="headerlink" title="11.3 Android中的线程池"></a>11.3 Android中的线程池</h2><h3 id="11-3-1-使用线程池的好处"><a href="#11-3-1-使用线程池的好处" class="headerlink" title="11.3.1 使用线程池的好处"></a>11.3.1 使用线程池的好处</h3><ol>
+<li>重用线程，避免线程的创建和销毁带来的性能开销；</li>
+<li>能有效控制线程池的最大并发数，避免大量线程之间互相抢夺系统资源而导致的阻塞现象。</li>
+<li>能有效对线程进行简单的管理，并提供定时执行以及指定间隔循环执行等功能。</li>
+</ol>
+<h3 id="11-3-2-ThreadPoolExecutor"><a href="#11-3-2-ThreadPoolExecutor" class="headerlink" title="11.3.2 ThreadPoolExecutor"></a>11.3.2 ThreadPoolExecutor</h3><ol>
+<li><strong>corePoolSize</strong>：核心线程数，默认情况下，核心线程会在线程池中一直存活</li>
+<li><strong>maximumPoolSize</strong>：最大线程数，当活动线程数达到这个数值后，后续任务将会被阻塞</li>
+<li><strong>keepAliveTime</strong>：非核心线程闲置时的超时时长，超过这个时长，闲置的非核心线程就会被回收</li>
+<li><strong>unit</strong>：用于指定keepAliveTime参数的时间单位，有<code>TimeUnit.MILLISECONDS</code>、<code>TimeUnit.SECONDS</code>、<code>TimeUnit.MINUTES</code>等；</li>
+<li><strong>workQueue</strong>：任务队列，通过线程池的excute方法提交的Runable对象存储在这个参数中</li>
+<li><strong>threadFactory</strong>：线程工厂，为线程池提供创建新线程的功能，它是一个接口，它只有一个方法<code>Thread newThread(Runnable r);</code></li>
+<li><strong>RejectedExecutionHandler</strong>：当线程池无法执行新任务时，可能是由于任务队列已满或者是无法成功执行任务，这个时候就会调用这个Handler的<code>rejectedExecution</code>方法来通知调用者，默认情况下，<code>rejectedExecution</code>会直接抛出一个<code>rejectedExecutionException</code></li>
+</ol>
+<h3 id="11-3-3-线程池的分类"><a href="#11-3-3-线程池的分类" class="headerlink" title="11.3.3 线程池的分类"></a>11.3.3 线程池的分类</h3><ol>
+<li><p><strong>FixedThreadPool</strong>：线程数量固定的线程池，它只有核心线程；</p>
+</li>
+<li><p><strong>CachedThreadPool</strong>：线程数量不固定的线程池，它只有非核心线程；</p>
+</li>
+<li><p><strong>ScheduledThreadPool</strong>：核心线程数量固定，非核心线程数量没有限制的线程池，并且只要非核心线程一闲置，马上回收，主要用于执行定时任务和具有固定周期的任务；</p>
+</li>
+<li><p><strong>SingleThreadPool</strong>：只有一个核心线程的线程池，确保了所有的任务都在同一个线程中按顺序执行。</p>
+</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:25:32.952Z" itemprop="dateUpdated">2017-07-25 19:25:32</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第十一章 Android的线程和线程池/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&title=《Android的线程和线程池》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&title=《Android的线程和线程池》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的线程和线程池》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第十二章 Bitmap的加载和Cache/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Bitmap的加载和Cache</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第十章 Android的消息机制/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android的消息机制</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&title=《Android的线程和线程池》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&title=《Android的线程和线程池》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的线程和线程池》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACp0lEQVR42u3au3LCQAwFUP7/p5MmRVJgrh5ryMxxxYDBe7ZYCUmPR3x9/bquP72+8l+7fr184eHh4Q2Wni9owrhe9LN3qk/Hw8PDO83rHdDXj7xeXI7JgwQeHh7eZ/ImS0yem9yPh4eH9794SWqbfytJ7vHw8PA+k1f96STx7S09D0XLtRY8PDy8mDdJZ9/1+kh/Dw8PD2/cVc8DQPWevKHVW+fPd/Hw8PAO8PIDtwpOtqBXnigPh+Hh4eGt8ibHfQ6eDAFUw8+fd/Dw8PDexKsOChRaU0H4yalRZw8PDw9vlZcPEPRGDXYT96iRhoeHh3eAN2fMC7t5+r7cwcPDw8Nb4k2aUnmSXU3Wq021F5NleHh4eANetVSaFwuq6fI8AODh4eHdyau2naoDBL0xgmqoiGYi8PDw8JZ4+bGe/9PPlzIp7754Lh4eHt6NvNGoU6vpNSl/PF0/Hh4e3gFefsRXC755u6tXgOgFGDw8PLwtXu9o7h3lvSQ7P/qfdvbw8PDwjvGqQ1eTI37+3bVaNR4eHl7Mq6bF1eJsNaXujVjh4eHh3c/rNcCS8m4O6BVwCzNleHh4eEu8cvY9aFNVy8GTjcbDw8M7x0sYyejVZOyguhH5qvDw8PBO8PLUdt4YyxPoariKNgsPDw9vlddrQeUhpNpgy4saUfqOh4eHdwtvXk6tptRbI1YvIh4eHh7eKi8vKzQP6PGgVTU44eHh4Z3gzUsP85LBaKyqOhmBh4eHt/PcwrHbrBAHCXcenPKkHA8PD+8cLw8Gvft77/QCAx4eHt6dvF6RYneEq1eeiAIDHh4e3ofxJoWMfDuaW4OHh4f3YbykqLr1lOoG4eHh4Z3m7TafqqNaSSG4V9LFw8PDO8Gr/uHPg0RvsKD3y2sTW3h4eHhX1zfL4vk+FvmrdQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

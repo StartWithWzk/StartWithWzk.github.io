@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://startwithwzk.github.io/"/>
-  <updated>2017-07-22T15:32:48.886Z</updated>
+  <updated>2017-07-25T11:25:00.901Z</updated>
   <id>https://startwithwzk.github.io/</id>
   
   <author>
@@ -14,6 +14,683 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Bitmap的加载和Cache</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0%20Bitmap%E7%9A%84%E5%8A%A0%E8%BD%BD%E5%92%8CCache/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第十二章 Bitmap的加载和Cache/</id>
+    <published>2017-07-25T11:16:31.000Z</published>
+    <updated>2017-07-25T11:25:00.901Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="12-1-Bitmap的高效加载"><a href="#12-1-Bitmap的高效加载" class="headerlink" title="12.1 Bitmap的高效加载"></a>12.1 Bitmap的高效加载</h2><ul>
+<li><p><code>BitmapFactory</code>类提供了四类方法：<code>decodeFile</code>、<code>decodeResource</code>、<code>decodeStream</code>和<code>decodeByteArray</code>从不同来源加载出一个Bitmap对象，最终的实现是在底层实现的。</p>
+</li>
+<li><p>采用<code>BitmapFactory.Options</code>按照一定的采样率来加载所需尺寸的图片，因为iamgeView所需的图片大小往往小于图片的原始尺寸。</p>
+</li>
+<li><p>常用的获取采样率的代码片段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Bitmap <span class="title">decodeSampledBitmapFromResource</span><span class="params">(Resources res, <span class="keyword">int</span> resId, <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight)</span> </span>&#123;</div><div class="line">    <span class="comment">// First decode with inJustDecodeBounds=true to check dimensions</span></div><div class="line">    <span class="keyword">final</span> BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</div><div class="line">    options.inJustDecodeBounds = <span class="keyword">true</span>;</div><div class="line">    BitmapFactory.decodeResource(res, resId, options);</div><div class="line"></div><div class="line">    <span class="comment">// Calculate inSampleSize</span></div><div class="line">    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);</div><div class="line"></div><div class="line">    <span class="comment">// Decode bitmap with inSampleSize set</span></div><div class="line">    options.inJustDecodeBounds = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">return</span> BitmapFactory.decodeResource(res, resId, options);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">calculateInSampleSize</span><span class="params">(BitmapFactory.Options options, <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (reqWidth == <span class="number">0</span> || reqHeight == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Raw height and width of image</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> height = options.outHeight;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> width = options.outWidth;</div><div class="line">    Log.d(TAG, <span class="string">"origin, w= "</span> + width + <span class="string">" h="</span> + height);</div><div class="line">    <span class="keyword">int</span> inSampleSize = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (height &gt; reqHeight || width &gt; reqWidth) &#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfHeight = height / <span class="number">2</span>;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfWidth = width / <span class="number">2</span>;</div><div class="line"></div><div class="line">        <span class="comment">// Calculate the largest inSampleSize value that is a power of 2 and</span></div><div class="line">        <span class="comment">// keeps both height and width larger than the requested height and width.</span></div><div class="line">        <span class="keyword">while</span> ((halfHeight / inSampleSize) &gt;= reqHeight &amp;&amp; (halfWidth / inSampleSize) &gt;= reqWidth) &#123;</div><div class="line">            inSampleSize *= <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Log.d(TAG, <span class="string">"sampleSize:"</span> + inSampleSize);</div><div class="line">    <span class="keyword">return</span> inSampleSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="12-2-Android中的缓存策略"><a href="#12-2-Android中的缓存策略" class="headerlink" title="12.2 Android中的缓存策略"></a>12.2 Android中的缓存策略</h2><ol>
+<li><p>最常用的缓存算法是LRU，核心是当缓存满时，会优先淘汰那些近期最少使用的缓存对象，系统中采用LRU算法的缓存有两种：<code>LruCache</code>(内存缓存)和<code>DiskLruCache</code>(磁盘缓存)。</p>
+</li>
+<li><p>LruCache是Android 3.1才有的，通过support-v4兼容包可以兼容到早期的Android版本。LruCache类是一个线程安全的泛型类，它内部采用一个LinkedHashMap以强引用的方式存储外界的缓存对象，其提供了get和put方法来完成缓存的获取和添加操作，当缓存满时，LruCache会移除较早使用的缓存对象，然后再添加新的缓存对象。</p>
+</li>
+<li><p>一些特殊情况下，还需要重写LruCache的entryRemoved方法，LruCache移除就缓存时会调用entryRemoved</p>
+</li>
+<li><p>DiskLruCache磁盘缓存，它不属于Android sdk的一部分，它的源码可以在这里下载 DiskLruCache的创建、缓存查找和缓存添加操作</p>
+</li>
+</ol>
+<h2 id="12-3-ImageLoader的使用"><a href="#12-3-ImageLoader的使用" class="headerlink" title="12.3 ImageLoader的使用"></a>12.3 ImageLoader的使用</h2><p>参考源码<a href="https://github.com/singwhatiwanna/android-art-res/blob/master/Chapter_12/src/com/ryg/chapter_12/loader/ImageLoader.java" target="_blank" rel="external">ImageLoder</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;12-1-Bitmap的高效加载&quot;&gt;&lt;a href=&quot;#12-1-Bitmap的高效加载&quot; class=&quot;headerlink&quot; title=&quot;12.1 Bitmap的高效加载&quot;&gt;&lt;/a&gt;12.1 Bitmap的高效加载&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android的线程和线程池</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0%20Android%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第十一章 Android的线程和线程池/</id>
+    <published>2017-07-25T11:16:20.000Z</published>
+    <updated>2017-07-25T11:25:32.952Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="11-1-主线程和子线程"><a href="#11-1-主线程和子线程" class="headerlink" title="11.1 主线程和子线程"></a>11.1 主线程和子线程</h2><ol>
+<li><p>在Java中默认情况下一个进程只有一个线程，也就是主线程，其他线程都是子线程。Android中的主线程主要处理和界面相关的事情，而子线程则往往用于执行耗时操作。</p>
+</li>
+<li><p>在Android中除了Thread，还有<code>HandlerThread</code>、<code>AsyncTask</code>以及<code>IntentService</code>等也都扮演着线程的角色。<code>AsyncTask</code>封装了线程池和Handler，它主要是为了方便开发者在子线程中更新UI。<code>HandlerThread</code>是一种具有消息循环的线程，在它的内部可以使用Handler。<code>IntentService</code>是一个服务，它内部采用HandlerThread来执行任务，当任务执行完毕后就会自动退出。因为它是服务的缘故，所以和后台线程相比，它比较不容易被系统杀死。</p>
+</li>
+<li><p>从Android3.0开始，系统要求网络访问必须要在子线程中进行，否则网络访问将会失败并抛出<code>NetWorkOnMainThreadException</code>这个异常。</p>
+</li>
+<li><p>AsyncTask是一个抽象泛型类，它提供了<code>Params</code>、<code>Progress</code>、<code>Result</code>三个泛型参数，如果task确实不需要传递具体的参数，那么都可以设置为<code>void</code>。下面是它的四个核心方法，其中<code>doInBackground</code>不是在主线程执行的。<code>onPreExecute、doInBackground、onProgressUpdate、onPostResult</code></p>
+</li>
+</ol>
+<h2 id="11-2-Android中的线程形态"><a href="#11-2-Android中的线程形态" class="headerlink" title="11.2 Android中的线程形态"></a>11.2 Android中的线程形态</h2><h3 id="11-2-1-AsyncTask"><a href="#11-2-1-AsyncTask" class="headerlink" title="11.2.1 AsyncTask"></a>11.2.1 AsyncTask</h3><h4 id="AsyncTask使用限制"><a href="#AsyncTask使用限制" class="headerlink" title="AsyncTask使用限制"></a>AsyncTask使用限制</h4><ol>
+<li>AsyncTask的类必须要在主线程中加载，这个过程在Android4.1以上版本已经被系统自动完成。</li>
+<li>AsyncTask的对象必须在主线程中创建，<code>execute</code>方法必须要在UI线程中调用，并且只能执行一次，否则会报运行时异常。</li>
+<li>在Android 1.6之前，AsyncTask是<strong>串行执行任务的</strong>，Android1.6的时候AsyncTask开始采用线程池并行处理任务，但是从Android3.0开始，为了避免AsyncTask带来的并发错误，AsyncTask又采用一个线程来串行执行任务。==尽管如此，在Android3.0以及后续版本中，我们可以使用AsyncTask的executeOnExecutor方法来并行执行任务。但是这个方法是Android3.0新添加的方法，并不能在低版本上使用。==</li>
+</ol>
+<h4 id="AsyncTask的原理"><a href="#AsyncTask的原理" class="headerlink" title="AsyncTask的原理"></a>AsyncTask的原理</h4><ol>
+<li><p>AsyncTask中有两个线程池：<code>SerialExecutor</code>和<code>THREAD_POOL_EXECUTOR</code>。前者是用于任务的排队，<strong>默认是串行的线程池</strong>；后者用于真正执行任务。AsyncTask中还有一个Handler，即InternalHandler，用于将执行环境从线程池切换到主线程。AsyncTask内部就是通过InternalHandler来发送任务执行的进度以及执行结束等消息。</p>
+</li>
+<li><p>AsyncTask排队执行过程：系统先把参数<code>Params</code>封装为<code>FutureTask</code>对象，它相当于Runnable；接着将FutureTask交给SerialExecutor的<code>execute</code>方法，它先把FutureTask插入到任务队列tasks中，如果这个时候没有正在活动的AsyncTask任务，那么就会执行下一个AsyncTask任务，同时当一个AsyncTask任务执行完毕之后，AsyncTask会继续执行其他任务直到所有任务都被执行为止。 </p>
+</li>
+</ol>
+<h3 id="11-2-2-HandlerThread"><a href="#11-2-2-HandlerThread" class="headerlink" title="11.2.2 HandlerThread"></a>11.2.2 HandlerThread</h3><ul>
+<li><code>HandlerThread</code>就是一种可以使用Handler的Thread，它的实现就是在run方法中通过<code>Looper.prepare()</code>来创建消息队列，并通过Looper.loop()来开启消息循环，这样在实际的使用中就允许在HandlerThread中创建Handler了，外界可以通过Handler的消息方式通知HandlerThread执行一个具体的任务。HandlerThread的run方法是一个无限循环，因此当明确不需要再使用HandlerThread的时候，可以通过它的<code>quit</code>或者<code>quitSafely</code>方法来终止线程的执行。HandlerThread的最主要的应用场景就是用在IntentService中。</li>
+</ul>
+<h3 id="11-2-3-IntentService"><a href="#11-2-3-IntentService" class="headerlink" title="11.2.3 IntentService"></a>11.2.3 IntentService</h3><ul>
+<li><code>IntentService</code>是一个继承自Service的抽象类，要使用它就要创建它的子类。IntentService适合执行一些<strong>高优先级</strong>的后台任务，这样不容易被系统杀死。IntentService的<code>onCreate</code>方法中会创建HandlerThread，并使用HandlerThread的Looper来构造一个Handler对象ServiceHandler，这样通过ServiceHandler对象发送的消息最终都会在HandlerThread中执行。IntentService会将Intent封装到Message中，通过ServiceHandler发送出去，在ServiceHandler的<code>handleMessage</code>方法中会调用IntentService的抽象方法<code>onHandleIntent</code>，所以IntentService的子类都要是实现这个方法。</li>
+</ul>
+<h2 id="11-3-Android中的线程池"><a href="#11-3-Android中的线程池" class="headerlink" title="11.3 Android中的线程池"></a>11.3 Android中的线程池</h2><h3 id="11-3-1-使用线程池的好处"><a href="#11-3-1-使用线程池的好处" class="headerlink" title="11.3.1 使用线程池的好处"></a>11.3.1 使用线程池的好处</h3><ol>
+<li>重用线程，避免线程的创建和销毁带来的性能开销；</li>
+<li>能有效控制线程池的最大并发数，避免大量线程之间互相抢夺系统资源而导致的阻塞现象。</li>
+<li>能有效对线程进行简单的管理，并提供定时执行以及指定间隔循环执行等功能。</li>
+</ol>
+<h3 id="11-3-2-ThreadPoolExecutor"><a href="#11-3-2-ThreadPoolExecutor" class="headerlink" title="11.3.2 ThreadPoolExecutor"></a>11.3.2 ThreadPoolExecutor</h3><ol>
+<li><strong>corePoolSize</strong>：核心线程数，默认情况下，核心线程会在线程池中一直存活</li>
+<li><strong>maximumPoolSize</strong>：最大线程数，当活动线程数达到这个数值后，后续任务将会被阻塞</li>
+<li><strong>keepAliveTime</strong>：非核心线程闲置时的超时时长，超过这个时长，闲置的非核心线程就会被回收</li>
+<li><strong>unit</strong>：用于指定keepAliveTime参数的时间单位，有<code>TimeUnit.MILLISECONDS</code>、<code>TimeUnit.SECONDS</code>、<code>TimeUnit.MINUTES</code>等；</li>
+<li><strong>workQueue</strong>：任务队列，通过线程池的excute方法提交的Runable对象存储在这个参数中</li>
+<li><strong>threadFactory</strong>：线程工厂，为线程池提供创建新线程的功能，它是一个接口，它只有一个方法<code>Thread newThread(Runnable r);</code></li>
+<li><strong>RejectedExecutionHandler</strong>：当线程池无法执行新任务时，可能是由于任务队列已满或者是无法成功执行任务，这个时候就会调用这个Handler的<code>rejectedExecution</code>方法来通知调用者，默认情况下，<code>rejectedExecution</code>会直接抛出一个<code>rejectedExecutionException</code></li>
+</ol>
+<h3 id="11-3-3-线程池的分类"><a href="#11-3-3-线程池的分类" class="headerlink" title="11.3.3 线程池的分类"></a>11.3.3 线程池的分类</h3><ol>
+<li><p><strong>FixedThreadPool</strong>：线程数量固定的线程池，它只有核心线程；</p>
+</li>
+<li><p><strong>CachedThreadPool</strong>：线程数量不固定的线程池，它只有非核心线程；</p>
+</li>
+<li><p><strong>ScheduledThreadPool</strong>：核心线程数量固定，非核心线程数量没有限制的线程池，并且只要非核心线程一闲置，马上回收，主要用于执行定时任务和具有固定周期的任务；</p>
+</li>
+<li><p><strong>SingleThreadPool</strong>：只有一个核心线程的线程池，确保了所有的任务都在同一个线程中按顺序执行。</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;11-1-主线程和子线程&quot;&gt;&lt;a href=&quot;#11-1-主线程和子线程&quot; class=&quot;headerlink&quot; title=&quot;11.1 主线程和子线程&quot;&gt;&lt;/a&gt;11.1 主线程和子线程&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在Java中默认情况下一个进程只有一个线程
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android的消息机制</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%8D%81%E7%AB%A0%20Android%E7%9A%84%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/</id>
+    <published>2017-07-25T11:16:11.000Z</published>
+    <updated>2017-07-25T11:26:01.551Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="10-1-Android消息机制概述"><a href="#10-1-Android消息机制概述" class="headerlink" title="10.1 Android消息机制概述"></a>10.1 Android消息机制概述</h2><ol>
+<li>Android的消息机制主要是指Handler的运行机制，其底层需要MessageQueue和Looper的支持。</li>
+<li>Android规定UI操作只能在主线程中进行，<code>ViewRootImpl</code>的<code>checkThread</code>方法会验证当前线程是否可以进行UI操作。<blockquote>
+<p><strong>为什么系统不允许在子线程中访问UI的？</strong></p>
+<ol>
+<li>因为UI组件不是线程安全的，如果在多线程中并发访问可能会导致UI组件处于不可预期的状态。</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p><strong>为什么系统不对UI控件的访问加上锁机制？</strong></p>
+<ol>
+<li>首先加上锁机制会让UI访问的逻辑变得复杂</li>
+<li>其次锁机制会降低UI访问的效率，因为锁机制会阻塞某些线程的执行</li>
+</ol>
+</blockquote>
+<ol>
+<li>Handler创建时会采用当前线程的Looper来创建内部的消息循环系统，如果当前线程中不存在Looper的话就会报错。Handler可以用<code>post</code>方法将一个Runnable投递到消息队列中，也可以用<code>send</code>方法发送一个消息投递到相抵队列中，其实<code>post</code>最终还是调用了<code>send</code>方法。</li>
+</ol>
+<h2 id="10-2-Android的消息机制分析"><a href="#10-2-Android的消息机制分析" class="headerlink" title="10.2 Android的消息机制分析"></a>10.2 Android的消息机制分析</h2><h3 id="10-2-1-ThreadLocal-的工作原理"><a href="#10-2-1-ThreadLocal-的工作原理" class="headerlink" title="10.2.1 ThreadLocal 的工作原理"></a>10.2.1 ThreadLocal 的工作原理</h3><ol>
+<li><p>ThreadLocal是一个线程内部的数据存储类，通过它可以在指定的线程中存储数据，数据存储以后，只有在指定线程中可以获取到存储的数据，对于其他线程来说则无法获取到数据。一般来说，当某些数据是以<strong>线程为作用域并且不同线程具有不同的数据副本</strong>的时候，可以考虑使用ThreadLocal。对于Handler来说，它需要获取当前线程的Looper，而Looper的作用域就是线程并且不同线程具有不同的Looper，这个时候通过ThreadLocal就可以实现Looper在线程中的存取了。</p>
+</li>
+<li><p>ThreadLocal的原理：不同线程访问同一个ThreadLocal的get方法时，ThreadLocal内部会从各自的线程中取出一个数组，然后再从数组中根据当前ThreadLocal的索引去查找出对应的value值，不同线程中的数组是不同的，这就是为什么通过ThreadLocal可以在不同线程中维护一套数据的副本并且彼此互不干扰。</p>
+</li>
+<li><p><code>Values</code>是Thread类内部专门用来存储线程的ThreadLocal数据的成员变量，它内部有一个数组<code>private Object[] table</code>，ThreadLocal的值就存在这个table数组中。如果values的值为null，那么就需要对其进行初始化然后再将ThreadLocal的值进行存储。==ThreadLocal数据的存储规则：ThreadLocal的值在table数组中的存储位置总是ThreadLocal的索引+1的位置。==</p>
+</li>
+</ol>
+<h3 id="10-2-2-MessageQueue的工作原理"><a href="#10-2-2-MessageQueue的工作原理" class="headerlink" title="10.2.2 MessageQueue的工作原理"></a>10.2.2 MessageQueue的工作原理</h3><ol>
+<li><p>MessageQueue其实是通过单链表来维护消息列表的，它包含两个主要操作enqueueMessage和next，前者是插入消息，后者是取出一条消息并移除。</p>
+</li>
+<li><p>next方法是一个无限循环的方法，如果消息队列中没有消息，那么next方法会一直阻塞在这里。当有新消息到来时，next方法会返回这条消息并将它从链表中移除。</p>
+</li>
+</ol>
+<h3 id="10-2-3-Looper的工作原理"><a href="#10-2-3-Looper的工作原理" class="headerlink" title="10.2.3 Looper的工作原理"></a>10.2.3 Looper的工作原理</h3><ol>
+<li><p>Looper的<code>prepareMainLooper</code>方法主要是给主线程也就是ActivityThread创建Looper使用的，本质也是调用了prepare方法。</p>
+</li>
+<li><p>Looper的<code>quit</code>和<code>quitSafely</code>方法的区别是：前者会直接退出Looper，后者只是设定一个退出标记，然后把消息队列中的已有消息处理完毕后才安全地退出。Looper退出之后，通过Handler发送的消息就会失败，这个时候Handler的send方法会返回false。==在子线程中，如果手动为其创建了Looper，那么在所有的事情完成以后应该调用<code>quit</code>方法来终止消息循环，否则这个子线程就会一直处于等待的状态，而如果退出Looper以后，这个线程就会立刻终止，因此建议不需要的时候终止Looper。==</p>
+</li>
+<li><p>Looper的<code>loop</code>方法会调用MessageQueue的<code>next</code>方法来获取新消息，而<code>next</code>是一个阻塞操作，当没有消息时，<code>next</code>方法会一直阻塞着在那里，这也导致了loop方法一直阻塞在那里。如果MessageQueue的<code>next</code>方法返回了新消息，Looper就会处理这条消息：<code>msg.target.dispatchMessage(msg)</code>，其中的msg.target就是发送这条消息的Handler对象。</p>
+</li>
+</ol>
+<h3 id="10-2-4-Handler的工作原理"><a href="#10-2-4-Handler的工作原理" class="headerlink" title="10.2.4 Handler的工作原理"></a>10.2.4 Handler的工作原理</h3><ol>
+<li><p>Handler就是处理消息的发送和接收之后的处理</p>
+</li>
+<li><p>Handler处理消息的过程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (msg.callback != <span class="keyword">null</span>) &#123;</div><div class="line">        handleCallback(msg);<span class="comment">//当message是runnable的情况，也就是Handler的post方法传递的参数，这种情况下直接执行runnable的run方法</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (mCallback != <span class="keyword">null</span>) &#123;<span class="comment">//如果创建Handler的时候是给Handler设置了Callback接口的实现，那么此时调用该实现的handleMessage方法</span></div><div class="line">            <span class="keyword">if</span> (mCallback.handleMessage(msg)) &#123;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        handleMessage(msg);<span class="comment">//如果是派生Handler的子类，就要重写handleMessage方法，那么此时就是调用子类实现的handleMessage方法</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handleCallback</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">        message.callback.run();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Subclasses must implement this to receive messages.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Handler还有一个特殊的构造方法，它可以通过特定的Looper来创建Handler。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper)</span></span>&#123;</div><div class="line">  <span class="keyword">this</span>(looper, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Android的主线程就是<code>ActivityThread</code>，主线程的入口方法就是<code>main</code>，其中调用了<code>Looper.prepareMainLooper()</code>来创建主线程的Looper以及MessageQueue，并通过<code>Looper.loop()</code>方法来开启主线程的消息循环。主线程内有一个Handler，即<code>ActivityThread.H</code>，它定义了一组消息类型，主要包含了四大组件的启动和停止等过程，例如<code>LAUNCH_ACTIVITY</code>等。</p>
+</li>
+<li><p>ActivityThread通过ApplicationThread和AMS进行进程间通信，AMS以进程间通信的方法完成ActivityThread的请求后会回调ApplicationThread中的Binder方法，然后ApplicationThread会向H发送消息，H收到消息后会将ApplicationThread中的逻辑切换到ActivityThread中去执行，即切换到主线程中去执行，这个过程就是主线程的消息循环模型。</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;10-1-Android消息机制概述&quot;&gt;&lt;a href=&quot;#10-1-Android消息机制概述&quot; class=&quot;headerlink&quot; title=&quot;10.1 Android消息机制概述&quot;&gt;&lt;/a&gt;10.1 Android消息机制概述&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>四大组件的工作过程</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E4%B9%9D%E7%AB%A0%20%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/</id>
+    <published>2017-07-25T11:15:54.000Z</published>
+    <updated>2017-07-25T11:26:23.797Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="9-1-四大组件的运行状态"><a href="#9-1-四大组件的运行状态" class="headerlink" title="9.1 四大组件的运行状态"></a>9.1 四大组件的运行状态</h2><ul>
+<li><p>四大组件中只有BroadcastReceiver既可以在AndroidManifest文件中注册，也可以在代码中注册，其他三个组件都必须在AndroidManifest文件中注册；ContentProvider的调用不需要借助Intent，其他三个组件都需要借助Intent。</p>
+</li>
+<li><p>Activity是一种展示型组件，向用户直接地展示一个界面。Activity组件是可以停止的，在实际开发中可以通过Activity的finish方法来结束一个Activity组件的运行。</p>
+</li>
+<li><p>Service是一种计算型组件，用于在后台执行一系列计算任务。Service组件有两种状态：启动状态和绑定状态。当service处于绑定状态时，外界可以很方便的和service进行通信，而在启动状态中是不可与外界通信的。尽管Service组件是用于执行后台计算的，但是它本身是运行在主线程中的，因此不能进行太耗时的运算。Service组件也是可以停止的，需要灵活采用stopService和UNBindService这两个方法才能完全停止一个Service组件。</p>
+</li>
+<li><p>BroadcastReceiver是一种消息型组件，用于不同的组件乃至不同的应用之间传递消息。广播的注册有两种方式，静态注册和动态注册。</p>
+</li>
+<li><p>ContentProvider是一种数据共享型组件，用于向其他组件乃至其他应用共享数据。它的内部需要实现增删查改这四种操作，在它内部维持着一份数据集合，这个数据集合既可以是数据库也可以采用任何其他类型来实现。另外ContentProvider内部的insert、delete、update和query方法需要处理好线程同步，因为这几个方法是在Binder线程池中被调用的。</p>
+</li>
+</ul>
+<h2 id="9-2-Activity的工作过程"><a href="#9-2-Activity的工作过程" class="headerlink" title="9.2 Activity的工作过程"></a>9.2 Activity的工作过程</h2><ol>
+<li><p>Activity启动的大致流程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://p1.bpimg.com/567571/f0bacb7b8feba76f.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+<li><p><code>ApplicationThread</code>是<code>ActivityThread</code>的一个内部类，它继承自<code>ApplicationThreadNative</code>，而<code>ApplicationThreadNative</code>继承自<code>Binder</code>并实现了<code>IApplicationThread</code>接口，<code>ApplicationThreadNative</code>的作用其实就和系统为AIDL文件生成的类是一样的。</p>
+</li>
+<li><p><code>ActivityManagerService</code>(AMS)继承自<code>ActivityManagerNative</code>，而<code>ActivityManagerNative</code>继承自<code>Binder</code>并实现了<code>IActivityManager</code>这个Binder接口，因此AMS也是一个Binder。</p>
+</li>
+<li><p>一个应用只有一个Application对象，它的创建也是通过<code>Instrumentation</code>来完成的，这个过程和Activity对象的创建过程一样，都是通过类加载器来实现的。</p>
+</li>
+<li><p><code>ContextImpl</code>是Context的具体实现，ContextImpl是通过Activity的<code>attach</code>方法来和Activity建立关联的，在attach方法中Activity还会完成Window的创建并建立自己和Window的关联，这样当window接收到外部输入事件后就可以将事件传递给Activity。[这里可能有误，应该是Activity将事件传递给window]</p>
+</li>
+</ol>
+<h2 id="9-3-Service的工作过程"><a href="#9-3-Service的工作过程" class="headerlink" title="9.3 Service的工作过程"></a>9.3 Service的工作过程</h2><p>Service有两种状态：启动状态和绑定状态，两种状态是可以共存的。</p>
+<ul>
+<li><p><strong>启动过程</strong>：<br><img src="http://p1.bqimg.com/567571/36be20d6ed41012a.jpg" alt="启动"></p>
+</li>
+<li><p><strong>绑定过程</strong>：<br><img src="http://i1.piimg.com/567571/4e786ae6d8e19a92.jpg" alt="绑定"></p>
+</li>
+</ul>
+<h2 id="BroadcastReceiver的工作过程"><a href="#BroadcastReceiver的工作过程" class="headerlink" title="BroadcastReceiver的工作过程"></a>BroadcastReceiver的工作过程</h2><ol>
+<li>BroadcastReceiver的工作过程包括广播注册过程、广播发送和接收过程。<ol>
+<li>注册过程：静态注册的时候是由<code>PackageManagerService</code>来完成整个注册过程，下面是动态注册的过程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://p1.bqimg.com/567571/1c49f334af8a8948.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+</ol>
+</li>
+</ol>
+<h2 id="ContentProvider的工作过程"><a href="#ContentProvider的工作过程" class="headerlink" title="ContentProvider的工作过程"></a>ContentProvider的工作过程</h2><ol>
+<li><p>当ContentProvider所在的进程启动的时候，它会同时被启动并被发布到AMS中，这个时候它的onCreate要先于Application的onCreate执行。</p>
+</li>
+<li><p>ContentProvider的启动过程：</p>
+<ol>
+<li><p>当一个应用启动时，入口方法是<code>ActivityThread</code>的<code>main</code>方法，其中创建<code>ActivityThread</code>的实例并创建主线程的消息队列</p>
+</li>
+<li><p><code>ActivityThread</code>的<code>attach</code>方法中会远程调用<code>ActivityManagerService</code>的<code>attachApplication</code>，并将<code>ApplicationThread</code>提供给AMS，<code>ApplicationThread</code>主要用于<code>ActivityThread</code>和AMS之间的通信</p>
+</li>
+<li><p><code>ActivityManagerService</code>的<code>attachApplication</code>会调用<code>ApplicationThread</code>的<code>bindApplication</code>方法，这个方法会通过H切换到<code>ActivityThread</code>中去执行，即调用<code>handleBindApplication</code>方法</p>
+</li>
+<li><p><code>handleBindApplication</code>方法会创建<code>Application</code>对象并加载<code>ContentProvider</code>，注意是先加载<code>ContentProvider</code>，然后调用<code>Application</code>的<code>onCreate</code>方法。</p>
+</li>
+</ol>
+</li>
+<li><p>ContentProvider的<code>android:multiprocess</code>属性决定它是否是单实例，默认值是false，也就是默认是单实例。当设置为true时，每个调用者的进程中都存在一个ContentProvider对象。</p>
+</li>
+<li><p>当调用ContentProvider的insert、delete、update、query方法中的任何一个时，如果ContentProvider所在的进程没有启动的话，那么就会触发ContentProvider的创建，并伴随着ContentProvider所在进程的启动。下图是ContentProvider的query操作的大致过程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://box.kancloud.cn/2015-12-10_56692ec8cd215.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;9-1-四大组件的运行状态&quot;&gt;&lt;a href=&quot;#9-1-四大组件的运行状态&quot; class=&quot;headerlink&quot; title=&quot;9.1 四大组件的运行状态&quot;&gt;&lt;/a&gt;9.1 四大组件的运行状态&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;四大组件中只有BroadcastR
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>理解Window和WindowManager</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E7%90%86%E8%A7%A3Window%E5%92%8CWindowManager/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第八章 理解Window和WindowManager/</id>
+    <published>2017-07-25T11:15:39.000Z</published>
+    <updated>2017-07-25T11:26:44.193Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="8-1-Window和WindowManager"><a href="#8-1-Window和WindowManager" class="headerlink" title="8.1 Window和WindowManager"></a>8.1 Window和WindowManager</h2><p>WindowManager的LayoutParams中的<strong>flags</strong>和<strong>type</strong>这两个参数比较重要，其中关于Flags参数，有几个常用的属性</p>
+<ul>
+<li><p><strong>FLAG_NOT_FOCUSABLE</strong>：表示Window不要获得焦点，也不需要接收各种输入时间，此标记会同时启用<strong>FLAG_NOT_TOUCH_MODAL</strong>，最终事件会直接传递给下层的具有焦点的Window</p>
+</li>
+<li><p><strong>FLAG_NOT_TOUCH_MODAL</strong>：系统会将当前Window区域以外的单击事件传递给底层的Window，当前Window区域以内的单击事件则自己处理。一般来说都需要开启此标记，否则其他window将无法收到单击事件</p>
+</li>
+<li><p><strong>FLAG_SHOW_WHEN_LOCKED</strong>：开启此模式可以让Window显示在锁屏的界面上</p>
+</li>
+</ul>
+<p>关于Type参数</p>
+<ul>
+<li>应用Window层级范围1~99</li>
+<li>子Window层级范围1000~1999</li>
+<li>系统Window层级范围是2000~2999（可以选用TYPE_SYSTEM_OVERLAY或者TYPE_SYSTEM_ERROR，如果选用后者，需要声明权限）</li>
+</ul>
+<p>WindowManager继承自ViewManager，常用的只有三个方法：addView、updateView和removeView。</p>
+<h2 id="8-2-Window的内部机制"><a href="#8-2-Window的内部机制" class="headerlink" title="8.2 Window的内部机制"></a>8.2 Window的内部机制</h2><ol>
+<li><p>Window是一个抽象的概念，不是实际存在的，它也是以View的形式存在。在实际使用中无法直接访问Window，只能通过WindowManager才能访问Window。每个Window都对应着一个View和一个ViewRootImpl，Window和View通过ViewRootImpl来建立联系。</p>
+</li>
+<li><p>Window的添加、删除和更新过程都是IPC过程，以Window的添加为例，WindowManager的实现类WindowManagerImpl对于addView、updateView和removeView方法都是委托给WindowManagerGlobal类（该类以工厂方式向外提供自己的实例），该类保存了很多数据列表，例如所有window对应的view集合mViews、所有window对应的ViewRootImpl的集合mRoots等，之后添加操作交给了ViewRootImpl来处理，接着会通过WindowSession来完成Window的添加过程，这个过程是一个IPC调用，因为最终是通过WindowManagerService来完成window的添加的。</p>
+</li>
+<li><p>dispatchDetachedFromWindow方法作用</p>
+<ol>
+<li>垃圾回收，比如清除数据和消息、移除回调</li>
+<li>通过Session的remove方法删除Window，这是一个IPC调用</li>
+<li>调用View的dispatchDetachedFromWindow方法</li>
+<li>调用WindowManagerGlobal的doRemove方法刷新数据。</li>
+</ol>
+</li>
+</ol>
+<h2 id="8-3-Window的创建过程"><a href="#8-3-Window的创建过程" class="headerlink" title="8.3 Window的创建过程"></a>8.3 Window的创建过程</h2><h3 id="8-3-1-Activity的Window创建过程"><a href="#8-3-1-Activity的Window创建过程" class="headerlink" title="8.3.1 Activity的Window创建过程"></a>8.3.1 Activity的Window创建过程</h3><ol>
+<li><p>Activity的启动过程很复杂，最终会由<code>ActivityThread</code>中的<code>performLaunchActivity</code>来完成整个启动过程，在这个方法内部会通过<strong>类加载器</strong>创建Activity的实例对象，并调用它的attach方法为其关联运行过程中所依赖的一系列上下文环境变量；</p>
+</li>
+<li><p>Activity实现了Window的Callback接口，当window接收到外界的状态变化时就会回调Activity的方法，例如<code>onAttachedToWindow、onDetachedFromWindow、dispatchTouchEvent</code>等；</p>
+</li>
+<li><p>Activity的Window是由PolicyManager的<code>makeNewWindow</code>方法来创建的，它的真正实现是Policy类，它会新建一个PhoneWindow对象，Activity的setContentView的实现是由PhoneWindow来实现的；</p>
+</li>
+<li><p>Activity的顶级View是DecorView，它本质上是一个FrameLayout。如果没有DecorView，那么PhoneWindow会先创建一个DecorView，然后加载具体的布局文件并将view添加到DecorView的mContentParent中，最后就是回调Activity的onContentChanged通知Activity视图已经发生了变化；</p>
+</li>
+<li><p>需要注意的是，此时DecorView还没有被WindowManager正式添加到Window中，还有一个步骤是让WindowManager能够识别DecorView，在ActivityThread调用<code>handleResumeActivity</code>方法时，首先会调用Activity的onResume方法，然后会调用makeVisible方法，这个方法中DecorView真正地完成了添加和显示过程。</p>
+</li>
+</ol>
+<h3 id="8-3-2-Dialog的Window创建过程"><a href="#8-3-2-Dialog的Window创建过程" class="headerlink" title="8.3.2 Dialog的Window创建过程"></a>8.3.2 Dialog的Window创建过程</h3><ol>
+<li>过程与Activity的Window创建过程类似，普通的Dialog的有一个特别之处，即它必须采用Activity的Context，如果采用Application的Context会报错。原因是Application没有应用token，应用token一般是Activity拥有的。[service貌似也有token?]</li>
+</ol>
+<h3 id="8-3-3-Toast的Window创建过程"><a href="#8-3-3-Toast的Window创建过程" class="headerlink" title="8.3.3 Toast的Window创建过程"></a>8.3.3 Toast的Window创建过程</h3><ol>
+<li>Toast属于系统Window，它内部的视图由两种方式指定：一种是系统默认的样式；另一种是通过setView方法来指定一个自定义的View。</li>
+</ol>
+<p>2.Toast具有定时取消功能，所以系统采用了Handler。Toast的显示和隐藏是IPC过程，都需要NotificationManagerService来实现。在Toast和NMS进行IPC过程时，NMS会跨进程回调Toast中的TN类中的方法，TN类是一个Binder类，运行在Binder线程池中，所以需要通过Handler将其切换到当前发送Toast请求所在的线程，所以Toast无法在没有Looper的线程中弹出。</p>
+<p>3.对于非系统应用来说，mToastQueue最多能同时存在50个ToastRecord，这样做是为了防止DOS(Denial of Service，拒绝服务)。因为如果某个应用弹出太多的Toast会导致其他应用没有机会弹出Toast。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;8-1-Window和WindowManager&quot;&gt;&lt;a href=&quot;#8-1-Window和WindowManager&quot; class=&quot;headerlink&quot; title=&quot;8.1 Window和WindowManager&quot;&gt;&lt;/a&gt;8.1 Window和Win
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android动画深入分析</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E4%B8%83%E7%AB%A0%20Android%E5%8A%A8%E7%94%BB%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/</id>
+    <published>2017-07-25T11:15:30.000Z</published>
+    <updated>2017-07-25T11:27:03.715Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="7-1-View动画"><a href="#7-1-View动画" class="headerlink" title="7.1 View动画"></a>7.1 View动画</h2><h3 id="7-1-1-View动画的种类"><a href="#7-1-1-View动画的种类" class="headerlink" title="7.1.1 View动画的种类"></a>7.1.1 View动画的种类</h3><p>View动画四种变换效果对应着Animation的四个子类：TranslateAnimation、ScaleAnimation、RotateAnimation和AlphaAnimation，也可以用XML来定义，建议使用XML，因为可读性更好。</p>
+<ul>
+<li><strong><set></set></strong>：对应于AnimationSet类，它可以包含若干个动画。并且也可以被嵌套在其他动画中。<ul>
+<li><strong>android: interpolator</strong>：表示动画的插值器，插值器影响动画的速度。不指定，默认为<code>@android:anim/accelerate_decelerate_interpolator</code>，即加速减速插值器。</li>
+<li><strong>android: shareInterpolator</strong>：表示集合中的动画是否和集合共享同一个插值器。</li>
+</ul>
+</li>
+</ul>
+<p>通过Animation的setAnimationListener方法可以给View动画添加过程监听。</p>
+<h3 id="7-1-2-自定义View动画"><a href="#7-1-2-自定义View动画" class="headerlink" title="7.1.2 自定义View动画"></a>7.1.2 自定义View动画</h3><p>继承Animation这个抽象类，然后重写它的initialize和applyTransFormation方法，在initialize方法中做一些初始化工作，在applyTransformation中进行相应的矩阵变换，很多时候需要采用Camera来简化矩阵变换的过程。</p>
+<h3 id="7-1-3-帧动画"><a href="#7-1-3-帧动画" class="headerlink" title="7.1.3 帧动画"></a>7.1.3 帧动画</h3><p>帧动画是顺序播放一组预先定义好的图片，类型电影播放，系统提供了另外一个类AnimationDrawable来使用帧动画，首先需要用XML来定义一个AnimationDrawable，标签为<animation-list>。比较容易引发OOM，所以使用的时候尽量避免使用过多尺寸较大的图片。</animation-list></p>
+<h2 id="7-2-View动画的特殊使用场景"><a href="#7-2-View动画的特殊使用场景" class="headerlink" title="7.2 View动画的特殊使用场景"></a>7.2 View动画的特殊使用场景</h2><h3 id="7-2-1-LayoutAnimation"><a href="#7-2-1-LayoutAnimation" class="headerlink" title="7.2.1 LayoutAnimation"></a>7.2.1 LayoutAnimation</h3><p>LayoutAnimation作用于ViewGroup，为ViewGroup指定一个动画，这样当它的子元素出场都具有这种动画效果。它的使用步骤为</p>
+<ol>
+<li>定义LayoutAnimation。<ul>
+<li><strong>android: delay</strong>：表示子元素开始动画的时间延迟，比如子元素入场动画的时间周期为300ms，那么0.5表示每个子元素都需要延迟150ms才能播放入场动画。</li>
+<li><strong>android: animationOrder</strong>：表示子元素动画的顺序，有三种选项：normal、reverse和random，其中normal表示顺序显示；reverse表示逆向显示；random则是随机播放入场动画。</li>
+<li><strong>android: animation</strong>：为子元素指定具体入场动画。</li>
+</ul>
+</li>
+<li>为子元素设置具体的入场动画。</li>
+<li>为ViewGroup指定android :layoutAnimation属性。</li>
+</ol>
+<p>Ps.除了在XML中指定LayoutAnimation外，还可以通过LayoutAnimationController来实现。</p>
+<h3 id="7-2-2-Activity的切换效果"><a href="#7-2-2-Activity的切换效果" class="headerlink" title="7.2.2 Activity的切换效果"></a>7.2.2 Activity的切换效果</h3><p>Activity有默认的切换效果，但是这个效果是可以自定义的，主要用到<code>overridePendingTransition(int enterAnim, int exitAnim)</code>，这个方法必须在startActivity(intent)或者finish()之后调用才能生效。</p>
+<p>Ps.Fragment也可以添加切换动画</p>
+<h2 id="7-3-属性动画"><a href="#7-3-属性动画" class="headerlink" title="7.3 属性动画"></a>7.3 属性动画</h2><h3 id="7-3-1-使用属性动画"><a href="#7-3-1-使用属性动画" class="headerlink" title="7.3.1 使用属性动画"></a>7.3.1 使用属性动画</h3><ul>
+<li>属性动画默认时间间隔300ms，默认帧率10ms/帧</li>
+<li>属性动画从API11才有，可以采用开源动画库nineoldandroid来兼容以前的版本。</li>
+<li>比较常用的几个动画类是：ValueAnimator、ObjectAnimator和AnimatorSet。其中ObjectAnimator继承自ValueAnimator，AnimatorSet是动画集合。</li>
+</ul>
+<h3 id="7-3-2-插值器和估值器"><a href="#7-3-2-插值器和估值器" class="headerlink" title="7.3.2 插值器和估值器"></a>7.3.2 插值器和估值器</h3><p>TimeInterpolator中文译为时间插值器，它的作用是根据时间流逝的百分比来计算出当前属性改变的百分比；TypeEvaluate中文译为类型估值算法，也叫估值器，它的作用是根据当前属性改变的百分比来计算改变后的属性值，系统内置的有IntEvaluator、FloatEvaluator和ArgbEvaluator。</p>
+<p>属性动画中的插值器和估值器是实现非匀速动画的重要手段。</p>
+<h3 id="7-3-3-属性动画的监听器"><a href="#7-3-3-属性动画的监听器" class="headerlink" title="7.3.3 属性动画的监听器"></a>7.3.3 属性动画的监听器</h3><p>属性动画提供了监听器用于监听动画的播放过程，主要有两个接口，分别为AnimatorUpdateListener和AnimatorListener。</p>
+<h3 id="7-3-4-对任意属性做动画"><a href="#7-3-4-对任意属性做动画" class="headerlink" title="7.3.4 对任意属性做动画"></a>7.3.4 对任意属性做动画</h3><p>对object的属性xxx做动画，如果想要动画生效，要同时满足两个条件：</p>
+<ol>
+<li>object必须要提供setXXX方法，如果动画的时候没有传递初始值，那么还要提供getXXX方法，因为系统要去取XXX属性的初始值。（如果这条不满足，程序直接crash）</li>
+<li>object的setXXX对属性XXX所做的改变必须能够通过某种方法反映出来，比如会带来UI的改变。（如果这条不满足，动画无效果但不会crash）</li>
+</ol>
+<p>针对上面条件二的解决办法是</p>
+<ul>
+<li>给你的对象加上get和set方法，如果你有权限的话</li>
+<li>用一个类来包装原始对象，间接为其提供get和set方法</li>
+<li>采用ValueAnimator，监听动画过程，自己实现属性的改变</li>
+</ul>
+<h2 id="7-4-使用动画的注意事项"><a href="#7-4-使用动画的注意事项" class="headerlink" title="7.4 使用动画的注意事项"></a>7.4 使用动画的注意事项</h2><p>通过动画可以实现一些比较绚丽的的效果，但是使用过程中，也需要注意一些事情，主要分为下面几类。</p>
+<ol>
+<li>OOM问题</li>
+<li>内存泄漏（在属性动画中，有一类无线循环的动画，这类动画需要在Activity退出时及时停止）</li>
+<li>兼容性问题</li>
+<li>View动画问题</li>
+<li>不要使用px</li>
+<li>硬件加速（使用动画过程中，建议开启硬件加速，这样会提高动画的流畅性）</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;7-1-View动画&quot;&gt;&lt;a href=&quot;#7-1-View动画&quot; class=&quot;headerlink&quot; title=&quot;7.1 View动画&quot;&gt;&lt;/a&gt;7.1 View动画&lt;/h2&gt;&lt;h3 id=&quot;7-1-1-View动画的种类&quot;&gt;&lt;a href=&quot;#7-1-1-
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android的Drawable</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%85%AD%E7%AB%A0%20Android%E7%9A%84Drawable/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/</id>
+    <published>2017-07-25T11:15:17.000Z</published>
+    <updated>2017-07-25T11:27:18.083Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="6-1-Drawable"><a href="#6-1-Drawable" class="headerlink" title="6.1 Drawable"></a>6.1 Drawable</h2><ul>
+<li>Drawable是一个抽象类，每个具体的Drawable都是它的子类，例如ShapeDrawable、BitmapDrawable等。</li>
+<li>Drawable的内部宽/高可以通过getIntrinsicWidth和getIntrinsicHeight这两个方法获得。<strong>但并不是所有Drawable都有内部宽高的。</strong></li>
+<li>Drawable是没有大小概念的。</li>
+</ul>
+<h2 id="6-2-Drawable的分类"><a href="#6-2-Drawable的分类" class="headerlink" title="6.2 Drawable的分类"></a>6.2 Drawable的分类</h2><h3 id="6-2-1-BitmapDrawable"><a href="#6-2-1-BitmapDrawable" class="headerlink" title="6.2.1 BitmapDrawable"></a>6.2.1 BitmapDrawable</h3><ul>
+<li><strong>android: antialias</strong>：是否开启图片抗锯齿功能。会微小地影响图片清晰度，但是建议开启。</li>
+<li><strong>android: dither</strong>：是否开启抖动效果。开启可以让高质量的图片在低质量的屏幕上还能保持较好的显示效果。建议开启。</li>
+<li><strong>android: filter</strong>：是否开启过滤效果。当图片尺寸被拉伸或者压缩时，开启此效果可以保持较好的显示效果。</li>
+<li><strong>android: tileMode</strong>：这个选项有几个值：[“disabled” | “clamp” | “repeat” | “mirror”]，其中disable是默认值，表示关闭平铺模式。<strong>当开启平铺模式的时候，gravity属性会被忽略</strong>。<ul>
+<li>repart表示的是简单的水平和竖直方向上的平铺效果。</li>
+<li>mirror：表示的是水平和竖直方向上的镜面投影效果。</li>
+<li>clamp：表示的是，图片四周的像素会扩散到周围区域。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-2-ShapeDrawable"><a href="#6-2-2-ShapeDrawable" class="headerlink" title="6.2.2 ShapeDrawable"></a>6.2.2 ShapeDrawable</h3><ul>
+<li><strong>android: shape</strong>：表示图片的形状。有个四个选项：rectangle（矩形）、oval（椭圆）、line（横线）和ring（圆环）。此外针对ring还有五个特殊属性，使用的时候可以自行查询。</li>
+<li><strong><corners></corners></strong>：表示四个角的角度。它只适用于rectangle。</li>
+<li><strong><gradient></gradient></strong>：于<solid>标签互相排斥，其中solid表示纯色填充，而gradient表示渐变效果。</solid></li>
+<li><strong><solid></solid></strong>：表示纯色填充。</li>
+<li><strong><stoke></stoke></strong>：Shape的描边。</li>
+<li><strong><padding></padding></strong>：表示包含shape的空白。</li>
+<li><strong><size></size></strong>：表示的shape的固有大小。对于shape来说，默认情况下没有固定宽/高，这个时候getIntrinsicWidth/Height会返回-1，但是如果通过<size>标签设定，那么这个时候shape就有了。</size></li>
+</ul>
+<h3 id="6-2-3-LayerDrawable"><a href="#6-2-3-LayerDrawable" class="headerlink" title="6.2.3 LayerDrawable"></a>6.2.3 LayerDrawable</h3><p>LayerDrawable对应的XML标签是<layer-list>，它表示一种层次化的Drawable集合。下面的item会覆盖上面的item。</layer-list></p>
+<h3 id="6-2-4-StateListDrawable"><a href="#6-2-4-StateListDrawable" class="headerlink" title="6.2.4 StateListDrawable"></a>6.2.4 StateListDrawable</h3><p>StateListDrawable对应于<selector>标签，它表示Drawable的集合，每个Drawable都对应于View的一种状态。系统会从上到下的顺序查到符合状态的Drawable。</selector></p>
+<ul>
+<li><strong>android: constantSize</strong>：固有大小是否随着其状态的改变而改变（不同的Drawable具有不同的固有大小）。默认false并且此时StateList的固有大小是内部所有Drawable的固有大小的最大值。</li>
+<li><strong>android: dither</strong>：是否开启抖动。默认true。</li>
+<li><strong>android: variablePadding</strong>：padding是否随着其状态的改变而改变（不同的Drawable具有不同的padding）。默认false并且此时StateList的padding是内部所有Drawable的padding的最大值。</li>
+</ul>
+<h3 id="6-2-5-LeverListDrawable"><a href="#6-2-5-LeverListDrawable" class="headerlink" title="6.2.5 LeverListDrawable"></a>6.2.5 LeverListDrawable</h3><p>LeverListDrawable对应于<level-list>标签，它同样表示一个Drawable集合，集合中每个Drawable都有一个等级或者说等级范围。根据不同的等级，LevelListDrawable会切换为对应的Drawable。可以通过setImageLevel方法来切换Drawable。等级是有范围的，即0~10000。</level-list></p>
+<h3 id="6-2-6-TransitionDrawable"><a href="#6-2-6-TransitionDrawable" class="headerlink" title="6.2.6 TransitionDrawable"></a>6.2.6 TransitionDrawable</h3><p>对应于<transition>标签，它用于实现两个Drawable之间的淡入淡出。最后，通过startTransition和reverseTransition方法来实现淡入淡出以及它的逆过程。</transition></p>
+<h3 id="6-2-7-InsetDrawable"><a href="#6-2-7-InsetDrawable" class="headerlink" title="6.2.7 InsetDrawable"></a>6.2.7 InsetDrawable</h3><p>对应于<inset>标签，他可以将其他Drawable内嵌到自己当中，并可以在四周留出一定间距。当一个view希望自己的背景比自己实际区域小的时候，可以使用这种方法。</inset></p>
+<h3 id="6-2-8-ScaleDrawable"><a href="#6-2-8-ScaleDrawable" class="headerlink" title="6.2.8 ScaleDrawable"></a>6.2.8 ScaleDrawable</h3><p>对应于<scale>标签，它可以根据自己的等级将制定的Drawable缩放到一定比例。</scale></p>
+<h3 id="6-2-9-ClipDrawable"><a href="#6-2-9-ClipDrawable" class="headerlink" title="6.2.9 ClipDrawable"></a>6.2.9 ClipDrawable</h3><p>对应于<clip>标签，它可以根据自己当前的等级（level）来裁剪另一个Drawable，裁剪方向可以通过android: clipOrientation和android: gravity这两个属性来共同控制。</clip></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;6-1-Drawable&quot;&gt;&lt;a href=&quot;#6-1-Drawable&quot; class=&quot;headerlink&quot; title=&quot;6.1 Drawable&quot;&gt;&lt;/a&gt;6.1 Drawable&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Drawable是一个抽象类，每个具体的Draw
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>理解RemoteView</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E7%90%86%E8%A7%A3RemoteView/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/</id>
+    <published>2017-07-25T11:15:00.000Z</published>
+    <updated>2017-07-25T11:27:47.235Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="5-1-RemoteViews的应用"><a href="#5-1-RemoteViews的应用" class="headerlink" title="5.1 RemoteViews的应用"></a>5.1 RemoteViews的应用</h2><p>RemoteViews在实际开发中，主要用于通知栏和桌面小部件的开发过程中。它们在更新界面时无法像在Activity里面那样去直接更新View，因为两者都运行在其它进程中，确切来说是系统的SystemServer进程。</p>
+<h3 id="5-1-1-RemoteView在通知栏上的应用"><a href="#5-1-1-RemoteView在通知栏上的应用" class="headerlink" title="5.1.1 RemoteView在通知栏上的应用"></a>5.1.1 RemoteView在通知栏上的应用</h3><ul>
+<li>只需要提供当前应用的包名和布局文件的资源id即可创建一个RemoteViews对象。</li>
+<li>更新其中的View必须通过RemoteView所提供的的一系列set方法来更新View。（例如设置TextView的文本，<code>remoteView.setTextViewText(R.id.msg, &quot;chapter_5&quot;)</code>）</li>
+<li>如果要给一个控件添加点击事件，则要使用PendingIntent并通过setOnclickPendingIntent方法来实现。</li>
+</ul>
+<h3 id="5-1-2-RemoteViews在桌面小部件上的应用"><a href="#5-1-2-RemoteViews在桌面小部件上的应用" class="headerlink" title="5.1.2 RemoteViews在桌面小部件上的应用"></a>5.1.2 RemoteViews在桌面小部件上的应用</h3><p>AppWidgetProvider是Android中提供的用于实现桌面小部件的类，它继承于BroadcastReceiver.其开发步骤可大致分为以下几步：</p>
+<ol>
+<li><strong>定义小部件界面</strong></li>
+<li><p><strong>定义小部件配置信息</strong>：在res/xml/下新建appwidget_provider_info.xml，其中initialLayout就是指小工具所使用的初始化布局，minHeight和minWidth定义小工具的最小尺寸，undataPeriodMills定义小工具自动更新周期，毫秒为单位。</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">appwidget-provider</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:initialLayout</span>=<span class="string">"@layout/widget"</span></div><div class="line">    <span class="attr">android:minHeight</span>=<span class="string">"84dp"</span></div><div class="line">    <span class="attr">android:minWidth</span>=<span class="string">"84dp"</span></div><div class="line">    <span class="attr">android:updatePeriodMillis</span>=<span class="string">"86400000"</span> &gt;</div><div class="line"><span class="tag">&lt;/<span class="name">appwidget-provider</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>定义小部件的实现类</p>
+</li>
+<li>在AndroidManifest.xml中声明小部件 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".MyAppWidgetProvider"</span> &gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line">        <span class="attr">android:name</span>=<span class="string">"android.appwidget.provider"</span></div><div class="line">        <span class="attr">android:resource</span>=<span class="string">"@xml/appwidget_provider_info"</span> &gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">meta-data</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!--这个Action是作为小部件的标识而必须存在--&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.appwidget.action.APPWIDGET_UPDATE"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<p>此外，除了最常用的onUpdate方法，还有其它几个方法。这些方法会自动被onReceive方法在合适的时间调用。</p>
+<ul>
+<li><strong>onEnable</strong>：当窗口小部件第一次添加到桌面时调用该方法，可添加多次，但只在第一次调用。</li>
+<li><strong>onUpdata</strong>：小部件被添加时或者每次小部件更新时都会调用一次该方法。</li>
+<li><strong>onDeleted</strong>：每删除一次桌面小部件就调用一次。</li>
+<li><strong>onDisabled</strong>：当最后一个该类型的小部件被删除时调用。</li>
+<li><strong>onReceive</strong>：这是广播的内置方法，用于分发具体事件给其他方法。</li>
+</ul>
+<h3 id="5-1-3-PendingIntent概述"><a href="#5-1-3-PendingIntent概述" class="headerlink" title="5.1.3 PendingIntent概述"></a>5.1.3 PendingIntent概述</h3><p>PendingIntent表示一种处于待定、等待、即将发生状态的意图。它支持三种意图：启动Activity、启动Service和发送广播。</p>
+<p>PendingIntent的匹配规则为：如果两个内部的Intent相同并且requestCode也相同，那么就是匹配的。（Intent的匹配规则为：两个Intent的ComponentName和intent-filter都相同）</p>
+<p>flag参数的含义：</p>
+<ul>
+<li><strong>FLAG_ONE_SHOT</strong>：当前PendingIntent只能被使用一次，然后它就会被自动cnacel，如果还有后续的PendingIntent，那么它们的send方法就会调用失败。</li>
+<li><strong>FALG_NO_CREATE</strong>：当前PendingIntent不会主动创建，如果当前PendingIntent之前不存在，那么getActivity、getService和getBroadcast会直接返回null。</li>
+<li><strong>FLAG_CANCEL_CURRENT</strong>：当前描述的PendingIntent如果已经存在，那么它们被会cancel，然后系统会创建一个新的。</li>
+<li><strong>FLAG_UPDATE_CURRENT</strong>：当前描述的PendingIntent如果已经存在，那么它们都会被更新，即它们中的Extras会被替换为最新的。</li>
+</ul>
+<h2 id="5-2-RemoteViews的内部机制"><a href="#5-2-RemoteViews的内部机制" class="headerlink" title="5.2 RemoteViews的内部机制"></a>5.2 RemoteViews的内部机制</h2><p>通知栏和桌面小部件分别由NotificationManager和AppWidgetManager管理，而NotificationManager和APPWidgetManager通过Binder分别和SystemServer进程中的NotificationManagerService和APPWidgetManagerService进行通信。</p>
+<p>RemoteViews目前不能支持所有的View类型，它所支持的类型如下：</p>
+<ul>
+<li><strong>Layout</strong>：FrameLayout、LinearLayout、RelativeLayout、GridLayout</li>
+<li><strong>View</strong>：AnalogClock、Button、Chronometer、ImageButton、ImageView、ProgressBar、TextView、ViewFlipper、ListView、GridView、StackView、AdapterViewFlipper、ViewStub</li>
+</ul>
+<p>RemoteViews中的大部分set方法是通过反射来完成的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;5-1-RemoteViews的应用&quot;&gt;&lt;a href=&quot;#5-1-RemoteViews的应用&quot; class=&quot;headerlink&quot; title=&quot;5.1 RemoteViews的应用&quot;&gt;&lt;/a&gt;5.1 RemoteViews的应用&lt;/h2&gt;&lt;p&gt;Remote
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+      <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>View的工作原理</title>
+    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/第四章 View的工作原理/</id>
+    <published>2017-07-25T11:14:45.000Z</published>
+    <updated>2017-07-25T11:28:54.142Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="4-1-ViewRoot和DecorView"><a href="#4-1-ViewRoot和DecorView" class="headerlink" title="4.1 ViewRoot和DecorView"></a>4.1 ViewRoot和DecorView</h2><ul>
+<li><p>ViewRoot对应于ViewRootImpl类，它是连接WindowManager和DecorView的纽带，View的三大流程均是通过ViewRoot来完成的。</p>
+</li>
+<li><p>View的绘制流程是从ViewRoot的performTraversals方法开始的，它会依次调用performMeasure、performLayout和performDraw三个方法。</p>
+</li>
+<li>measure过程决定了View的宽/高，Measure完成以后，可以通过getMeasuredWidth和getMeasuredHeight方法来获取View测量后的宽/高，==几乎所有情况下都等于view最终的宽和高。==</li>
+<li>layout过程决定了，View四个顶点的坐标和实际的View的宽和高，完成以后，可以通过getTop、getLeft等方法来拿到View的四个顶点的位置，并可以通过getWidth和getHeight方法拿到View的最终宽和高。</li>
+<li>Draw过程则决定了View的显示，只有draw方法完成以后View的内容才能呈现在屏幕上。</li>
+<li>DecorView作为顶级View，一般情况下它内部会包含一个竖直方向的LinearLayout，在其中有上下两部分（具体情况和Android版本以及主题有关），上面是标题栏，下面是内容栏。</li>
+</ul>
+<h2 id="4-2-理解MeasureSpec"><a href="#4-2-理解MeasureSpec" class="headerlink" title="4.2 理解MeasureSpec"></a>4.2 理解MeasureSpec</h2><h3 id="4-2-1-MeasureSpec"><a href="#4-2-1-MeasureSpec" class="headerlink" title="4.2.1 MeasureSpec"></a>4.2.1 MeasureSpec</h3><ol>
+<li><p>MeasureSpec代表一个32位的int值，其中高两位代表SpecMode，低30位代表SpecSize，SpecMode是指测量模式，而SpecSize是指在某种测量模式下的规格大小。</p>
+</li>
+<li><p>MeasureSpec通过将SpecMode和SpecSize打包成一个int值来避免过多的内存分配。</p>
+</li>
+<li><p>SpecMode有三类，每一类都表示特殊的含义：</p>
+<ul>
+<li><strong>UNSPECIFIED</strong>：父容器不对View有任何限制，要多大给多大，这种情况用于系统内部，表示一种测量状态。</li>
+<li><strong>EXACTLY</strong>：父容器已经检测出View所需要的精确大小，这个时候View的最终大小就是SpecSize所指定的值。它对应于LayoutParams中的match_parent和具体的数值（dp）这两种模式。</li>
+<li><strong>AT_MOST</strong>：父容器指定了一个可用大小即SpecSize，View的大小不能大于这个值，<strong>具体是什么值要看不同View的实现</strong>。它对应于LayoutParams中的wrap_content。</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-2-2-MeasureSpec和LayoutParams的对应关系"><a href="#4-2-2-MeasureSpec和LayoutParams的对应关系" class="headerlink" title="4.2.2 MeasureSpec和LayoutParams的对应关系"></a>4.2.2 MeasureSpec和LayoutParams的对应关系</h3><ul>
+<li><p>在View测量的时候，系统会将LayoutParams在父容器的约束下转换成对应的MeasureSpec，然后再根据这个MeasureSpec来确定View测量后的宽/高。</p>
+</li>
+<li><p>对于DecorView，其MeasureSpec由窗口的尺寸和其自身的LayoutParams来共同确定；对于普通的View，其MeasureSpec由父容器的MeasureSpec和自身的LayoutParams来共同决定。MeasureSpec一旦确定后，onMeasure中就可以确定View的测量宽/高。</p>
+</li>
+<li><p>子View和父容器的MeasureSpec关系归纳：</p>
+<ol>
+<li>当子View采用固定宽/高的时候，无论父容器的MeasureSpec是什么，View的MeasureSpec都是精确模式并且其大小遵循LayoutParams中的值。</li>
+<li>子View为match_parent时，如果父容器是精确模式，则子View也为精确模式且为父容器的剩余空间大小；如果父容器是wrap_content，则子View也是wrap_content且不会超过父容器的剩余空间。</li>
+<li>子View为wrap_content时，无论父View是精确还是最大化，子View的模式总是wrap_content，且不会超过父容器的剩余空间。</li>
+</ol>
+</li>
+</ul>
+<h2 id="4-3-View的工作流程"><a href="#4-3-View的工作流程" class="headerlink" title="4.3 View的工作流程"></a>4.3 View的工作流程</h2><h3 id="4-3-1-measure过程"><a href="#4-3-1-measure过程" class="headerlink" title="4.3.1 measure过程"></a>4.3.1 measure过程</h3><ul>
+<li>View的measure方法是一个final类型的方法，子类无法重写，而在其中会调用View的onMeasure方法，故只需要重写这个方法就好了。</li>
+<li>View的measure过程：直接继承View（特指单独View）的自定义控件需要重写onMeasure方法，并设置wrap_content时的自身大小，否则在布局中使用wrap_content就相当于使用match_parent。（TextView、Imageview等系统控件的onMeasure均做了特殊处理）</li>
+<li>在某种情况下，系统可能多次measure才能群定最终的测量宽/高，一个比较好的习惯是在onLayout方法中去获取View的测量宽高或最终宽高。</li>
+<li>由于View的measure过程和Activity的生命周期方法不是同步执行的，因此无法保证在Activity的onCreate、onStart、onResume时某个View已经测量完毕了。有四种方法可以在Activity初始化的准确获取View的宽高<ul>
+<li>Activity/View#onWindowFocusChanged：View已经初始化完毕了。（注意该方法会在Activity Pause和resume时被多次调用）</li>
+<li>view.post(runnable)：通过post将一个runnable投递到消息队列尾部，然后等地Looper调用。</li>
+<li>ViewTreeObserver中的onGlobalLayoutListener中。（可能会被调用多次，当View树的状态发生改变或者View树内部的view的可见性发生改变时，都会回调）</li>
+<li>view.measure(int widthMeasureSpec, int heightMeasureSpec)：通过手动测量，从而获得宽高，这种情况比较复杂。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-3-2-layout过程"><a href="#4-3-2-layout过程" class="headerlink" title="4.3.2 layout过程"></a>4.3.2 layout过程</h3><ul>
+<li>layout中可能会使view的大小大于测量的大小</li>
+<li>layout方法大致流程，首先会通过setFrame方法来初始化View的四个顶点的位置，View的四个顶点一旦确定，那么View在父容器中的位置也就确定了；接着会调用onLayout方法，这个方法的用途就是父容器确定子元素的位置。</li>
+</ul>
+<h3 id="4-3-3-draw过程"><a href="#4-3-3-draw过程" class="headerlink" title="4.3.3 draw过程"></a>4.3.3 draw过程</h3><ul>
+<li>draw的过程：绘制背景（background.draw(canvas)），绘制自己（onDraw()），绘制chidren（dispatchDraw），绘制装饰（onDrawScrollBars）</li>
+<li>setWillNotDraw方法用于在一个View不需要绘制时的优化（设置为true时）。</li>
+</ul>
+<h2 id="4-4-自定义View"><a href="#4-4-自定义View" class="headerlink" title="4.4 自定义View"></a>4.4 自定义View</h2><ol>
+<li><p><strong>让View支持wrap_content</strong>：直接继承View或者ViewGroup的空间，如果不在onMeasure中对wrap_content做特殊处理，那么match_parent和wrap_content是一样的效果。</p>
+</li>
+<li><p><strong>让View支持padding</strong>：直接继承View的控件，如果不在onDraw方法中处理padding，那么padding属性是无法起作用的。另外，直接继承自ViewGroup的控件，需要在onMeasure和onLayout中考虑padding和子元素的margin对其造成的影响（因为子元素的margin是由父容器控制的），不然将会导致padding和子元素的margin失效。</p>
+</li>
+<li><p><strong>尽量不要在View中使用Handler</strong>：因为View内部本身就提供了post系列的方法，完全可以替代Handler的作用。</p>
+</li>
+<li><p><strong>View中如果有线程或者动画，需要及时停止</strong>：View#onDetachedFromWindow这个方法是一个很好的时机。当包含此View的Activity退出或者当前View被remove时，View的onDetachedFromWindow方法会被调用。同时，当View变得不可见时我们也需要停止线程和动画，如果不处理，有可能造成内存泄漏。</p>
+</li>
+<li><p><strong>View带有滑动嵌套情形时，需要处理好滑动冲突</strong>：这方面的内容，在第三章的时候有提及。</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;4-1-ViewRoot和DecorView&quot;&gt;&lt;a href=&quot;#4-1-ViewRoot和DecorView&quot; class=&quot;headerlink&quot; title=&quot;4.1 ViewRoot和DecorView&quot;&gt;&lt;/a&gt;4.1 ViewRoot和DecorVi
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
+    
+      <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+  </entry>
   
   <entry>
     <title>第三章 View的事件体系</title>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Android动画深入分析 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="7.1 View动画7.1.1 View动画的种类View动画四种变换效果对应着Animation的四个子类：TranslateAnimation、ScaleAnimation、RotateAnimation和AlphaAnimation，也可以用XML来定义，建议使用XML，因为可读性更好。  ：对应于AnimationSet类，它可以包含若干个动画。并且也可以被嵌套在其他动画中。 androi">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android动画深入分析">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="7.1 View动画7.1.1 View动画的种类View动画四种变换效果对应着Animation的四个子类：TranslateAnimation、ScaleAnimation、RotateAnimation和AlphaAnimation，也可以用XML来定义，建议使用XML，因为可读性更好。  ：对应于AnimationSet类，它可以包含若干个动画。并且也可以被嵌套在其他动画中。 androi">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T11:27:03.715Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android动画深入分析">
+<meta name="twitter:description" content="7.1 View动画7.1.1 View动画的种类View动画四种变换效果对应着Animation的四个子类：TranslateAnimation、ScaleAnimation、RotateAnimation和AlphaAnimation，也可以用XML来定义，建议使用XML，因为可读性更好。  ：对应于AnimationSet类，它可以包含若干个动画。并且也可以被嵌套在其他动画中。 androi">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android动画深入分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android动画深入分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:15:30.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-1-View动画"><span class="post-toc-number">1.</span> <span class="post-toc-text">7.1 View动画</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-1-View动画的种类"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">7.1.1 View动画的种类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-2-自定义View动画"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">7.1.2 自定义View动画</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-3-帧动画"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">7.1.3 帧动画</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-2-View动画的特殊使用场景"><span class="post-toc-number">2.</span> <span class="post-toc-text">7.2 View动画的特殊使用场景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-1-LayoutAnimation"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">7.2.1 LayoutAnimation</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-2-Activity的切换效果"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">7.2.2 Activity的切换效果</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-3-属性动画"><span class="post-toc-number">3.</span> <span class="post-toc-text">7.3 属性动画</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-1-使用属性动画"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">7.3.1 使用属性动画</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-2-插值器和估值器"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">7.3.2 插值器和估值器</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-3-属性动画的监听器"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">7.3.3 属性动画的监听器</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-4-对任意属性做动画"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">7.3.4 对任意属性做动画</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-4-使用动画的注意事项"><span class="post-toc-number">4.</span> <span class="post-toc-text">7.4 使用动画的注意事项</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第七章-第七章 Android动画深入分析"
+  class="post-article article-type-第七章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android动画深入分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:15:30" datetime="2017-07-25T11:15:30.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="7-1-View动画"><a href="#7-1-View动画" class="headerlink" title="7.1 View动画"></a>7.1 View动画</h2><h3 id="7-1-1-View动画的种类"><a href="#7-1-1-View动画的种类" class="headerlink" title="7.1.1 View动画的种类"></a>7.1.1 View动画的种类</h3><p>View动画四种变换效果对应着Animation的四个子类：TranslateAnimation、ScaleAnimation、RotateAnimation和AlphaAnimation，也可以用XML来定义，建议使用XML，因为可读性更好。</p>
+<ul>
+<li><strong><set></set></strong>：对应于AnimationSet类，它可以包含若干个动画。并且也可以被嵌套在其他动画中。<ul>
+<li><strong>android: interpolator</strong>：表示动画的插值器，插值器影响动画的速度。不指定，默认为<code>@android:anim/accelerate_decelerate_interpolator</code>，即加速减速插值器。</li>
+<li><strong>android: shareInterpolator</strong>：表示集合中的动画是否和集合共享同一个插值器。</li>
+</ul>
+</li>
+</ul>
+<p>通过Animation的setAnimationListener方法可以给View动画添加过程监听。</p>
+<h3 id="7-1-2-自定义View动画"><a href="#7-1-2-自定义View动画" class="headerlink" title="7.1.2 自定义View动画"></a>7.1.2 自定义View动画</h3><p>继承Animation这个抽象类，然后重写它的initialize和applyTransFormation方法，在initialize方法中做一些初始化工作，在applyTransformation中进行相应的矩阵变换，很多时候需要采用Camera来简化矩阵变换的过程。</p>
+<h3 id="7-1-3-帧动画"><a href="#7-1-3-帧动画" class="headerlink" title="7.1.3 帧动画"></a>7.1.3 帧动画</h3><p>帧动画是顺序播放一组预先定义好的图片，类型电影播放，系统提供了另外一个类AnimationDrawable来使用帧动画，首先需要用XML来定义一个AnimationDrawable，标签为<animation-list>。比较容易引发OOM，所以使用的时候尽量避免使用过多尺寸较大的图片。</animation-list></p>
+<h2 id="7-2-View动画的特殊使用场景"><a href="#7-2-View动画的特殊使用场景" class="headerlink" title="7.2 View动画的特殊使用场景"></a>7.2 View动画的特殊使用场景</h2><h3 id="7-2-1-LayoutAnimation"><a href="#7-2-1-LayoutAnimation" class="headerlink" title="7.2.1 LayoutAnimation"></a>7.2.1 LayoutAnimation</h3><p>LayoutAnimation作用于ViewGroup，为ViewGroup指定一个动画，这样当它的子元素出场都具有这种动画效果。它的使用步骤为</p>
+<ol>
+<li>定义LayoutAnimation。<ul>
+<li><strong>android: delay</strong>：表示子元素开始动画的时间延迟，比如子元素入场动画的时间周期为300ms，那么0.5表示每个子元素都需要延迟150ms才能播放入场动画。</li>
+<li><strong>android: animationOrder</strong>：表示子元素动画的顺序，有三种选项：normal、reverse和random，其中normal表示顺序显示；reverse表示逆向显示；random则是随机播放入场动画。</li>
+<li><strong>android: animation</strong>：为子元素指定具体入场动画。</li>
+</ul>
+</li>
+<li>为子元素设置具体的入场动画。</li>
+<li>为ViewGroup指定android :layoutAnimation属性。</li>
+</ol>
+<p>Ps.除了在XML中指定LayoutAnimation外，还可以通过LayoutAnimationController来实现。</p>
+<h3 id="7-2-2-Activity的切换效果"><a href="#7-2-2-Activity的切换效果" class="headerlink" title="7.2.2 Activity的切换效果"></a>7.2.2 Activity的切换效果</h3><p>Activity有默认的切换效果，但是这个效果是可以自定义的，主要用到<code>overridePendingTransition(int enterAnim, int exitAnim)</code>，这个方法必须在startActivity(intent)或者finish()之后调用才能生效。</p>
+<p>Ps.Fragment也可以添加切换动画</p>
+<h2 id="7-3-属性动画"><a href="#7-3-属性动画" class="headerlink" title="7.3 属性动画"></a>7.3 属性动画</h2><h3 id="7-3-1-使用属性动画"><a href="#7-3-1-使用属性动画" class="headerlink" title="7.3.1 使用属性动画"></a>7.3.1 使用属性动画</h3><ul>
+<li>属性动画默认时间间隔300ms，默认帧率10ms/帧</li>
+<li>属性动画从API11才有，可以采用开源动画库nineoldandroid来兼容以前的版本。</li>
+<li>比较常用的几个动画类是：ValueAnimator、ObjectAnimator和AnimatorSet。其中ObjectAnimator继承自ValueAnimator，AnimatorSet是动画集合。</li>
+</ul>
+<h3 id="7-3-2-插值器和估值器"><a href="#7-3-2-插值器和估值器" class="headerlink" title="7.3.2 插值器和估值器"></a>7.3.2 插值器和估值器</h3><p>TimeInterpolator中文译为时间插值器，它的作用是根据时间流逝的百分比来计算出当前属性改变的百分比；TypeEvaluate中文译为类型估值算法，也叫估值器，它的作用是根据当前属性改变的百分比来计算改变后的属性值，系统内置的有IntEvaluator、FloatEvaluator和ArgbEvaluator。</p>
+<p>属性动画中的插值器和估值器是实现非匀速动画的重要手段。</p>
+<h3 id="7-3-3-属性动画的监听器"><a href="#7-3-3-属性动画的监听器" class="headerlink" title="7.3.3 属性动画的监听器"></a>7.3.3 属性动画的监听器</h3><p>属性动画提供了监听器用于监听动画的播放过程，主要有两个接口，分别为AnimatorUpdateListener和AnimatorListener。</p>
+<h3 id="7-3-4-对任意属性做动画"><a href="#7-3-4-对任意属性做动画" class="headerlink" title="7.3.4 对任意属性做动画"></a>7.3.4 对任意属性做动画</h3><p>对object的属性xxx做动画，如果想要动画生效，要同时满足两个条件：</p>
+<ol>
+<li>object必须要提供setXXX方法，如果动画的时候没有传递初始值，那么还要提供getXXX方法，因为系统要去取XXX属性的初始值。（如果这条不满足，程序直接crash）</li>
+<li>object的setXXX对属性XXX所做的改变必须能够通过某种方法反映出来，比如会带来UI的改变。（如果这条不满足，动画无效果但不会crash）</li>
+</ol>
+<p>针对上面条件二的解决办法是</p>
+<ul>
+<li>给你的对象加上get和set方法，如果你有权限的话</li>
+<li>用一个类来包装原始对象，间接为其提供get和set方法</li>
+<li>采用ValueAnimator，监听动画过程，自己实现属性的改变</li>
+</ul>
+<h2 id="7-4-使用动画的注意事项"><a href="#7-4-使用动画的注意事项" class="headerlink" title="7.4 使用动画的注意事项"></a>7.4 使用动画的注意事项</h2><p>通过动画可以实现一些比较绚丽的的效果，但是使用过程中，也需要注意一些事情，主要分为下面几类。</p>
+<ol>
+<li>OOM问题</li>
+<li>内存泄漏（在属性动画中，有一类无线循环的动画，这类动画需要在Activity退出时及时停止）</li>
+<li>兼容性问题</li>
+<li>View动画问题</li>
+<li>不要使用px</li>
+<li>硬件加速（使用动画过程中，建议开启硬件加速，这样会提高动画的流畅性）</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:27:03.715Z" itemprop="dateUpdated">2017-07-25 19:27:03</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第七章 Android动画深入分析/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&title=《Android动画深入分析》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&title=《Android动画深入分析》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android动画深入分析》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第八章 理解Window和WindowManager/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">理解Window和WindowManager</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第六章 Android的Drawable/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android的Drawable</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&title=《Android动画深入分析》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&title=《Android动画深入分析》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android动画深入分析》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第七章 Android动画深入分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3awW7CQAwEUP7/p1upp0oImLGzwOHlhCCQfamUdce+3eLj5+/4//r+nfvz83PuP83PueDAw8PDGy390ZEv7vkS29uUf/piDXh4eHjHeO2y2i0hebgnv5yvGQ8PD+8beO0xK9BnRTweHh7ed/LaT5MFPd888g0JDw8P7/28JIx4jmzZsw3pYNaCh4eHN6l1iwbYZ18f7+/h4eHhjbrqs8dusp20JfVwnXh4eHgHeO0i8kvOAoirxrluz7+Ah4eHdxEvafznQ1TXlsjJFvXwl/Hw8PAu5SWxbBubJo/yttmWNLoeFtN4eHh4x3gJbHiZuBm2aXe9mInAw8PDO8bLL5BvLfkAQQ6Ihhvw8PDwDvBmTaY8JkgigzaqyFeCh4eHd4K3CRSufZ0U7jUeDw8P7428TYiQt6zy8KL9MwzzYzw8PLyuwzUMZ6+KKpJv5eHICyQeHh7empc/lPfxxKY/1Y444OHh4Z3gFVnvOjjIG1qXFdl4eHh4b+Hl5fWm4N5sG0U5joeHh3eAl7ej9mMByY2bhbMvbhkeHh7eMd6miXXVomcFdxTj4uHh4R3g5e38faSb34L8/eL/Bjw8PLwFb/Mg3i/63LaEh4eHd45X7B5xjJsXu7MNqR5TwMPDwzvGawee9gX0fl4seQcPDw/vBG8Ws7bxaztclYe80YGHh4d3KW8WOrRjBG2Lqx1BuGx0AA8PD6/ktcFr8sjexLvtxoaHh4d3mvdTHkkxPTuzDUGiG4qHh4d3gLeJKpIz2/BiNjU2GzLAw8PD2/DauGHW4sq3meTTYlPBw8PDO8ZrH995JJHfmtmuhYeHh/f9vFlwkEcV+RhBFEDj4eHhfZSXjAjsC/S2KMfDw8P7FC8vdvfF9P66RdMLDw8P7wBv0wBrkXm5nIwF7IMMPDw8vJL3Cw5rGDzUGahgAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

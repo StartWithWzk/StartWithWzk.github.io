@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Android的Drawable | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="6.1 Drawable Drawable是一个抽象类，每个具体的Drawable都是它的子类，例如ShapeDrawable、BitmapDrawable等。 Drawable的内部宽/高可以通过getIntrinsicWidth和getIntrinsicHeight这两个方法获得。但并不是所有Drawable都有内部宽高的。 Drawable是没有大小概念的。  6.2 Drawable的分类">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android的Drawable">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="6.1 Drawable Drawable是一个抽象类，每个具体的Drawable都是它的子类，例如ShapeDrawable、BitmapDrawable等。 Drawable的内部宽/高可以通过getIntrinsicWidth和getIntrinsicHeight这两个方法获得。但并不是所有Drawable都有内部宽高的。 Drawable是没有大小概念的。  6.2 Drawable的分类">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T11:27:18.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android的Drawable">
+<meta name="twitter:description" content="6.1 Drawable Drawable是一个抽象类，每个具体的Drawable都是它的子类，例如ShapeDrawable、BitmapDrawable等。 Drawable的内部宽/高可以通过getIntrinsicWidth和getIntrinsicHeight这两个方法获得。但并不是所有Drawable都有内部宽高的。 Drawable是没有大小概念的。  6.2 Drawable的分类">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android的Drawable</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android的Drawable</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:15:17.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-1-Drawable"><span class="post-toc-number">1.</span> <span class="post-toc-text">6.1 Drawable</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-2-Drawable的分类"><span class="post-toc-number">2.</span> <span class="post-toc-text">6.2 Drawable的分类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-1-BitmapDrawable"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">6.2.1 BitmapDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-2-ShapeDrawable"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">6.2.2 ShapeDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-3-LayerDrawable"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">6.2.3 LayerDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-4-StateListDrawable"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">6.2.4 StateListDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-5-LeverListDrawable"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">6.2.5 LeverListDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-6-TransitionDrawable"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">6.2.6 TransitionDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-7-InsetDrawable"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">6.2.7 InsetDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-8-ScaleDrawable"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">6.2.8 ScaleDrawable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-9-ClipDrawable"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">6.2.9 ClipDrawable</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第六章-第六章 Android的Drawable"
+  class="post-article article-type-第六章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android的Drawable</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:15:17" datetime="2017-07-25T11:15:17.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="6-1-Drawable"><a href="#6-1-Drawable" class="headerlink" title="6.1 Drawable"></a>6.1 Drawable</h2><ul>
+<li>Drawable是一个抽象类，每个具体的Drawable都是它的子类，例如ShapeDrawable、BitmapDrawable等。</li>
+<li>Drawable的内部宽/高可以通过getIntrinsicWidth和getIntrinsicHeight这两个方法获得。<strong>但并不是所有Drawable都有内部宽高的。</strong></li>
+<li>Drawable是没有大小概念的。</li>
+</ul>
+<h2 id="6-2-Drawable的分类"><a href="#6-2-Drawable的分类" class="headerlink" title="6.2 Drawable的分类"></a>6.2 Drawable的分类</h2><h3 id="6-2-1-BitmapDrawable"><a href="#6-2-1-BitmapDrawable" class="headerlink" title="6.2.1 BitmapDrawable"></a>6.2.1 BitmapDrawable</h3><ul>
+<li><strong>android: antialias</strong>：是否开启图片抗锯齿功能。会微小地影响图片清晰度，但是建议开启。</li>
+<li><strong>android: dither</strong>：是否开启抖动效果。开启可以让高质量的图片在低质量的屏幕上还能保持较好的显示效果。建议开启。</li>
+<li><strong>android: filter</strong>：是否开启过滤效果。当图片尺寸被拉伸或者压缩时，开启此效果可以保持较好的显示效果。</li>
+<li><strong>android: tileMode</strong>：这个选项有几个值：[“disabled” | “clamp” | “repeat” | “mirror”]，其中disable是默认值，表示关闭平铺模式。<strong>当开启平铺模式的时候，gravity属性会被忽略</strong>。<ul>
+<li>repart表示的是简单的水平和竖直方向上的平铺效果。</li>
+<li>mirror：表示的是水平和竖直方向上的镜面投影效果。</li>
+<li>clamp：表示的是，图片四周的像素会扩散到周围区域。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-2-ShapeDrawable"><a href="#6-2-2-ShapeDrawable" class="headerlink" title="6.2.2 ShapeDrawable"></a>6.2.2 ShapeDrawable</h3><ul>
+<li><strong>android: shape</strong>：表示图片的形状。有个四个选项：rectangle（矩形）、oval（椭圆）、line（横线）和ring（圆环）。此外针对ring还有五个特殊属性，使用的时候可以自行查询。</li>
+<li><strong><corners></corners></strong>：表示四个角的角度。它只适用于rectangle。</li>
+<li><strong><gradient></gradient></strong>：于<solid>标签互相排斥，其中solid表示纯色填充，而gradient表示渐变效果。</solid></li>
+<li><strong><solid></solid></strong>：表示纯色填充。</li>
+<li><strong><stoke></stoke></strong>：Shape的描边。</li>
+<li><strong><padding></padding></strong>：表示包含shape的空白。</li>
+<li><strong><size></size></strong>：表示的shape的固有大小。对于shape来说，默认情况下没有固定宽/高，这个时候getIntrinsicWidth/Height会返回-1，但是如果通过<size>标签设定，那么这个时候shape就有了。</size></li>
+</ul>
+<h3 id="6-2-3-LayerDrawable"><a href="#6-2-3-LayerDrawable" class="headerlink" title="6.2.3 LayerDrawable"></a>6.2.3 LayerDrawable</h3><p>LayerDrawable对应的XML标签是<layer-list>，它表示一种层次化的Drawable集合。下面的item会覆盖上面的item。</layer-list></p>
+<h3 id="6-2-4-StateListDrawable"><a href="#6-2-4-StateListDrawable" class="headerlink" title="6.2.4 StateListDrawable"></a>6.2.4 StateListDrawable</h3><p>StateListDrawable对应于<selector>标签，它表示Drawable的集合，每个Drawable都对应于View的一种状态。系统会从上到下的顺序查到符合状态的Drawable。</selector></p>
+<ul>
+<li><strong>android: constantSize</strong>：固有大小是否随着其状态的改变而改变（不同的Drawable具有不同的固有大小）。默认false并且此时StateList的固有大小是内部所有Drawable的固有大小的最大值。</li>
+<li><strong>android: dither</strong>：是否开启抖动。默认true。</li>
+<li><strong>android: variablePadding</strong>：padding是否随着其状态的改变而改变（不同的Drawable具有不同的padding）。默认false并且此时StateList的padding是内部所有Drawable的padding的最大值。</li>
+</ul>
+<h3 id="6-2-5-LeverListDrawable"><a href="#6-2-5-LeverListDrawable" class="headerlink" title="6.2.5 LeverListDrawable"></a>6.2.5 LeverListDrawable</h3><p>LeverListDrawable对应于<level-list>标签，它同样表示一个Drawable集合，集合中每个Drawable都有一个等级或者说等级范围。根据不同的等级，LevelListDrawable会切换为对应的Drawable。可以通过setImageLevel方法来切换Drawable。等级是有范围的，即0~10000。</level-list></p>
+<h3 id="6-2-6-TransitionDrawable"><a href="#6-2-6-TransitionDrawable" class="headerlink" title="6.2.6 TransitionDrawable"></a>6.2.6 TransitionDrawable</h3><p>对应于<transition>标签，它用于实现两个Drawable之间的淡入淡出。最后，通过startTransition和reverseTransition方法来实现淡入淡出以及它的逆过程。</transition></p>
+<h3 id="6-2-7-InsetDrawable"><a href="#6-2-7-InsetDrawable" class="headerlink" title="6.2.7 InsetDrawable"></a>6.2.7 InsetDrawable</h3><p>对应于<inset>标签，他可以将其他Drawable内嵌到自己当中，并可以在四周留出一定间距。当一个view希望自己的背景比自己实际区域小的时候，可以使用这种方法。</inset></p>
+<h3 id="6-2-8-ScaleDrawable"><a href="#6-2-8-ScaleDrawable" class="headerlink" title="6.2.8 ScaleDrawable"></a>6.2.8 ScaleDrawable</h3><p>对应于<scale>标签，它可以根据自己的等级将制定的Drawable缩放到一定比例。</scale></p>
+<h3 id="6-2-9-ClipDrawable"><a href="#6-2-9-ClipDrawable" class="headerlink" title="6.2.9 ClipDrawable"></a>6.2.9 ClipDrawable</h3><p>对应于<clip>标签，它可以根据自己当前的等级（level）来裁剪另一个Drawable，裁剪方向可以通过android: clipOrientation和android: gravity这两个属性来共同控制。</clip></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:27:18.083Z" itemprop="dateUpdated">2017-07-25 19:27:18</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第六章 Android的Drawable/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&title=《Android的Drawable》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&title=《Android的Drawable》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的Drawable》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第七章 Android动画深入分析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android动画深入分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第五章 理解RemoteView/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">理解RemoteView</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&title=《Android的Drawable》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&title=《Android的Drawable》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的Drawable》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3a0WojMQwF0Pz/T7ewT4UyM1eSlXThzFMIiePjgCUkvV7x8/Xv+fk6eed+tfsVfr9/v+bowcPDw2tt/eq52u7V5pJP3v9ucmTJnvHw8PC2eUkwSMJGcjMnK+TH9LATPDw8vI/y8us7x+ThBA8PD+9/5E2KEb3gkbzGw8PD+xQvLw0kJYD7n88T9N5+8PDw8LZ5vQbYZ1+v9/fw8PDwWl31STDojQX0AtLlCnh4eHgLvDzNnbSmkvQ6DwZ5SRcPDw/vnbxq0bY3FDU5iMIR4+Hh4b2RV02Rq3WASYhKAgYeHh7eHq93ledtqklZYRJm8PDw8DZ4eVKbX8F56pwzmok+Hh4e3hpvnv7ef6ZXAq6m3aP+Hh4eHl6LVx0b7aXU1ZWrTS88PDy8bV4vwZ1stDdwkDS9HkoSeHh4eAu8pBiRjxFMZp/ywFCuuODh4eGNeXnJNU+dq8l0zquOZ+Hh4eFt8CaF1OqFPmmMTQ4aDw8Pb4M3GRHIU95qmy0vRuDh4eF9llct6VZDy/xbk78EDw8P7xQv325eDsjHpHJ8tQmHh4eHt8E7VcDtlRsmRxaFFjw8PLw13qRkkKe8vSJvPsL10N/Dw8PDO8p7xU/SsM/HtuYVlIcjwMPDw1vg9TY9eb/aSMvbXeX/EA8PD2/Aqy5UDSGT46s2z5ozEXh4eHhF3mQcanJM81AR/Rl4eHh4a7zJz5dbU8ExlaPZ1bfw8PDwjvImra88YFRHCvKi7cNO8PDw8BZ4p4oL1dJqPo6QB5heaw0PDw+vx0uCweSazkcHet8d1Vrw8PDwBrxe0aHaacrHCI616/Dw8PD+AK83CpA0tO7DT0J6qFLj4eHhvZ032fQkGCTpPh4eHt77edUlqtTe5X5gFAwPDw9vgXe2AVZNzfN2Wm81PDw8vKO8b70Dac4eZDvGAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

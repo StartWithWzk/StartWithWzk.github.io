@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>四大组件的工作过程 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="9.1 四大组件的运行状态 四大组件中只有BroadcastReceiver既可以在AndroidManifest文件中注册，也可以在代码中注册，其他三个组件都必须在AndroidManifest文件中注册；ContentProvider的调用不需要借助Intent，其他三个组件都需要借助Intent。  Activity是一种展示型组件，向用户直接地展示一个界面。Activity组件是可以停止的">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四大组件的工作过程">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="9.1 四大组件的运行状态 四大组件中只有BroadcastReceiver既可以在AndroidManifest文件中注册，也可以在代码中注册，其他三个组件都必须在AndroidManifest文件中注册；ContentProvider的调用不需要借助Intent，其他三个组件都需要借助Intent。  Activity是一种展示型组件，向用户直接地展示一个界面。Activity组件是可以停止的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p1.bpimg.com/567571/f0bacb7b8feba76f.jpg">
+<meta property="og:image" content="http://p1.bqimg.com/567571/36be20d6ed41012a.jpg">
+<meta property="og:image" content="http://i1.piimg.com/567571/4e786ae6d8e19a92.jpg">
+<meta property="og:image" content="http://p1.bqimg.com/567571/1c49f334af8a8948.jpg">
+<meta property="og:image" content="http://box.kancloud.cn/2015-12-10_56692ec8cd215.png">
+<meta property="og:updated_time" content="2017-07-25T11:26:23.797Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="四大组件的工作过程">
+<meta name="twitter:description" content="9.1 四大组件的运行状态 四大组件中只有BroadcastReceiver既可以在AndroidManifest文件中注册，也可以在代码中注册，其他三个组件都必须在AndroidManifest文件中注册；ContentProvider的调用不需要借助Intent，其他三个组件都需要借助Intent。  Activity是一种展示型组件，向用户直接地展示一个界面。Activity组件是可以停止的">
+<meta name="twitter:image" content="http://p1.bpimg.com/567571/f0bacb7b8feba76f.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">四大组件的工作过程</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">四大组件的工作过程</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:15:54.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-1-四大组件的运行状态"><span class="post-toc-number">1.</span> <span class="post-toc-text">9.1 四大组件的运行状态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-2-Activity的工作过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">9.2 Activity的工作过程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-3-Service的工作过程"><span class="post-toc-number">3.</span> <span class="post-toc-text">9.3 Service的工作过程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BroadcastReceiver的工作过程"><span class="post-toc-number">4.</span> <span class="post-toc-text">BroadcastReceiver的工作过程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ContentProvider的工作过程"><span class="post-toc-number">5.</span> <span class="post-toc-text">ContentProvider的工作过程</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第九章-第九章 四大组件的工作过程"
+  class="post-article article-type-第九章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">四大组件的工作过程</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:15:54" datetime="2017-07-25T11:15:54.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="9-1-四大组件的运行状态"><a href="#9-1-四大组件的运行状态" class="headerlink" title="9.1 四大组件的运行状态"></a>9.1 四大组件的运行状态</h2><ul>
+<li><p>四大组件中只有BroadcastReceiver既可以在AndroidManifest文件中注册，也可以在代码中注册，其他三个组件都必须在AndroidManifest文件中注册；ContentProvider的调用不需要借助Intent，其他三个组件都需要借助Intent。</p>
+</li>
+<li><p>Activity是一种展示型组件，向用户直接地展示一个界面。Activity组件是可以停止的，在实际开发中可以通过Activity的finish方法来结束一个Activity组件的运行。</p>
+</li>
+<li><p>Service是一种计算型组件，用于在后台执行一系列计算任务。Service组件有两种状态：启动状态和绑定状态。当service处于绑定状态时，外界可以很方便的和service进行通信，而在启动状态中是不可与外界通信的。尽管Service组件是用于执行后台计算的，但是它本身是运行在主线程中的，因此不能进行太耗时的运算。Service组件也是可以停止的，需要灵活采用stopService和UNBindService这两个方法才能完全停止一个Service组件。</p>
+</li>
+<li><p>BroadcastReceiver是一种消息型组件，用于不同的组件乃至不同的应用之间传递消息。广播的注册有两种方式，静态注册和动态注册。</p>
+</li>
+<li><p>ContentProvider是一种数据共享型组件，用于向其他组件乃至其他应用共享数据。它的内部需要实现增删查改这四种操作，在它内部维持着一份数据集合，这个数据集合既可以是数据库也可以采用任何其他类型来实现。另外ContentProvider内部的insert、delete、update和query方法需要处理好线程同步，因为这几个方法是在Binder线程池中被调用的。</p>
+</li>
+</ul>
+<h2 id="9-2-Activity的工作过程"><a href="#9-2-Activity的工作过程" class="headerlink" title="9.2 Activity的工作过程"></a>9.2 Activity的工作过程</h2><ol>
+<li><p>Activity启动的大致流程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://p1.bpimg.com/567571/f0bacb7b8feba76f.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+<li><p><code>ApplicationThread</code>是<code>ActivityThread</code>的一个内部类，它继承自<code>ApplicationThreadNative</code>，而<code>ApplicationThreadNative</code>继承自<code>Binder</code>并实现了<code>IApplicationThread</code>接口，<code>ApplicationThreadNative</code>的作用其实就和系统为AIDL文件生成的类是一样的。</p>
+</li>
+<li><p><code>ActivityManagerService</code>(AMS)继承自<code>ActivityManagerNative</code>，而<code>ActivityManagerNative</code>继承自<code>Binder</code>并实现了<code>IActivityManager</code>这个Binder接口，因此AMS也是一个Binder。</p>
+</li>
+<li><p>一个应用只有一个Application对象，它的创建也是通过<code>Instrumentation</code>来完成的，这个过程和Activity对象的创建过程一样，都是通过类加载器来实现的。</p>
+</li>
+<li><p><code>ContextImpl</code>是Context的具体实现，ContextImpl是通过Activity的<code>attach</code>方法来和Activity建立关联的，在attach方法中Activity还会完成Window的创建并建立自己和Window的关联，这样当window接收到外部输入事件后就可以将事件传递给Activity。[这里可能有误，应该是Activity将事件传递给window]</p>
+</li>
+</ol>
+<h2 id="9-3-Service的工作过程"><a href="#9-3-Service的工作过程" class="headerlink" title="9.3 Service的工作过程"></a>9.3 Service的工作过程</h2><p>Service有两种状态：启动状态和绑定状态，两种状态是可以共存的。</p>
+<ul>
+<li><p><strong>启动过程</strong>：<br><img src="http://p1.bqimg.com/567571/36be20d6ed41012a.jpg" alt="启动"></p>
+</li>
+<li><p><strong>绑定过程</strong>：<br><img src="http://i1.piimg.com/567571/4e786ae6d8e19a92.jpg" alt="绑定"></p>
+</li>
+</ul>
+<h2 id="BroadcastReceiver的工作过程"><a href="#BroadcastReceiver的工作过程" class="headerlink" title="BroadcastReceiver的工作过程"></a>BroadcastReceiver的工作过程</h2><ol>
+<li>BroadcastReceiver的工作过程包括广播注册过程、广播发送和接收过程。<ol>
+<li>注册过程：静态注册的时候是由<code>PackageManagerService</code>来完成整个注册过程，下面是动态注册的过程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://p1.bqimg.com/567571/1c49f334af8a8948.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></li>
+</ol>
+</li>
+</ol>
+<h2 id="ContentProvider的工作过程"><a href="#ContentProvider的工作过程" class="headerlink" title="ContentProvider的工作过程"></a>ContentProvider的工作过程</h2><ol>
+<li><p>当ContentProvider所在的进程启动的时候，它会同时被启动并被发布到AMS中，这个时候它的onCreate要先于Application的onCreate执行。</p>
+</li>
+<li><p>ContentProvider的启动过程：</p>
+<ol>
+<li><p>当一个应用启动时，入口方法是<code>ActivityThread</code>的<code>main</code>方法，其中创建<code>ActivityThread</code>的实例并创建主线程的消息队列</p>
+</li>
+<li><p><code>ActivityThread</code>的<code>attach</code>方法中会远程调用<code>ActivityManagerService</code>的<code>attachApplication</code>，并将<code>ApplicationThread</code>提供给AMS，<code>ApplicationThread</code>主要用于<code>ActivityThread</code>和AMS之间的通信</p>
+</li>
+<li><p><code>ActivityManagerService</code>的<code>attachApplication</code>会调用<code>ApplicationThread</code>的<code>bindApplication</code>方法，这个方法会通过H切换到<code>ActivityThread</code>中去执行，即调用<code>handleBindApplication</code>方法</p>
+</li>
+<li><p><code>handleBindApplication</code>方法会创建<code>Application</code>对象并加载<code>ContentProvider</code>，注意是先加载<code>ContentProvider</code>，然后调用<code>Application</code>的<code>onCreate</code>方法。</p>
+</li>
+</ol>
+</li>
+<li><p>ContentProvider的<code>android:multiprocess</code>属性决定它是否是单实例，默认值是false，也就是默认是单实例。当设置为true时，每个调用者的进程中都存在一个ContentProvider对象。</p>
+</li>
+<li><p>当调用ContentProvider的insert、delete、update、query方法中的任何一个时，如果ContentProvider所在的进程没有启动的话，那么就会触发ContentProvider的创建，并伴随着ContentProvider所在进程的启动。下图是ContentProvider的query操作的大致过程：<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://box.kancloud.cn/2015-12-10_56692ec8cd215.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:26:23.797Z" itemprop="dateUpdated">2017-07-25 19:26:23</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第九章 四大组件的工作过程/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&title=《四大组件的工作过程》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&title=《四大组件的工作过程》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《四大组件的工作过程》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第十章 Android的消息机制/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android的消息机制</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第八章 理解Window和WindowManager/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">理解Window和WindowManager</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&title=《四大组件的工作过程》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&title=《四大组件的工作过程》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《四大组件的工作过程》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第九章 四大组件的工作过程/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsklEQVR42u3aQW4CMQwF0N7/0nRbiTZ82zGi0psVojCTl0qxsf31FV+PH9fPd55fn7+V3PP5Oj/lwoWHh4c3WPr51skjk3fyz59fn9eMh4eHt807PzhZYrKU6rndC0V4eHh4n8bLD+jeoZ+EEDw8PLz/xUuS7F5Z4YPiHh4eHl7Aqy4oL1jkf60Ghsu1Fjw8PLyYl3eRPuf1Sn8PDw8Pb9xVnxzlSWC4W+r95c54eHh4C7xqOptTewvNtyNvxeHh4eHd5VVLq70SRhIA5iHhl7vh4eHhLfOStlZvJKtaSphsXDmvx8PDw2vxksZS0oKqJuKFrL81XoCHh4e3westOk+Oe6XeSVApTxzg4eHhjXm99Pq8Tb1BhDyVbzbA8PDw8Ma8SbFgsqC8uJAHKjw8PLw9Xi8kVFtlySerIaTwf8PDw8O7yus1nJLCbsK4+5Q/QwgeHh7eMi8vK0xKq1XkaIwADw8P7yqvWoaoAqpjB5NNjIau8PDw8Ma897SgeoNck8IEHh4e3jav9yP/nGpXi7nV4FTeIDw8PLw1XnU4YFKKrZZoe4VmPDw8vA1edXyqt/RJ+38UZvDw8PCu8pK0uFdIPR/ieco+Khnj4eHhLfNuNaLm7bHk0I++i4eHh7fA6x3o1W1K0uhJM+xFERkPDw/vLbzeiEByMudNsjwAvLgbHh4e3hqv9+Vee6ya8faejoeHh/ceXjX9nafgyaHf7Ozh4eHhLfAexetWoXZjauzF6AAeHh7eJV5vub2NyJPjyetmuw4PDw+vyEsWmrep8jZYtQGWj3Dh4eHhvYeXH9Z5c2s+OpAHrReBAQ8PD+8DeL1S7KhkUNx6PDw8vP/CS5LyeRmiUGjGw8PDW+NVm0/VEkN1sGBeKMHDw8Pb401+8OdF2LwZlgSSSTqOh4eHN+B9A9h3pksnx+N8AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

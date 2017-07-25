@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>理解RemoteView | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索,View">
+    <meta name="description" content="5.1 RemoteViews的应用RemoteViews在实际开发中，主要用于通知栏和桌面小部件的开发过程中。它们在更新界面时无法像在Activity里面那样去直接更新View，因为两者都运行在其它进程中，确切来说是系统的SystemServer进程。 5.1.1 RemoteView在通知栏上的应用 只需要提供当前应用的包名和布局文件的资源id即可创建一个RemoteViews对象。 更新其中">
+<meta name="keywords" content="Android,Android开发艺术探索,View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解RemoteView">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="5.1 RemoteViews的应用RemoteViews在实际开发中，主要用于通知栏和桌面小部件的开发过程中。它们在更新界面时无法像在Activity里面那样去直接更新View，因为两者都运行在其它进程中，确切来说是系统的SystemServer进程。 5.1.1 RemoteView在通知栏上的应用 只需要提供当前应用的包名和布局文件的资源id即可创建一个RemoteViews对象。 更新其中">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T11:27:47.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解RemoteView">
+<meta name="twitter:description" content="5.1 RemoteViews的应用RemoteViews在实际开发中，主要用于通知栏和桌面小部件的开发过程中。它们在更新界面时无法像在Activity里面那样去直接更新View，因为两者都运行在其它进程中，确切来说是系统的SystemServer进程。 5.1.1 RemoteView在通知栏上的应用 只需要提供当前应用的包名和布局文件的资源id即可创建一个RemoteViews对象。 更新其中">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">理解RemoteView</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">理解RemoteView</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:15:00.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-1-RemoteViews的应用"><span class="post-toc-number">1.</span> <span class="post-toc-text">5.1 RemoteViews的应用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-1-RemoteView在通知栏上的应用"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">5.1.1 RemoteView在通知栏上的应用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-2-RemoteViews在桌面小部件上的应用"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">5.1.2 RemoteViews在桌面小部件上的应用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-3-PendingIntent概述"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">5.1.3 PendingIntent概述</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-2-RemoteViews的内部机制"><span class="post-toc-number">2.</span> <span class="post-toc-text">5.2 RemoteViews的内部机制</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第五章-第五章 理解RemoteView"
+  class="post-article article-type-第五章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">理解RemoteView</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:15:00" datetime="2017-07-25T11:15:00.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="5-1-RemoteViews的应用"><a href="#5-1-RemoteViews的应用" class="headerlink" title="5.1 RemoteViews的应用"></a>5.1 RemoteViews的应用</h2><p>RemoteViews在实际开发中，主要用于通知栏和桌面小部件的开发过程中。它们在更新界面时无法像在Activity里面那样去直接更新View，因为两者都运行在其它进程中，确切来说是系统的SystemServer进程。</p>
+<h3 id="5-1-1-RemoteView在通知栏上的应用"><a href="#5-1-1-RemoteView在通知栏上的应用" class="headerlink" title="5.1.1 RemoteView在通知栏上的应用"></a>5.1.1 RemoteView在通知栏上的应用</h3><ul>
+<li>只需要提供当前应用的包名和布局文件的资源id即可创建一个RemoteViews对象。</li>
+<li>更新其中的View必须通过RemoteView所提供的的一系列set方法来更新View。（例如设置TextView的文本，<code>remoteView.setTextViewText(R.id.msg, &quot;chapter_5&quot;)</code>）</li>
+<li>如果要给一个控件添加点击事件，则要使用PendingIntent并通过setOnclickPendingIntent方法来实现。</li>
+</ul>
+<h3 id="5-1-2-RemoteViews在桌面小部件上的应用"><a href="#5-1-2-RemoteViews在桌面小部件上的应用" class="headerlink" title="5.1.2 RemoteViews在桌面小部件上的应用"></a>5.1.2 RemoteViews在桌面小部件上的应用</h3><p>AppWidgetProvider是Android中提供的用于实现桌面小部件的类，它继承于BroadcastReceiver.其开发步骤可大致分为以下几步：</p>
+<ol>
+<li><strong>定义小部件界面</strong></li>
+<li><p><strong>定义小部件配置信息</strong>：在res/xml/下新建appwidget_provider_info.xml，其中initialLayout就是指小工具所使用的初始化布局，minHeight和minWidth定义小工具的最小尺寸，undataPeriodMills定义小工具自动更新周期，毫秒为单位。</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">appwidget-provider</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:initialLayout</span>=<span class="string">"@layout/widget"</span></div><div class="line">    <span class="attr">android:minHeight</span>=<span class="string">"84dp"</span></div><div class="line">    <span class="attr">android:minWidth</span>=<span class="string">"84dp"</span></div><div class="line">    <span class="attr">android:updatePeriodMillis</span>=<span class="string">"86400000"</span> &gt;</div><div class="line"><span class="tag">&lt;/<span class="name">appwidget-provider</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>定义小部件的实现类</p>
+</li>
+<li>在AndroidManifest.xml中声明小部件 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".MyAppWidgetProvider"</span> &gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line">        <span class="attr">android:name</span>=<span class="string">"android.appwidget.provider"</span></div><div class="line">        <span class="attr">android:resource</span>=<span class="string">"@xml/appwidget_provider_info"</span> &gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">meta-data</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!--这个Action是作为小部件的标识而必须存在--&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.appwidget.action.APPWIDGET_UPDATE"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<p>此外，除了最常用的onUpdate方法，还有其它几个方法。这些方法会自动被onReceive方法在合适的时间调用。</p>
+<ul>
+<li><strong>onEnable</strong>：当窗口小部件第一次添加到桌面时调用该方法，可添加多次，但只在第一次调用。</li>
+<li><strong>onUpdata</strong>：小部件被添加时或者每次小部件更新时都会调用一次该方法。</li>
+<li><strong>onDeleted</strong>：每删除一次桌面小部件就调用一次。</li>
+<li><strong>onDisabled</strong>：当最后一个该类型的小部件被删除时调用。</li>
+<li><strong>onReceive</strong>：这是广播的内置方法，用于分发具体事件给其他方法。</li>
+</ul>
+<h3 id="5-1-3-PendingIntent概述"><a href="#5-1-3-PendingIntent概述" class="headerlink" title="5.1.3 PendingIntent概述"></a>5.1.3 PendingIntent概述</h3><p>PendingIntent表示一种处于待定、等待、即将发生状态的意图。它支持三种意图：启动Activity、启动Service和发送广播。</p>
+<p>PendingIntent的匹配规则为：如果两个内部的Intent相同并且requestCode也相同，那么就是匹配的。（Intent的匹配规则为：两个Intent的ComponentName和intent-filter都相同）</p>
+<p>flag参数的含义：</p>
+<ul>
+<li><strong>FLAG_ONE_SHOT</strong>：当前PendingIntent只能被使用一次，然后它就会被自动cnacel，如果还有后续的PendingIntent，那么它们的send方法就会调用失败。</li>
+<li><strong>FALG_NO_CREATE</strong>：当前PendingIntent不会主动创建，如果当前PendingIntent之前不存在，那么getActivity、getService和getBroadcast会直接返回null。</li>
+<li><strong>FLAG_CANCEL_CURRENT</strong>：当前描述的PendingIntent如果已经存在，那么它们被会cancel，然后系统会创建一个新的。</li>
+<li><strong>FLAG_UPDATE_CURRENT</strong>：当前描述的PendingIntent如果已经存在，那么它们都会被更新，即它们中的Extras会被替换为最新的。</li>
+</ul>
+<h2 id="5-2-RemoteViews的内部机制"><a href="#5-2-RemoteViews的内部机制" class="headerlink" title="5.2 RemoteViews的内部机制"></a>5.2 RemoteViews的内部机制</h2><p>通知栏和桌面小部件分别由NotificationManager和AppWidgetManager管理，而NotificationManager和APPWidgetManager通过Binder分别和SystemServer进程中的NotificationManagerService和APPWidgetManagerService进行通信。</p>
+<p>RemoteViews目前不能支持所有的View类型，它所支持的类型如下：</p>
+<ul>
+<li><strong>Layout</strong>：FrameLayout、LinearLayout、RelativeLayout、GridLayout</li>
+<li><strong>View</strong>：AnalogClock、Button、Chronometer、ImageButton、ImageView、ProgressBar、TextView、ViewFlipper、ListView、GridView、StackView、AdapterViewFlipper、ViewStub</li>
+</ul>
+<p>RemoteViews中的大部分set方法是通过反射来完成的。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:27:47.235Z" itemprop="dateUpdated">2017-07-25 19:27:47</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第五章 理解RemoteView/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&title=《理解RemoteView》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&title=《理解RemoteView》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《理解RemoteView》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第六章 Android的Drawable/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android的Drawable</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第四章 View的工作原理/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">View的工作原理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&title=《理解RemoteView》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&title=《理解RemoteView》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《理解RemoteView》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第五章 理解RemoteView/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3aS27DMAwFwNz/0u2yAfJ7JEUjBcarwnVsjQNIyiNvt/j4uTvuzyTXv/rU4x0er3/8723jwMPDwxsM/f2w3p95P+hXZ94/t/qpJ5/Fw8PDW+Mlt+stCcmg8yMfMx4eHt738PIJPXkR+XYZDw8P77/zktChN633ggw8PDy863m9AVXj1/z+vQgDDw8P7xpeXkX6nr9X6nt4eHh446p6dWubT9zVaOOndeDh4eFt8KoRai8ayF9BHnYUNvd4eHh4R3m9W1dbpibLTHkZuL8PHh4e3gIvmb5PNVpVX2X+Wj+MEA8PD2+BNxnoZIqvFskmTQl4eHh4p3hJsT9vrsoHV11+DjQE4OHh4R3i5cvD5A7VmCN/BXk8gYeHh3eKVy0sJRFGNW6oFsMKXwkeHh7eAi8f1rG0I57uew0KT67Bw8PDW+Cd/XXfWxLy1zEv1+Hh4eFNeMlFefG+ugBUw4VyhIGHh4e3xtuYrPPr80WlXMzDw8PDW+AlN8qbq3oxQfKa8i/g5Xjw8PDwDvGqrajVLXIeYVS/jWijj4eHh3cJL4lf8/J/tVGgF1U0OyPw8PDwxrxqkWlerMqbrvIwAg8PD2+bV96kts5UI4ZeUe3Dl4GHh4d3iNeLaOex7EVtW3h4eHgLvFNLQl6+mrRS5fHukzIYHh4e3jKvN/VXg9r5pjw68PDw8NZ4eSmrR+09qxpM4OHh4V3PO7sw5GWq5qSfRB54eHh4R3m9mKAXTPT+rrYXfOiMwMPDwxvzepPv2bJZdRFKnoiHh4e3zcvLUb2Idp645gsDHh4e3pW8fFJOzvS215Mw4sPCgIeHh/c1vHmTVm+nX2h3wMPDw/sCXg7oLRv59dECg4eHh7fGS8KIU40C1St75TQ8PDy8Pd78B3+yGOTDnTxxJc/Aw8PD+zt+AeL3u2DwNo+qAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

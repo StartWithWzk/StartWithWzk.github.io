@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Android的消息机制 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android开发艺术探索">
+    <meta name="description" content="10.1 Android消息机制概述 Android的消息机制主要是指Handler的运行机制，其底层需要MessageQueue和Looper的支持。 Android规定UI操作只能在主线程中进行，ViewRootImpl的checkThread方法会验证当前线程是否可以进行UI操作。 为什么系统不允许在子线程中访问UI的？  因为UI组件不是线程安全的，如果在多线程中并发访问可能会导致UI组件">
+<meta name="keywords" content="Android,Android开发艺术探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android的消息机制">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="10.1 Android消息机制概述 Android的消息机制主要是指Handler的运行机制，其底层需要MessageQueue和Looper的支持。 Android规定UI操作只能在主线程中进行，ViewRootImpl的checkThread方法会验证当前线程是否可以进行UI操作。 为什么系统不允许在子线程中访问UI的？  因为UI组件不是线程安全的，如果在多线程中并发访问可能会导致UI组件">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-07-25T11:26:01.551Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android的消息机制">
+<meta name="twitter:description" content="10.1 Android消息机制概述 Android的消息机制主要是指Handler的运行机制，其底层需要MessageQueue和Looper的支持。 Android规定UI操作只能在主线程中进行，ViewRootImpl的checkThread方法会验证当前线程是否可以进行UI操作。 为什么系统不允许在子线程中访问UI的？  因为UI组件不是线程安全的，如果在多线程中并发访问可能会导致UI组件">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android的消息机制</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android的消息机制</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-25T11:16:11.000Z" itemprop="datePublished" class="page-time">
+  2017-07-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#10-1-Android消息机制概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">10.1 Android消息机制概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#10-2-Android的消息机制分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">10.2 Android的消息机制分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-2-1-ThreadLocal-的工作原理"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">10.2.1 ThreadLocal 的工作原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-2-2-MessageQueue的工作原理"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">10.2.2 MessageQueue的工作原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-2-3-Looper的工作原理"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">10.2.3 Looper的工作原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-2-4-Handler的工作原理"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">10.2.4 Handler的工作原理</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="第十章-第十章 Android的消息机制"
+  class="post-article article-type-第十章 fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android的消息机制</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-25 19:16:11" datetime="2017-07-25T11:16:11.000Z"  itemprop="datePublished">2017-07-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="10-1-Android消息机制概述"><a href="#10-1-Android消息机制概述" class="headerlink" title="10.1 Android消息机制概述"></a>10.1 Android消息机制概述</h2><ol>
+<li>Android的消息机制主要是指Handler的运行机制，其底层需要MessageQueue和Looper的支持。</li>
+<li>Android规定UI操作只能在主线程中进行，<code>ViewRootImpl</code>的<code>checkThread</code>方法会验证当前线程是否可以进行UI操作。<blockquote>
+<p><strong>为什么系统不允许在子线程中访问UI的？</strong></p>
+<ol>
+<li>因为UI组件不是线程安全的，如果在多线程中并发访问可能会导致UI组件处于不可预期的状态。</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p><strong>为什么系统不对UI控件的访问加上锁机制？</strong></p>
+<ol>
+<li>首先加上锁机制会让UI访问的逻辑变得复杂</li>
+<li>其次锁机制会降低UI访问的效率，因为锁机制会阻塞某些线程的执行</li>
+</ol>
+</blockquote>
+<ol>
+<li>Handler创建时会采用当前线程的Looper来创建内部的消息循环系统，如果当前线程中不存在Looper的话就会报错。Handler可以用<code>post</code>方法将一个Runnable投递到消息队列中，也可以用<code>send</code>方法发送一个消息投递到相抵队列中，其实<code>post</code>最终还是调用了<code>send</code>方法。</li>
+</ol>
+<h2 id="10-2-Android的消息机制分析"><a href="#10-2-Android的消息机制分析" class="headerlink" title="10.2 Android的消息机制分析"></a>10.2 Android的消息机制分析</h2><h3 id="10-2-1-ThreadLocal-的工作原理"><a href="#10-2-1-ThreadLocal-的工作原理" class="headerlink" title="10.2.1 ThreadLocal 的工作原理"></a>10.2.1 ThreadLocal 的工作原理</h3><ol>
+<li><p>ThreadLocal是一个线程内部的数据存储类，通过它可以在指定的线程中存储数据，数据存储以后，只有在指定线程中可以获取到存储的数据，对于其他线程来说则无法获取到数据。一般来说，当某些数据是以<strong>线程为作用域并且不同线程具有不同的数据副本</strong>的时候，可以考虑使用ThreadLocal。对于Handler来说，它需要获取当前线程的Looper，而Looper的作用域就是线程并且不同线程具有不同的Looper，这个时候通过ThreadLocal就可以实现Looper在线程中的存取了。</p>
+</li>
+<li><p>ThreadLocal的原理：不同线程访问同一个ThreadLocal的get方法时，ThreadLocal内部会从各自的线程中取出一个数组，然后再从数组中根据当前ThreadLocal的索引去查找出对应的value值，不同线程中的数组是不同的，这就是为什么通过ThreadLocal可以在不同线程中维护一套数据的副本并且彼此互不干扰。</p>
+</li>
+<li><p><code>Values</code>是Thread类内部专门用来存储线程的ThreadLocal数据的成员变量，它内部有一个数组<code>private Object[] table</code>，ThreadLocal的值就存在这个table数组中。如果values的值为null，那么就需要对其进行初始化然后再将ThreadLocal的值进行存储。==ThreadLocal数据的存储规则：ThreadLocal的值在table数组中的存储位置总是ThreadLocal的索引+1的位置。==</p>
+</li>
+</ol>
+<h3 id="10-2-2-MessageQueue的工作原理"><a href="#10-2-2-MessageQueue的工作原理" class="headerlink" title="10.2.2 MessageQueue的工作原理"></a>10.2.2 MessageQueue的工作原理</h3><ol>
+<li><p>MessageQueue其实是通过单链表来维护消息列表的，它包含两个主要操作enqueueMessage和next，前者是插入消息，后者是取出一条消息并移除。</p>
+</li>
+<li><p>next方法是一个无限循环的方法，如果消息队列中没有消息，那么next方法会一直阻塞在这里。当有新消息到来时，next方法会返回这条消息并将它从链表中移除。</p>
+</li>
+</ol>
+<h3 id="10-2-3-Looper的工作原理"><a href="#10-2-3-Looper的工作原理" class="headerlink" title="10.2.3 Looper的工作原理"></a>10.2.3 Looper的工作原理</h3><ol>
+<li><p>Looper的<code>prepareMainLooper</code>方法主要是给主线程也就是ActivityThread创建Looper使用的，本质也是调用了prepare方法。</p>
+</li>
+<li><p>Looper的<code>quit</code>和<code>quitSafely</code>方法的区别是：前者会直接退出Looper，后者只是设定一个退出标记，然后把消息队列中的已有消息处理完毕后才安全地退出。Looper退出之后，通过Handler发送的消息就会失败，这个时候Handler的send方法会返回false。==在子线程中，如果手动为其创建了Looper，那么在所有的事情完成以后应该调用<code>quit</code>方法来终止消息循环，否则这个子线程就会一直处于等待的状态，而如果退出Looper以后，这个线程就会立刻终止，因此建议不需要的时候终止Looper。==</p>
+</li>
+<li><p>Looper的<code>loop</code>方法会调用MessageQueue的<code>next</code>方法来获取新消息，而<code>next</code>是一个阻塞操作，当没有消息时，<code>next</code>方法会一直阻塞着在那里，这也导致了loop方法一直阻塞在那里。如果MessageQueue的<code>next</code>方法返回了新消息，Looper就会处理这条消息：<code>msg.target.dispatchMessage(msg)</code>，其中的msg.target就是发送这条消息的Handler对象。</p>
+</li>
+</ol>
+<h3 id="10-2-4-Handler的工作原理"><a href="#10-2-4-Handler的工作原理" class="headerlink" title="10.2.4 Handler的工作原理"></a>10.2.4 Handler的工作原理</h3><ol>
+<li><p>Handler就是处理消息的发送和接收之后的处理</p>
+</li>
+<li><p>Handler处理消息的过程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (msg.callback != <span class="keyword">null</span>) &#123;</div><div class="line">        handleCallback(msg);<span class="comment">//当message是runnable的情况，也就是Handler的post方法传递的参数，这种情况下直接执行runnable的run方法</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (mCallback != <span class="keyword">null</span>) &#123;<span class="comment">//如果创建Handler的时候是给Handler设置了Callback接口的实现，那么此时调用该实现的handleMessage方法</span></div><div class="line">            <span class="keyword">if</span> (mCallback.handleMessage(msg)) &#123;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        handleMessage(msg);<span class="comment">//如果是派生Handler的子类，就要重写handleMessage方法，那么此时就是调用子类实现的handleMessage方法</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handleCallback</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">        message.callback.run();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Subclasses must implement this to receive messages.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Handler还有一个特殊的构造方法，它可以通过特定的Looper来创建Handler。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper)</span></span>&#123;</div><div class="line">  <span class="keyword">this</span>(looper, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Android的主线程就是<code>ActivityThread</code>，主线程的入口方法就是<code>main</code>，其中调用了<code>Looper.prepareMainLooper()</code>来创建主线程的Looper以及MessageQueue，并通过<code>Looper.loop()</code>方法来开启主线程的消息循环。主线程内有一个Handler，即<code>ActivityThread.H</code>，它定义了一组消息类型，主要包含了四大组件的启动和停止等过程，例如<code>LAUNCH_ACTIVITY</code>等。</p>
+</li>
+<li><p>ActivityThread通过ApplicationThread和AMS进行进程间通信，AMS以进程间通信的方法完成ActivityThread的请求后会回调ApplicationThread中的Binder方法，然后ApplicationThread会向H发送消息，H收到消息后会将ApplicationThread中的逻辑切换到ActivityThread中去执行，即切换到主线程中去执行，这个过程就是主线程的消息循环模型。</p>
+</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-07-25T11:26:01.551Z" itemprop="dateUpdated">2017-07-25 19:26:01</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/07/25/第十章 Android的消息机制/" target="_blank" rel="external">https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&title=《Android的消息机制》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&title=《Android的消息机制》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的消息机制》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/07/25/第十一章 Android的线程和线程池/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android的线程和线程池</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/07/25/第九章 四大组件的工作过程/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">四大组件的工作过程</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&title=《Android的消息机制》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&title=《Android的消息机制》 — 温治康&source=Java、Android、Python、JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android的消息机制》 — 温治康&url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/07/25/第十章 Android的消息机制/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsUlEQVR42u3aQZLiMBAEQP7/6d2Iib2xmKpui+GQPk2AkZU+SD3Vejzi68/Pdf3J87ev7nn+Nrnz+omrCw8PD2809VfX8+Pz+/NxNt++eQV4eHh4x3jXm8FmY0gW92T8fCPBw8PD+x5evgHkBfqr3+abBB4eHt438+5dsmclOB4eHt738PJwIQlkNwHubEO6IWvBw8PD69KAugj+3b8P9vfw8PDwFl31tiV2vdC3se9mhv9GwMPDwzvAyx+frLdtK6t9cW2ki4eHh3eaN1umW8CsXE5Ch5ej4eHh4d3KS26dHagqSt5R6BAV7nh4eHiHeUkrK2lu5ZNug4+2lMfDw8M7wWtj1rvChZZxPc4bBR4eHt4BXv6D67J4c0S1PZCaByh4eHh49/KSW2cBRHK8oI0qajweHh7eB3lt2yn//K4tJDqmgIeHh3eAdyJuaI92tQcR8sMNeHh4eCd4m2l9pvXVbgB4eHh4n+Hdu6znyXHe3ErijPo/Bjw8PLwRbxba5i2o9pqFEXh4eHif5+UlclIoR6FqUBbn49TxMR4eHt6tvHz5jrLhUeGeHzVoZ4KHh4d3gjfbBtr4Nd8S8s+LwhoPDw9vzZuFAsnnbXmdbwZFSY2Hh4d3gLdpdLVBajvd/OnDYhoPDw9vxNu3stooIS+OZ4X+f/Y9PDw8vFt5dy3N+0B2M+Zjc+Hh4eHdFNqeXsrzAn0WZODh4eGd5uUT3ZTXbbDbbl14eHh4p3mz0GF/XGAWyCavEg8PD+80b7bstkXziUJ5f8gADw8Pb8NrS+TrB7RxcD5O/rLw8PDwPsNrg9p2KvlLnMUQeHh4eN/Mywvi/SmGfTCBh4eH97u8z5fRSdzwJmXBw8PDO8Zrh0iaVQly89yo6YWHh4d3gDdrgOVFc948a0fbBxl4eHh4Je8vno0iFscOOokAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
