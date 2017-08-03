@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://startwithwzk.github.io/"/>
-  <updated>2017-07-25T11:25:00.901Z</updated>
+  <updated>2017-08-03T15:26:33.724Z</updated>
   <id>https://startwithwzk.github.io/</id>
   
   <author>
@@ -14,6 +14,71 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Lambda-Java8</title>
+    <link href="https://startwithwzk.github.io/2017/08/03/Lambda-Java8/"/>
+    <id>https://startwithwzk.github.io/2017/08/03/Lambda-Java8/</id>
+    <published>2017-08-03T15:25:05.000Z</published>
+    <updated>2017-08-03T15:26:33.724Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Lambda-Java-8"><a href="#Lambda-Java-8" class="headerlink" title="Lambda-Java 8"></a>Lambda-Java 8</h1><blockquote>
+<p>Lambda ����ʽ��һ����������(�� Java �����Ⲣ����ȫ��ȷ�������ڹ�����ô��Ϊ)���򵥵�˵������û�������ķ�����Ҳ��û�з������η�������ֵ���������֡�</p>
+<p>�����Խ�������һ���ټǣ�������Ҫʹ��ĳ�������ĵط�д��������ĳ������ֻʹ��һ�Σ����Ҷ����ܼ��̣�ʹ�������ټ�����֮������Ч�����������Ͳ��������з���д�����뷽���ˡ�</p>
+</blockquote>
+<p>Java�е�Lambda����ʽͨ��ʹ��(argument) -&gt; {body}�﷨��д�����磺</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">(arg1, arg2...) -&gt; &#123; body &#125;</div><div class="line"></div><div class="line">(type1 arg1, type2 arg2...) -&gt; &#123; body &#125;</div><div class="line"></div><div class="line"><span class="comment">// example</span></div><div class="line"></div><div class="line">() -&gt; System.out.println(<span class="string">"Hello World"</span>)</div><div class="line"></div><div class="line">(String s) -&gt; &#123; System.out.println(s); &#125;</div><div class="line"></div><div class="line">System.out::println</div><div class="line"></div><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123;  <span class="keyword">return</span> a + b; &#125;</div><div class="line"></div><div class="line">() -&gt; &#123; <span class="keyword">return</span> <span class="number">3.1415</span> &#125;</div><div class="line"></div><div class="line">() -&gt; <span class="number">42</span></div></pre></td></tr></table></figure>
+<p>����֮�⻹�� ����::����������ʽ�����磺</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ����ʽ</span></div><div class="line">person -&gt; person.getAge();</div><div class="line"><span class="comment">// �����滻��</span></div><div class="line">Person::getAge</div><div class="line"><span class="comment">// ����ʽ</span></div><div class="line">() -&gt; <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"><span class="comment">// �����滻��</span></div><div class="line">HashMap::<span class="keyword">new</span></div></pre></td></tr></table></figure>
+<p>����<strong>��������</strong>����˵<strong>˫ð������</strong>��Ӧ�Ĳ���������<code>Function&lt;T, R&gt;</code>��T��ʾ�������ͣ�R��ʾ�������͡���������ʽ<code>person -&gt; person.getAge()</code> ����������person������ֵ��<code>person.getAge()</code>����ô��������<code>Person::getAge</code>�Ͷ�Ӧ��<code>Function&lt;Person, Integer&gt;</code>���͡�</p>
+<h2 id="Lambda����ʽ�Lu"><a href="#Lambda����ʽ�Lu" class="headerlink" title="Lambda����ʽ�Ľṹ"></a>Lambda����ʽ�Ľṹ</h2><ul>
+<li>һ�� Lambda ����ʽ��������������������</li>
+<li>���������ͼȿ�����ȷ������Ҳ���Ը������������ƶϡ����磺<code>(int a)</code>��<code>(a)</code>Ч����ͬ</li>
+<li>���в�����������Բ�����ڣ�����֮���ö������������磺<code>(a, b)</code> �� <code>(int a, int b)</code>�� <code>(String a, int b, float c)</code></li>
+<li>��Բ���Ŵ���������Ϊ�ա����磺<code>() -&gt; 42</code></li>
+<li>��ֻ��һ���������������Ϳ��Ƶ�ʱ��Բ���ţ�����ʡ�ԡ����磺<code>a -&gt; return a*a</code></li>
+<li>Lambda ����ʽ�������ɰ�����������������</li>
+<li>���� Lambda ����ʽ������ֻ��һ�����䣬������{}��ʡ�ԡ����������ķ�������������������ʽһ��</li>
+<li>���� Lambda ����ʽ����������һ���������䣬������ʽ���������ڻ�����{}�У��γɴ����飩�����������ķ����������������ķ�������һ�£���û�з�����Ϊ��</li>
+</ul>
+<h2 id="ʲo�A���ʽ�ӿ�"><a href="#ʲo�A���ʽ�ӿ�" class="headerlink" title="ʲô�Ǻ���ʽ�ӿ�"></a>ʲô�Ǻ���ʽ�ӿ�</h2><p>�� Java �У�Marker�����ǣ����͵Ľӿ���һ��û�з��������������Ľӿڣ��򵥵�˵��marker �ӿ��ǿսӿڡ����Ƶأ�����ʽ�ӿ���ֻ����һ�����󷽷������Ľӿڡ�</p>
+<p><code>java.lang.Runnable</code> ����һ�ֺ���ʽ�ӿڣ��� Runnable �ӿ���ֻ������һ������ <code>void run()</code>�����Ƶأ�<code>OnClickListener</code> �ӿ�Ҳ��һ�ֺ���ʽ�ӿڣ�����ʹ�������ڲ�����ʵ��������ʽ�ӿڵĶ��������� Lambda ����ʽ����һ��ʽ���Եõ��򻯡�</p>
+<p>@FunctionalInterface�� Java 8 �¼�����һ�ֽӿڣ�����ָ���ýӿ����������Ǹ��� Java ���Թ淶�����ĺ���ʽ�ӿڡ�Java 8 ��������һЩ Lambda ����ʽ����ʹ�õĺ���ʽ�ӿڣ�����ע�͵Ľӿڲ�����Ч�ĺ���ʽ�ӿ�ʱ������ʹ�� @FunctionalInterface �������������Ĵ�����</p>
+<p>������һ���Զ����ĺ���ʽ�ӿڣ� </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@FunctionalInterface</span> </div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WorkerInterface</span> </span>&#123;</div><div class="line">  </div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomeWork</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>���ݶ��壬����ʽ�ӿ�ֻ����һ�����󷽷��������㳢�����ӵڶ������󷽷������׳�����ʱ������</p>
+<p>���磺</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@FunctionalInterface</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WorkerInterface</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomeWork</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomeMoreWork</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>������</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Unexpected <span class="meta">@FunctionalInterface</span> annotation </div><div class="line">    <span class="meta">@FunctionalInterface</span> ^ WorkerInterface is not a functional <span class="class"><span class="keyword">interface</span> <span class="title">multiple</span> </span></div><div class="line">    <span class="title">non</span>-<span class="title">overriding</span> <span class="title">abstract</span> <span class="title">methods</span> <span class="title">found</span> <span class="title">in</span> <span class="title">interface</span> <span class="title">WorkerInterface</span> 1 <span class="title">error</span></div></pre></td></tr></table></figure>
+<h2 id="Lambda-����ʽ����"><a href="#Lambda-����ʽ����" class="headerlink" title="Lambda ����ʽ����"></a>Lambda ����ʽ����</h2><p>ѧϰ Lambda ����ʽ�����÷�ʽ��ѧϰ���ӡ�</p>
+<p>�߳̿���ͨ�����·�����ʼ����</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//�ɷ���:</span></div><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">    System.out.println(<span class="string">"Hello from thread"</span>);</div><div class="line">&#125;</div><div class="line">&#125;).start();</div><div class="line"></div><div class="line"><span class="comment">//�·���:</span></div><div class="line"><span class="keyword">new</span> Thread(</div><div class="line">() -&gt; System.out.println(<span class="string">"Hello from thread"</span>)</div><div class="line">).start();</div></pre></td></tr></table></figure>
+<p>�¼���������ʹ�� Java 8 �� Lambda ����ʽ�����������Ĵ����У����ǽ�ʹ���¾����ַ�ʽ��һ�� Android UI �������� ActionListener��</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Old way:</span></div><div class="line">button.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">    Log.i(TAG, <span class="string">"onClick: Lambda"</span>);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">//New way:</span></div><div class="line">mTextView.setOnClickListener(v -&gt; Log.i(TAG, <span class="string">"onClick: Lambda"</span>));</div></pre></td></tr></table></figure>
+<p>���´����������Ǵ�ӡ�����������е�����Ԫ�ء�ע�⣬ʹ�� Lambda ����ʽ�ķ�����ֹһ�֡��������������У����������ó��õļ�ͷ�﷨���� Lambda ����ʽ��֮����ʹ�� Java 8 ȫ�µ�˫ð��(::)��������һ�����淽��ת��Ϊ Lambda ����ʽ��</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Old way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>);</div><div class="line"><span class="keyword">for</span>(Integer n: list) &#123;</div><div class="line">   System.out.println(n);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//New way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>);</div><div class="line">list.forEach(n -&gt; System.out.println(n));</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//or we can use :: double colon operator in Java 8</span></div><div class="line">list.forEach(System.out::println);</div></pre></td></tr></table></figure>
+<p>�������������У�����ʹ�ö���(Predicate)����ʽ�ӿڴ���һ�����ԣ�����ӡ����ͨ�����Ե�Ԫ�أ����������Ϳ���ʹ�� Lambda ����ʽ�涨һЩ�߼������Դ�Ϊ����������Ϊ��</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Print all numbers: <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> </div><div class="line">Print no numbers: </div><div class="line">Print even numbers: <span class="number">2</span> <span class="number">4</span> <span class="number">6</span> </div><div class="line">Print odd numbers: <span class="number">1</span> <span class="number">3</span> <span class="number">5</span> <span class="number">7</span> </div><div class="line">Print numbers greater than <span class="number">5</span>: <span class="number">6</span> <span class="number">7</span></div></pre></td></tr></table></figure>
+<p>����������ʹ�� Lambda ����ʽ��ӡ��ֵ��ÿ��Ԫ�ص�ƽ����ע������ʹ���� .stream() ��������������ת��Ϊ����Java 8 ������һЩ�������� APIs��<a href="http://download.java.net/jdk8/docs/api/java/util/stream/Stream.html" target="_blank" rel="external">java.util.stream.Stream</a> �ӿڰ����������õķ������ܽ��� Lambda ����ʽ����������Ч�������ǽ� Lambda ����ʽ <code>x -&gt; x * x</code> ���� map() �������÷��������������е�����Ԫ�ء�֮��������ʹ�� forEach ������ӡ�����е�����Ԫ�أ�</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Old way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>);</div><div class="line"><span class="keyword">for</span>(Integer n : list) &#123;</div><div class="line">    <span class="keyword">int</span> x = n * n;</div><div class="line">    System.out.println(x);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//New way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>);</div><div class="line">list.stream().map(x -&gt; x * x).forEach(System.out::println);</div></pre></td></tr></table></figure>
+<p>���������ӻ�����������ֵ��ÿ��Ԫ��ƽ�������ܺ͡���ע�⣬Lambda ����ʽֻ��һ���������ܴﵽ�˹��ܣ���Ҳ�� MapReduce ��һ���������ӡ�����ʹ�� map() ��ÿ��Ԫ����ƽ������ʹ�� reduce() ������Ԫ�ؼ���һ����ֵ��</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Old way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>);</div><div class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</div><div class="line"><span class="keyword">for</span>(Integer n : list) &#123;</div><div class="line">    <span class="keyword">int</span> x = n * n;</div><div class="line">    sum = sum + x;</div><div class="line">&#125;</div><div class="line">System.out.println(sum);</div><div class="line"></div><div class="line"><span class="comment">//New way:</span></div><div class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>);</div><div class="line"><span class="keyword">int</span> sum = list.stream().map(x -&gt; x * x).reduce((x,y) -&gt; x + y).get();</div><div class="line">System.out.println(sum);</div></pre></td></tr></table></figure>
+<h2 id="Lambda-����ʽ��������������"><a href="#Lambda-����ʽ��������������" class="headerlink" title="Lambda ����ʽ��������������"></a>Lambda ����ʽ��������������</h2><p>ʹ���������� Lambda ����ʽ��һ���������ڹؼ��ʵ�ʹ�á����������࣬�ؼ��� <code>this</code> ����Ϊ�����࣬������ Lambda ����ʽ���ؼ��� <code>this</code> ����Ϊд�� Lambda ���ⲿ�ࡣ</p>
+<h2 id="�ο�"><a href="#�ο�" class="headerlink" title="�ο�"></a>�ο�</h2><p><a href="http://blog.oneapm.com/apm-tech/226.html" target="_blank" rel="external">����ǳ�� Java 8 Lambda ����ʽ</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Lambda-Java-8&quot;&gt;&lt;a href=&quot;#Lambda-Java-8&quot; class=&quot;headerlink&quot; title=&quot;Lambda-Java 8&quot;&gt;&lt;/a&gt;Lambda-Java 8&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Lambda ����ʽ�
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://startwithwzk.github.io/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>Bitmap的加载和Cache</title>
@@ -470,8 +535,8 @@
   
   <entry>
     <title>Android的Drawable</title>
-    <link href="https://startwithwzk.github.io/2017/07/25/%E7%AC%AC%E5%85%AD%E7%AB%A0%20Android%E7%9A%84Drawable/"/>
-    <id>https://startwithwzk.github.io/2017/07/25/第六章 Android的Drawable/</id>
+    <link href="https://startwithwzk.github.io/2017/07/25/Android%E7%9A%84Drawable/"/>
+    <id>https://startwithwzk.github.io/2017/07/25/Android的Drawable/</id>
     <published>2017-07-25T11:15:17.000Z</published>
     <updated>2017-07-25T11:27:18.083Z</updated>
     
@@ -592,9 +657,9 @@
     
       <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
     
-      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
-    
       <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
     
   </entry>
   
@@ -686,9 +751,9 @@
     
       <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
     
-      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
-    
       <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
     
   </entry>
   
@@ -808,9 +873,9 @@
     
       <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
     
-      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
-    
       <category term="View" scheme="https://startwithwzk.github.io/tags/View/"/>
+    
+      <category term="Android开发艺术探索" scheme="https://startwithwzk.github.io/tags/Android%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2/"/>
     
   </entry>
   
