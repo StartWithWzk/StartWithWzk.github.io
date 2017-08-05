@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://startwithwzk.github.io/"/>
-  <updated>2017-08-03T15:26:33.724Z</updated>
+  <updated>2017-08-05T02:33:23.638Z</updated>
   <id>https://startwithwzk.github.io/</id>
   
   <author>
@@ -16,17 +16,92 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别</title>
+    <link href="https://startwithwzk.github.io/2017/08/05/Java%E6%B3%9B%E5%9E%8B%E4%B8%AD%E9%80%9A%E9%85%8D%E7%AC%A6%E4%B8%ADextends%E4%B8%8Esuper%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/</id>
+    <published>2017-08-05T02:33:00.000Z</published>
+    <updated>2017-08-05T02:33:23.638Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别"><a href="#Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别" class="headerlink" title="Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别"></a>Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别</h1><h2 id="lt-extends-T-gt"><a href="#lt-extends-T-gt" class="headerlink" title="&lt;? extends T&gt;"></a>&lt;? extends T&gt;</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/11484954.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><code>List&lt;? extends Number&gt; foo3</code>中通配符的声明的合法参数有以下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Number "extends" Number (in this context)</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Number&gt;();</div><div class="line"><span class="comment">// Integer extends Number</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</div><div class="line"><span class="comment">// Double extends Number</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Double&gt;();</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>Reading</strong> - 在上述参数中，有那些对象你能保证从<code>List foo3</code>中读出：<ul>
+<li>你可以读出<code>Number/Object</code>，因为任何可以匹配<code>foo3</code>的列表都包含了<code>Number/Object</code>或者是它的子类</li>
+<li>你不可以读出<code>Integer</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Doubel&gt;</code></li>
+<li>你不可以读出<code>Double</code>，理由同上</li>
+</ul>
+</li>
+<li><strong>Writing</strong> - 在上述参数中，有哪些对象能够合法添加进上述列表中：<ul>
+<li>你不可以添加<code>Integer、Double or Number</code>，因为<code>foo3</code>可能匹配/指向的是`List<doubel>、 List<integer> or List<integer></integer></integer></doubel></li>
+</ul>
+</li>
+</ol>
+<p><em>你不可以添加任何对象到List&lt;? extends T&gt;，因为你不能确定它能够匹配什么参数，所以你不知道什么参数可以被允许。唯一能够<strong>确定</strong>是你只能够读取<code>T</code>或者是它的子类</em></p>
+<h2 id="lt-super-T-gt"><a href="#lt-super-T-gt" class="headerlink" title="&lt;? super T&gt;"></a>&lt;? super T&gt;</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/41329476.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><code>List&lt;? super Integer&gt; foo3</code>中通配符的声明的合法参数有以下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Integer is a "superclass" of Integer (in this context)</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</div><div class="line"><span class="comment">// Number is a superclass of Integer</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Number&gt;();</div><div class="line"><span class="comment">// Object is a superclass of Integer</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Object&gt;();</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>Reading</strong> - 在上述参数中，有那些对象你能保证从<code>List foo3</code>中读出：<ul>
+<li>你不能确定读出的是Integer<code>，因为</code>foo3<code>可能匹配/指向的是</code>List<number> or List<object>`</object></number></li>
+<li>你不能确定读出的是<code>Number</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Object&gt;</code></li>
+<li>你唯一能够确定的是你能够读出一个<code>Object</code>的实例或者是它的子类（但是你不知道具体什么子类）</li>
+</ul>
+</li>
+<li><strong>Writing</strong> - 在上述参数中，有哪些对象能够合法添加进上述列表中：<ul>
+<li>你可以添加<code>Integer</code>，因为<code>Integer</code>可以添加进上述任意<code>List foo3</code>中</li>
+<li>你可以添加<code>any instance of a subclass of Integer</code>，因为<code>Integer</code>的子类可以添加进上述任意<code>List foo3</code>中</li>
+<li>你不可以添加<code>Double、Number or Object</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Integer&gt;</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="PECS"><a href="#PECS" class="headerlink" title="PECS"></a>PECS</h2><blockquote>
+<p>Producer Extends, Consumer Super</p>
+</blockquote>
+<ul>
+<li><strong>“Producer Extends”</strong> - 频繁往外读取内容的，适合用上界通配符Extents</li>
+<li><strong>“Consumer Super”</strong> - 经常往里插入的，适合用下界Super</li>
+<li>如果读与写都需要，那么应该直接声明<code>List&lt;T&gt;</code>，也就是不要用通配符</li>
+</ul>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Collections</span> </span>&#123; </div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">copy</span><span class="params">(List&lt;? <span class="keyword">super</span> T&gt; dest, List&lt;? extends T&gt; src)</span> </span>&#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; src.size(); i++) </div><div class="line">        dest.set(i, src.get(i)); </div><div class="line">  &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="https://stackoverflow.com/questions/4343202/difference-between-super-t-and-extends-t-in-java" target="_blank" rel="external">Difference between  &lt;? extends T&gt; and &lt;? super T&gt;  in Java</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别&quot;&gt;&lt;a href=&quot;#Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别&quot; class=&quot;headerlink&quot; title=&quot;Java泛型&amp;l
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://startwithwzk.github.io/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Lambda-Java8</title>
     <link href="https://startwithwzk.github.io/2017/08/03/Lambda-Java8/"/>
     <id>https://startwithwzk.github.io/2017/08/03/Lambda-Java8/</id>
     <published>2017-08-03T15:25:05.000Z</published>
-    <updated>2017-08-03T15:26:33.724Z</updated>
+    <updated>2017-08-05T02:32:11.713Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Lambda-Java-8"><a href="#Lambda-Java-8" class="headerlink" title="Lambda-Java 8"></a>Lambda-Java 8</h1><blockquote>
+    <content type="html"><![CDATA[<h1 id="Lambda-Java-8"><a href="#Lambda-Java-8" class="headerlink" title="Lambda - Java 8"></a>Lambda - Java 8</h1><blockquote>
 <p>Lambda ����ʽ��һ����������(�� Java �����Ⲣ����ȫ��ȷ�������ڹ�����ô��Ϊ)���򵥵�˵������û�������ķ�����Ҳ��û�з������η�������ֵ���������֡�</p>
 <p>�����Խ�������һ���ټǣ�������Ҫʹ��ĳ�������ĵط�д��������ĳ������ֻʹ��һ�Σ����Ҷ����ܼ��̣�ʹ�������ټ�����֮������Ч�����������Ͳ��������з���д�����뷽���ˡ�</p>
 </blockquote>
-<p>Java�е�Lambda����ʽͨ��ʹ��(argument) -&gt; {body}�﷨��д�����磺</p>
+<h2 id="��������ʽ"><a href="#��������ʽ" class="headerlink" title="��������ʽ"></a>��������ʽ</h2><p>Java�е�Lambda����ʽͨ��ʹ��(argument) -&gt; {body}�﷨��д�����磺</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">(arg1, arg2...) -&gt; &#123; body &#125;</div><div class="line"></div><div class="line">(type1 arg1, type2 arg2...) -&gt; &#123; body &#125;</div><div class="line"></div><div class="line"><span class="comment">// example</span></div><div class="line"></div><div class="line">() -&gt; System.out.println(<span class="string">"Hello World"</span>)</div><div class="line"></div><div class="line">(String s) -&gt; &#123; System.out.println(s); &#125;</div><div class="line"></div><div class="line">System.out::println</div><div class="line"></div><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123;  <span class="keyword">return</span> a + b; &#125;</div><div class="line"></div><div class="line">() -&gt; &#123; <span class="keyword">return</span> <span class="number">3.1415</span> &#125;</div><div class="line"></div><div class="line">() -&gt; <span class="number">42</span></div></pre></td></tr></table></figure>
 <p>����֮�⻹�� ����::����������ʽ�����磺</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ����ʽ</span></div><div class="line">person -&gt; person.getAge();</div><div class="line"><span class="comment">// �����滻��</span></div><div class="line">Person::getAge</div><div class="line"><span class="comment">// ����ʽ</span></div><div class="line">() -&gt; <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"><span class="comment">// �����滻��</span></div><div class="line">HashMap::<span class="keyword">new</span></div></pre></td></tr></table></figure>
@@ -70,8 +145,8 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;Lambda-Java-8&quot;&gt;&lt;a href=&quot;#Lambda-Java-8&quot; class=&quot;headerlink&quot; title=&quot;Lambda-Java 8&quot;&gt;&lt;/a&gt;Lambda-Java 8&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;Lambda ����ʽ�
+      &lt;h1 id=&quot;Lambda-Java-8&quot;&gt;&lt;a href=&quot;#Lambda-Java-8&quot; class=&quot;headerlink&quot; title=&quot;Lambda - Java 8&quot;&gt;&lt;/a&gt;Lambda - Java 8&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Lambda ��
     
     </summary>
     

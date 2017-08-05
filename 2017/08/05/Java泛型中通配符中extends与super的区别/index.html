@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java">
+    <meta name="description" content="Java泛型&amp;lt;? extends T&amp;gt;与&amp;lt;? super T&amp;gt;的区别&amp;lt;? extends T&amp;gt;                                                                                                           List&amp;lt;? extends Number&amp;gt;">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="Java泛型&amp;lt;? extends T&amp;gt;与&amp;lt;? super T&amp;gt;的区别&amp;lt;? extends T&amp;gt;                                                                                                           List&amp;lt;? extends Number&amp;gt;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/11484954.jpg">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/41329476.jpg">
+<meta property="og:updated_time" content="2017-08-05T02:33:23.638Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别">
+<meta name="twitter:description" content="Java泛型&amp;lt;? extends T&amp;gt;与&amp;lt;? super T&amp;gt;的区别&amp;lt;? extends T&amp;gt;                                                                                                           List&amp;lt;? extends Number&amp;gt;">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/11484954.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-08-05T02:33:00.000Z" itemprop="datePublished" class="page-time">
+  2017-08-05
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别"><span class="post-toc-number">1.</span> <span class="post-toc-text">Java泛型<? extends T>与<? super T>的区别</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#lt-extends-T-gt"><span class="post-toc-number">1.1.</span> <span class="post-toc-text"><? extends T></span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#lt-super-T-gt"><span class="post-toc-number">1.2.</span> <span class="post-toc-text"><? super T></span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#PECS"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">PECS</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Example"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">Example</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Refer"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">Refer</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Java泛型中通配符中extends与super的区别"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java泛型<? extends T>与<? super T>的区别</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-08-05 10:33:00" datetime="2017-08-05T02:33:00.000Z"  itemprop="datePublished">2017-08-05</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别"><a href="#Java泛型-lt-extends-T-gt-与-lt-super-T-gt-的区别" class="headerlink" title="Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别"></a>Java泛型&lt;? extends T&gt;与&lt;? super T&gt;的区别</h1><h2 id="lt-extends-T-gt"><a href="#lt-extends-T-gt" class="headerlink" title="&lt;? extends T&gt;"></a>&lt;? extends T&gt;</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/11484954.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><code>List&lt;? extends Number&gt; foo3</code>中通配符的声明的合法参数有以下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Number "extends" Number (in this context)</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Number&gt;();</div><div class="line"><span class="comment">// Integer extends Number</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</div><div class="line"><span class="comment">// Double extends Number</span></div><div class="line">List&lt;? extends Number&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Double&gt;();</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>Reading</strong> - 在上述参数中，有那些对象你能保证从<code>List foo3</code>中读出：<ul>
+<li>你可以读出<code>Number/Object</code>，因为任何可以匹配<code>foo3</code>的列表都包含了<code>Number/Object</code>或者是它的子类</li>
+<li>你不可以读出<code>Integer</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Doubel&gt;</code></li>
+<li>你不可以读出<code>Double</code>，理由同上</li>
+</ul>
+</li>
+<li><strong>Writing</strong> - 在上述参数中，有哪些对象能够合法添加进上述列表中：<ul>
+<li>你不可以添加<code>Integer、Double or Number</code>，因为<code>foo3</code>可能匹配/指向的是`List<doubel>、 List<integer> or List<integer></integer></integer></doubel></li>
+</ul>
+</li>
+</ol>
+<p><em>你不可以添加任何对象到List&lt;? extends T&gt;，因为你不能确定它能够匹配什么参数，所以你不知道什么参数可以被允许。唯一能够<strong>确定</strong>是你只能够读取<code>T</code>或者是它的子类</em></p>
+<h2 id="lt-super-T-gt"><a href="#lt-super-T-gt" class="headerlink" title="&lt;? super T&gt;"></a>&lt;? super T&gt;</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/41329476.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><code>List&lt;? super Integer&gt; foo3</code>中通配符的声明的合法参数有以下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Integer is a "superclass" of Integer (in this context)</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</div><div class="line"><span class="comment">// Number is a superclass of Integer</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Number&gt;();</div><div class="line"><span class="comment">// Object is a superclass of Integer</span></div><div class="line">List&lt;? <span class="keyword">super</span> Integer&gt; foo3 = <span class="keyword">new</span> ArrayList&lt;Object&gt;();</div></pre></td></tr></table></figure>
+<ol>
+<li><strong>Reading</strong> - 在上述参数中，有那些对象你能保证从<code>List foo3</code>中读出：<ul>
+<li>你不能确定读出的是Integer<code>，因为</code>foo3<code>可能匹配/指向的是</code>List<number> or List<object>`</object></number></li>
+<li>你不能确定读出的是<code>Number</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Object&gt;</code></li>
+<li>你唯一能够确定的是你能够读出一个<code>Object</code>的实例或者是它的子类（但是你不知道具体什么子类）</li>
+</ul>
+</li>
+<li><strong>Writing</strong> - 在上述参数中，有哪些对象能够合法添加进上述列表中：<ul>
+<li>你可以添加<code>Integer</code>，因为<code>Integer</code>可以添加进上述任意<code>List foo3</code>中</li>
+<li>你可以添加<code>any instance of a subclass of Integer</code>，因为<code>Integer</code>的子类可以添加进上述任意<code>List foo3</code>中</li>
+<li>你不可以添加<code>Double、Number or Object</code>，因为<code>foo3</code>可能匹配/指向的是<code>List&lt;Integer&gt;</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="PECS"><a href="#PECS" class="headerlink" title="PECS"></a>PECS</h2><blockquote>
+<p>Producer Extends, Consumer Super</p>
+</blockquote>
+<ul>
+<li><strong>“Producer Extends”</strong> - 频繁往外读取内容的，适合用上界通配符Extents</li>
+<li><strong>“Consumer Super”</strong> - 经常往里插入的，适合用下界Super</li>
+<li>如果读与写都需要，那么应该直接声明<code>List&lt;T&gt;</code>，也就是不要用通配符</li>
+</ul>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Collections</span> </span>&#123; </div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">copy</span><span class="params">(List&lt;? <span class="keyword">super</span> T&gt; dest, List&lt;? extends T&gt; src)</span> </span>&#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; src.size(); i++) </div><div class="line">        dest.set(i, src.get(i)); </div><div class="line">  &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="https://stackoverflow.com/questions/4343202/difference-between-super-t-and-extends-t-in-java" target="_blank" rel="external">Difference between  &lt;? extends T&gt; and &lt;? super T&gt;  in Java</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-08-05T02:33:23.638Z" itemprop="dateUpdated">2017-08-05 10:33:23</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/08/05/Java泛型中通配符中extends与super的区别/" target="_blank" rel="external">https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&title=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&title=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/08/03/Lambda-Java8/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Lambda-Java8</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&title=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&title=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java泛型<? extends T>与<? super T>的区别》 — 温治康&url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/08/05/Java泛型中通配符中extends与super的区别/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADK0lEQVR42u3awW7rMAwEwP7/T6fAwzsUaJzsUg5Qy+NTDo6kYQ4MSX19xc/j3/Pz8+/n9/v5O8m3khVOfrCxsbEvwn68fI62TDY+IiUneb1vG7gn62BjY2Nvx54dOglHzsjDerRmYsHGxsa+M/s1KSljZjVCfgZsbGxs7DyBJWVAsn2+8usVsLGxsbGTplIboFlzKkfmu2NjY2PvzZ4Nev/m54/Pt7GxsbH/GPtRPrNyJd8rSYEr5/+/DjY2NvZG7Pzv/llFS3tNJ7/oU1/6wcbGxt6InVyOmVHbMXCSuvI1i98cGxsb+7LsJFENoxgPg88KdDFIwMbGxt6I3R5xZbA6a+7nZ5iVMdjY2NhXZ7fpoU0Yr99sRwttoj18ExsbG3s79qy5s56K1vF5sjxsKmFjY2NvxF4ZvraFQR7WfJBQDAywsbGxN2W3f+vz4WuSAtdbTkUDCxsbG3s7do5vU1qeYNrk13b7n5Qi2NjY2Fuw2z/9SZNoZXx7btIazrqxsbGxL8vOhwFtO+kTyWm9LMHGxsbejz0bAySAWZLLhwr1oBcbGxt7I/ZZR0luwqyEYOXHeLI+NjY29m3YeVmy0h7KA5QPLd4UMNjY2NgbsdeTU964WW8/ndsCw8bGxt6DPfvarGU/aw+1P0YUXGxsbOwbsGdpIzl6Eo6kXMmDjo2Njb03e0adpa6zGlJtuLGxsbH3Zq+nh7y0mI0Z2jtH0b7Y2NjY27Hb1tLsyUOcXPFpk+XheAAbGxt7C/YnUlfSTlofIQyLImxsbOybsfMUkqefHLOy8uE5sbGxsTdit8VG24SapZ9ZiIcjXmxsbOyLs/Pjts2jlfHtysg5ao1hY2Njb8dui4rZoDdJinmwlsYV2NjY2NuxZ4Bh8ihbQu3Ioa69sLGxsS/OPvfCTdGaDzJL25xKdqkDgY2NjX0RdtusmQ0J2rC2Y+a6BYaNjY29HXu93ZO/0+41KyreJFdsbGzsW7LzY+WNnry1NEufb0oRbGxs7Fuy8zZ9PrKdjQHaa53DUgQbGxv7Iux2ofZCTx7QdrU2rWJjY2Pvx/5EL/3Th24TJzY2Nvam7G8MQ23x9s6HnwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
