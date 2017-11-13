@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第四章 使程序运行更高校——原型模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="# 第四章 使程序运行更高校——原型模式  用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象  原型模式的使用场景 类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等，通过原型拷贝避免这些消耗。 通过new产生一个对象需要非常繁琐的数据准备或访问权限，这时可以使用原型模型。 一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四章 使程序运行更高校——原型模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="# 第四章 使程序运行更高校——原型模式  用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象  原型模式的使用场景 类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等，通过原型拷贝避免这些消耗。 通过new产生一个对象需要非常繁琐的数据准备或访问权限，这时可以使用原型模型。 一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20160625162053289">
+<meta property="og:updated_time" content="2017-11-13T16:21:43.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第四章 使程序运行更高校——原型模式">
+<meta name="twitter:description" content="# 第四章 使程序运行更高校——原型模式  用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象  原型模式的使用场景 类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等，通过原型拷贝避免这些消耗。 通过new产生一个对象需要非常繁琐的数据准备或访问权限，这时可以使用原型模型。 一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160625162053289">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第四章 使程序运行更高校——原型模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第四章 使程序运行更高校——原型模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:04.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原型模式的使用场景"><span class="post-toc-number">1.</span> <span class="post-toc-text">原型模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原型模式的UML类图"><span class="post-toc-number">2.</span> <span class="post-toc-text">原型模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原型模式的简单实现"><span class="post-toc-number">3.</span> <span class="post-toc-text">原型模式的简单实现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#优缺点"><span class="post-toc-number">4.</span> <span class="post-toc-text">优缺点</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第四章 使程序运行更高校——原型模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第四章 使程序运行更高校——原型模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:04" datetime="2017-11-13T16:00:04.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>﻿# 第四章 使程序运行更高校——原型模式</p>
+<blockquote>
+<p>用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象</p>
+</blockquote>
+<h2 id="原型模式的使用场景"><a href="#原型模式的使用场景" class="headerlink" title="原型模式的使用场景"></a>原型模式的使用场景</h2><ol>
+<li>类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等，通过原型拷贝避免这些消耗。</li>
+<li>通过new产生一个对象需要非常繁琐的数据准备或访问权限，这时可以使用原型模型。</li>
+<li>一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供调用者使用，即保护性拷贝。</li>
+</ol>
+<h2 id="原型模式的UML类图"><a href="#原型模式的UML类图" class="headerlink" title="原型模式的UML类图"></a>原型模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://img.blog.csdn.net/20160625162053289" alt="原型模式UML" title="">
+                </div>
+                <div class="image-caption">原型模式UML</div>
+            </figure>
+<h2 id="原型模式的简单实现"><a href="#原型模式的简单实现" class="headerlink" title="原型模式的简单实现"></a>原型模式的简单实现</h2><p><strong>ConcretePrototype.class</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> String string;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; stringList;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConcretePrototype</span><span class="params">()</span> </span>&#123;</div><div class="line">        stringList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getString</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> string;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setString</span><span class="params">(String string)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.string = string;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getStringList</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> stringList;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStringList</span><span class="params">(ArrayList&lt;String&gt; stringList)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.stringList = stringList;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ConcretePrototype <span class="title">clone</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            ConcretePrototype copy = (ConcretePrototype) <span class="keyword">super</span>.clone();</div><div class="line">            copy.setString(<span class="keyword">this</span>.getString());</div><div class="line">            copy.setStringList((ArrayList&lt;String&gt;) getStringList().clone());</div><div class="line">            <span class="keyword">return</span> copy;</div><div class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>优点：</strong>原型模式是在内存中二进制流的拷贝，要比直接new一个对象性能好很多，特别是要在一个循环体内产生大量的对象时，原型模式可以更好地体现其优点。</p>
+<p><strong>缺点：</strong>这即是它的优点也是缺点，直接在内存中拷贝，构造函数是不会执行的，在实际开发当中应当注意这个潜在的问题。优点就是减少了约束，缺点也是减少了约束，需要大家在实际应用时考虑。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:21:43.245Z" itemprop="dateUpdated">2017-11-14 00:21:43</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第四章 使程序运行更高校——原型模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&title=《第四章 使程序运行更高校——原型模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&title=《第四章 使程序运行更高校——原型模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第四章 使程序运行更高校——原型模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第五章 应用最广泛的模式——工厂方法模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第五章 应用最广泛的模式——工厂方法模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第三章 自由扩展你的项目——建造者模式（Builder模式）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&title=《第四章 使程序运行更高校——原型模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&title=《第四章 使程序运行更高校——原型模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第四章 使程序运行更高校——原型模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第四章 使程序运行更高校——原型模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADPklEQVR42u3aS27jMBAFwNz/0h5gkEWAkZX3mvLAokurwJEoFjet/nx9xdfj75Xf8+z+x4/rfP1/70x+ufjCxsbGvgn7cXrl2zrfXPLe80M8Xye3YGNjY+/KbpdLjuAVh5uEtCgAY2NjY38kO2HkQWWWtKwES2xsbGzsGaD9b5KWzIpZ2NjY2HuzE9J5iFrZVtsS+K+1NGxsbOy3Z7eN3nf++4X9bWxsbOy3ZD/Kqw1X7VBOUoRa2f/3OtjY2Ngbsa/aeh5IknflwzorrV9sbGzsndgrxfr8m7/ddDKUuVKcwsbGxt6V3Y7p5CnEVQlGksbUwRUbGxv7tuzZgOMKox2yyceDkoPGxsbG3o991WDNSkGnDUXts7/8jo2Njb0pu100TxLaFkKe/AybFtjY2Ng3Z+dlo6vSidlBr2QQBytjY2Njb8TOP9/bYs16qShZOQ9g2NjY2J/Azrfetg2S4JSHuqveiI2Njb0Hux2LyYcj8wbtrMHQFrYOMjBsbGzs7dgrDdS6lBNs/ar288Fq2NjY2B/GfkV4ywtA7R6iwhM2Njb2puwiACSf+6MGQ35PUmZ6+gs2Njb2Ruzkoz8vx7drtg2D9kCj9AkbGxv75uxZS3VlvCZPP2aDRJEOGxsbeyN2myq0Yab9b/6WvGGAjY2NvTc7Dx55yb5tHsyCUN4YqGtp2NjY2Ldit4X4lSZB0YiN05ul4SFsbGzsjdjtME2LvyrZaNeJEh5sbGzsLdizwv2srJO3Imbt3qLwhI2Njb0FO09CZmnJyuDObA9RaMTGxsbejr2+oZVSfttyyN/4NGRiY2Njb8RuBxnze/JhnfaXtoXwSwaGjY2NfXP2rOA+ezYZpnnF0RzciY2Njb0dOx95mYWu9hCT9vBscKd+GBsbG/sm7PxqS0htqpCXpdoSGDY2Nvau7FmoS5KQvPQzS1fagxseATY2NvZN2HlBPz+zNuTkASkvXS0lJNjY2Ng3ZOdBqy3TX/XseiHsIIBhY2Njfxg7iQJJcScvHuWHmDeesbGxsbFnm5iV72fN4+ggsLGxsbdjzwo9ddgoDzFnJEnLsD2AjY2N/fbsWYGmbdaul4FmQRQbGxt7a/Yf6Wx3y6C6legAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

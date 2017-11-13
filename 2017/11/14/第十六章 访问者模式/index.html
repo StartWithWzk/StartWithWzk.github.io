@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第十六章 访问者模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第十六章 访问者模式 封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于这些元素的新的操作  访问者模式的使用场景 对象结构比较稳定，但经常需要在此对象结构上的定义新的操作 需要对一个对象结构中的对象进行很多不同的并且不相关的操作，而需要避免这些操作“污染”这些对象的类，也不希望在增加新操作时修改这些类  访问者模式的UML类图">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十六章 访问者模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第十六章 访问者模式 封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于这些元素的新的操作  访问者模式的使用场景 对象结构比较稳定，但经常需要在此对象结构上的定义新的操作 需要对一个对象结构中的对象进行很多不同的并且不相关的操作，而需要避免这些操作“污染”这些对象的类，也不希望在增加新操作时修改这些类  访问者模式的UML类图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-11/214787.jpg">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-11/14181944.jpg">
+<meta property="og:updated_time" content="2017-11-13T16:59:03.014Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十六章 访问者模式">
+<meta name="twitter:description" content="第十六章 访问者模式 封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于这些元素的新的操作  访问者模式的使用场景 对象结构比较稳定，但经常需要在此对象结构上的定义新的操作 需要对一个对象结构中的对象进行很多不同的并且不相关的操作，而需要避免这些操作“污染”这些对象的类，也不希望在增加新操作时修改这些类  访问者模式的UML类图">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-11/214787.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第十六章 访问者模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第十六章 访问者模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:16.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第十六章-访问者模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第十六章 访问者模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#访问者模式的使用场景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">访问者模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#访问者模式的UML类图"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">访问者模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#访问者模式的简单示例"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">访问者模式的简单示例</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第十六章 访问者模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第十六章 访问者模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:16" datetime="2017-11-13T16:00:16.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第十六章-访问者模式"><a href="#第十六章-访问者模式" class="headerlink" title="第十六章 访问者模式"></a>第十六章 访问者模式</h1><blockquote>
+<p>封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于这些元素的新的操作</p>
+</blockquote>
+<h2 id="访问者模式的使用场景"><a href="#访问者模式的使用场景" class="headerlink" title="访问者模式的使用场景"></a>访问者模式的使用场景</h2><ul>
+<li>对象结构比较稳定，但经常需要在此对象结构上的定义新的操作</li>
+<li>需要对一个对象结构中的对象进行很多不同的并且不相关的操作，而需要避免这些操作“污染”这些对象的类，也不希望在增加新操作时修改这些类</li>
+</ul>
+<h2 id="访问者模式的UML类图"><a href="#访问者模式的UML类图" class="headerlink" title="访问者模式的UML类图"></a>访问者模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-11/214787.jpg" alt="访问者模式UML" title="">
+                </div>
+                <div class="image-caption">访问者模式UML</div>
+            </figure>
+<ul>
+<li><strong>Visitor</strong>：接口或者抽象类，它定义了对每一个元素访问的行为，它的参数就是可以访问的元素，它的方法个数理论上来讲与元素个数一样的，因此，访问者模式要求元素的类族要稳定，如果经常添加、移除元素类，必然会导致频繁地修改Visitor接口，如果出现这种情况，这说明不适合使用访问者模式</li>
+<li><strong>ConcreteVisitor</strong>：具体的访问者</li>
+<li><strong>Element</strong>：元素接口或者抽象类，它定义了一个接受访问者（accept）的方法，其意义是指每一个元素都要可以被访问者访问</li>
+<li><strong>ConcreteElement</strong>：具体的元素类</li>
+<li><strong>ObjectStruture</strong>：定义当中所提及的对象结构，对象结构是一种抽象表述，它内部管理了元素集合，并且可以迭代这些元素供访问者访问</li>
+</ul>
+<h2 id="访问者模式的简单示例"><a href="#访问者模式的简单示例" class="headerlink" title="访问者模式的简单示例"></a>访问者模式的简单示例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//单个单子的接口（相当于Element）</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Bill</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">accept</span><span class="params">(AccountBookViewer viewer)</span></span>;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//消费的单子</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumeBill</span> <span class="keyword">implements</span> <span class="title">Bill</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> amount;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> String item;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConsumeBill</span><span class="params">(<span class="keyword">double</span> amount, String item)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.amount = amount;</div><div class="line">        <span class="keyword">this</span>.item = item;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(AccountBookViewer viewer)</span> </span>&#123;</div><div class="line">        viewer.view(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getAmount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> amount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getItem</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> item;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//收入单子</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IncomeBill</span> <span class="keyword">implements</span> <span class="title">Bill</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> amount;</div><div class="line">    <span class="keyword">private</span> String item;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IncomeBill</span><span class="params">(<span class="keyword">double</span> amount, String item)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.amount = amount;</div><div class="line">        <span class="keyword">this</span>.item = item;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(AccountBookViewer viewer)</span> </span>&#123;</div><div class="line">        viewer.view(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getAmount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> amount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getItem</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> item;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//账单查看者接口（相当于Visitor）</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AccountBookViewer</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//查看消费的单子</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">view</span><span class="params">(ConsumeBill bill)</span></span>;</div><div class="line">    </div><div class="line">    <span class="comment">//查看收入的单子</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">view</span><span class="params">(IncomeBill bill)</span></span>;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//老板类，查看账本的类之一</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Boss</span> <span class="keyword">implements</span> <span class="title">AccountBookViewer</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> totalIncome;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> totalConsume;</div><div class="line">    </div><div class="line">    <span class="comment">//老板只关注一共花了多少钱以及一共收入多少钱，其余并不关心</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">view</span><span class="params">(ConsumeBill bill)</span> </span>&#123;</div><div class="line">        totalConsume += bill.getAmount();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">view</span><span class="params">(IncomeBill bill)</span> </span>&#123;</div><div class="line">        totalIncome += bill.getAmount();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getTotalIncome</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"老板查看一共收入多少，数目是："</span> + totalIncome);</div><div class="line">        <span class="keyword">return</span> totalIncome;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getTotalConsume</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"老板查看一共花费多少，数目是："</span> + totalConsume);</div><div class="line">        <span class="keyword">return</span> totalConsume;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//注册会计师类，查看账本的类之一</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CPA</span> <span class="keyword">implements</span> <span class="title">AccountBookViewer</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//注会在看账本时，如果是支出，则如果支出是工资，则需要看应该交的税交了没</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">view</span><span class="params">(ConsumeBill bill)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (bill.getItem().equals(<span class="string">"工资"</span>)) &#123;</div><div class="line">            System.out.println(<span class="string">"注会查看账本时，如果单子的消费目的是发工资，则注会会查看有没有交个人所得税。"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//如果是收入，则所有的收入都要交税</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">view</span><span class="params">(IncomeBill bill)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"注会查看账本时，只要是收入，注会都要查看公司交税了没。"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//账本类（相当于ObjectStruture）</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountBook</span> </span>&#123;</div><div class="line">    <span class="comment">//单子列表</span></div><div class="line">    <span class="keyword">private</span> List&lt;Bill&gt; billList = <span class="keyword">new</span> ArrayList&lt;Bill&gt;();</div><div class="line">    <span class="comment">//添加单子</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBill</span><span class="params">(Bill bill)</span></span>&#123;</div><div class="line">        billList.add(bill);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//供账本的查看者查看账本</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(AccountBookViewer viewer)</span></span>&#123;</div><div class="line">        <span class="keyword">for</span> (Bill bill : billList) &#123;</div><div class="line">            bill.accept(viewer);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        AccountBook accountBook = <span class="keyword">new</span> AccountBook();</div><div class="line">        <span class="comment">//添加两条收入</span></div><div class="line">        accountBook.addBill(<span class="keyword">new</span> IncomeBill(<span class="number">10000</span>, <span class="string">"卖商品"</span>));</div><div class="line">        accountBook.addBill(<span class="keyword">new</span> IncomeBill(<span class="number">12000</span>, <span class="string">"卖广告位"</span>));</div><div class="line">        <span class="comment">//添加两条支出</span></div><div class="line">        accountBook.addBill(<span class="keyword">new</span> ConsumeBill(<span class="number">1000</span>, <span class="string">"工资"</span>));</div><div class="line">        accountBook.addBill(<span class="keyword">new</span> ConsumeBill(<span class="number">2000</span>, <span class="string">"材料费"</span>));</div><div class="line">        </div><div class="line">        AccountBookViewer boss = <span class="keyword">new</span> Boss();</div><div class="line">        AccountBookViewer cpa = <span class="keyword">new</span> CPA();</div><div class="line">        </div><div class="line">        <span class="comment">//两个访问者分别访问账本</span></div><div class="line">        accountBook.show(cpa);</div><div class="line">        accountBook.show(boss);</div><div class="line">        </div><div class="line">        ((Boss) boss).getTotalConsume();</div><div class="line">        ((Boss) boss).getTotalIncome();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>运行结果</strong></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-11/14181944.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>优点</strong></p>
+<ul>
+<li>各角色职责分离，符合单一职责原则</li>
+<li>具有优秀的拓展性</li>
+<li>使得数据结构和作用于结构上的操作解耦，使得操作集合可以独立变化</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>具体元素对访问者公布细节，违反迪米特原则</li>
+<li>具体元素变更时导致修改成本大</li>
+<li>title: 第十一章 让程序畅通执行——命令模式<br>date: 2017-11-14 00:00:11<br>tags:</li>
+<li>Android</li>
+<li>Android源码设计模式<br>categories:</li>
+<li>读书笔记违反了依赖导致原则，为了达到“区别对待”而依赖了具体类，没有依赖抽象</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:59:03.014Z" itemprop="dateUpdated">2017-11-14 00:59:03</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第十六章 访问者模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&title=《第十六章 访问者模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&title=《第十六章 访问者模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十六章 访问者模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第十七章 “和事佬”——中介者模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第十七章 “和事佬”——中介者模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第十五章 抓住问题核心——模板方法模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第十五章 抓住问题核心——模板方法模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&title=《第十六章 访问者模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&title=《第十六章 访问者模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十六章 访问者模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十六章 访问者模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACxUlEQVR42u3awWorMQwF0P7/T/fBWxVKMvdKdtvFmVVIhomPA5Yi6eMjvj7/X/t7vt759f7v73x/P39+feHh4eGNlv7q+r705NNX7LPPeb9mPDw8vNu89wd9e0/x9W8xyXY/WPDw8PB+ldeGkCT5fp9MJyEEDw8P7y/z8jJEy86ReHh4eH+Hlxz3bQDIa6qb9RyrteDh4eF11YCiAfYXXl/s7+Hh4eEtuur5IZ63/8+u5GGdeHh4eBd4+dfnhYb3W5AXO44l93h4eHjXeHnbaVNKSALJrDT8EoyHh4d3jXe2bLpPzdugdaxKjYeHh/eWtykTnB3bSgJAG0jw8PDwbvBmBdn9uNWsIJun+3h4eHj3eO3BnS+63Y58UCAvguDh4eHd4OXp9WYsIC83bAJSUXHBw8PDW/A2baq8gJuPI7QB42FVeHh4eBd4ba+sbV+dCi15IIm2FQ8PD2/Ba1vy++M7f13/J8DDw8P7EV6ejO6HAPKi8Oz+BwUeHh7eId5s0XnAODUcMKPi4eHh3eblLat87OlUCt6Wg6N/DHh4eHgjXn6I523+tnywHy942A48PDy8o7xTbf68bf+jRWE8PDy8W/2m1fDTbLygHQLIf4aHe/Dw8PAu8JKmV1KSmAWGfDigfSYeHh7ePV5+0M+O+NkmtmXiOu7h4eHhjXh19XdUkM1baO1gQd0Zw8PDw1vwZqlte5TPljtrsEWjV3h4eHhr3mx8Kh84KNpUMWyVTOPh4eGNeJ/l1TbJNkWEvFz7cj14eHh4F3jtsZsUAvJEOU/Z8yGGusuHh4eHN+LN0uJNotwObOWb9VCMwMPDwzvKaw/lvH01i0ttsw0PDw/vL/M2JeAkEU9CRdEww8PDw/tVXtskW/XlyhGEh/4eHh4e3gXe6hFxGyw/9NtA8nKD8PDw8C7wZg2wlrFPr9vQhYeHh3eB9w8i/XOoUfFingAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

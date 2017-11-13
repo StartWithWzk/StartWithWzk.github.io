@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第二十一章 装饰模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第二十一章 装饰模式  动态地给一个对象添加一些额外的职责。就增加功能而言，装饰模式相比生成子类更为灵活  装饰模式的使用场景需要透明且动态地拓展类的功能时 装饰模式的UML类图                                                                                             装饰模式的UML类图">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二十一章 装饰模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第二十一章 装饰模式  动态地给一个对象添加一些额外的职责。就增加功能而言，装饰模式相比生成子类更为灵活  装饰模式的使用场景需要透明且动态地拓展类的功能时 装饰模式的UML类图                                                                                             装饰模式的UML类图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-21/99279323.jpg">
+<meta property="og:updated_time" content="2017-11-13T17:07:27.312Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二十一章 装饰模式">
+<meta name="twitter:description" content="第二十一章 装饰模式  动态地给一个对象添加一些额外的职责。就增加功能而言，装饰模式相比生成子类更为灵活  装饰模式的使用场景需要透明且动态地拓展类的功能时 装饰模式的UML类图                                                                                             装饰模式的UML类图">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-21/99279323.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第二十一章 装饰模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第二十一章 装饰模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:21.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第二十一章-装饰模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第二十一章 装饰模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#装饰模式的使用场景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">装饰模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#装饰模式的UML类图"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">装饰模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第二十一章 装饰模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第二十一章 装饰模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:21" datetime="2017-11-13T16:00:21.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第二十一章-装饰模式"><a href="#第二十一章-装饰模式" class="headerlink" title="第二十一章 装饰模式"></a>第二十一章 装饰模式</h1><blockquote>
+<p> 动态地给一个对象添加一些额外的职责。就增加功能而言，装饰模式相比生成子类更为灵活</p>
+</blockquote>
+<h2 id="装饰模式的使用场景"><a href="#装饰模式的使用场景" class="headerlink" title="装饰模式的使用场景"></a>装饰模式的使用场景</h2><p>需要透明且动态地拓展类的功能时</p>
+<h2 id="装饰模式的UML类图"><a href="#装饰模式的UML类图" class="headerlink" title="装饰模式的UML类图"></a>装饰模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-21/99279323.jpg" alt="装饰模式的UML类图" title="">
+                </div>
+                <div class="image-caption">装饰模式的UML类图</div>
+            </figure>
+<p><strong>简单实现：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 饮料接口</div><div class="line"> * <span class="doctag">@author</span> Administrator</div><div class="line"> *</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Beverage</span> </span>&#123;</div><div class="line">	<span class="comment">//返回商品描述</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span></span>;</div><div class="line">	<span class="comment">//返回价格</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体实现类1</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CoffeeBean1</span> <span class="keyword">implements</span> <span class="title">Beverage</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"选了第一种咖啡豆"</span>;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> description;</div><div class="line">	&#125;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="number">50</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体实现类2</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CoffeeBean2</span> <span class="keyword">implements</span> <span class="title">Beverage</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"第二种咖啡豆！"</span>;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> description;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="number">100</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">// 抽象装饰类</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Decorator</span> <span class="keyword">implements</span> <span class="title">Beverage</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"我只是装饰器，不知道具体的描述"</span>;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> description;</div><div class="line">	&#125;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="number">0</span>;		<span class="comment">//价格由子类来决定</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体抽象类1</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Milk</span> <span class="keyword">extends</span> <span class="title">Decorator</span></span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"加了牛奶！"</span>;</div><div class="line">	<span class="keyword">private</span> Beverage beverage = <span class="keyword">null</span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Milk</span><span class="params">(Beverage beverage)</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.beverage = beverage;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getDescription()+<span class="string">"\n"</span>+description;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getPrice()+<span class="number">20</span>;	<span class="comment">//20表示牛奶的价格</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体抽象类2</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Mocha</span> <span class="keyword">extends</span> <span class="title">Decorator</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"加了摩卡！"</span>;</div><div class="line">	<span class="keyword">private</span> Beverage beverage = <span class="keyword">null</span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Mocha</span><span class="params">(Beverage beverage)</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.beverage = beverage;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getDescription()+<span class="string">"\n"</span>+description;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getPrice()+<span class="number">49</span>;	<span class="comment">//30表示摩卡的价格</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体抽象类3</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Soy</span> <span class="keyword">extends</span> <span class="title">Decorator</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String description = <span class="string">"加了豆浆！"</span>;</div><div class="line">	<span class="keyword">private</span> Beverage beverage = <span class="keyword">null</span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Soy</span><span class="params">(Beverage beverage)</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.beverage = beverage;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getDescription()+<span class="string">"\n"</span>+description;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getPrice</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">return</span> beverage.getPrice()+<span class="number">30</span>;	<span class="comment">//30表示豆浆的价格</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 测试类</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		Beverage beverage = <span class="keyword">new</span> CoffeeBean1();	<span class="comment">//选择了第一种咖啡豆磨制的咖啡</span></div><div class="line">		beverage = <span class="keyword">new</span> Mocha(beverage);		<span class="comment">//为咖啡加了摩卡</span></div><div class="line">		beverage = <span class="keyword">new</span> Milk(beverage);</div><div class="line">		System.out.println(beverage.getDescription()+<span class="string">"\n加了摩卡和牛奶的咖啡价格："</span>+beverage.getPrice());</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>装饰模式是以对客户端透明的方式扩展对象的功能，是继承关系的一个替代方案；而代理模式则是给一个对象提供一个代理对象，并由代理对象来控制对原有对象的引用。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T17:07:27.312Z" itemprop="dateUpdated">2017-11-14 01:07:27</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第二十一章 装饰模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&title=《第二十一章 装饰模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&title=《第二十一章 装饰模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二十一章 装饰模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第二十二章 对象共享，避免创建多对象——享元模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第二十章 得心应手的“粘合剂”——适配器模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第二十章 得心应手的“粘合剂”——适配器模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&title=《第二十一章 装饰模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&title=《第二十一章 装饰模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二十一章 装饰模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二十一章 装饰模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvUlEQVR42u3a0W7jMAwEwPz/T7evBzR2dynJzQHjpyAxHI0CiAzJ1yu+vv65fr5//zp52v3zrz7dduHh4eEtLP3qcVdLae9JnnB/f75mPDw8vNO8qxP16p7kmE6O9QR5v5W/rAoPDw/vA3h5SLhnt8k0Hh4e3v/Ia1PblcUlm4iHh4f3t7xkQe1XrjynvWdDrQUPDw8v5uVdpM95faS/h4eHh7fcVc+LsMk7eUtstrY3z8fDw8M7wFsfHWhHAdbHC5JiMR4eHt5pXn7QJ4BZgWM2Mlsn33h4eHibeLvS4jZItIxk6+tfDA8PD6/ktQMBLXU9Zc/T9+i/Ah4eHt4ybzZCmoeQNszkS68DDx4eHt4mXtt2io7g0SBsnnYXRWE8PDy8A7wkSZ01+FfaXbMRKzw8PLxneLP2/6xV1oaQDSk+Hh4e3iO8pQgzap7lQaJO9/Hw8PCO8doy66zF1R73bcHizf14eHh4B3h5WXYlwc1LFbNRg3p0AA8PD2+BN2vh7018Z6EiCgl4eHh4j/DaIuxspCBvvC0NH+Dh4eE9wksS2Vmam2/WrgEFPDw8vBO8/LjPC6ztId6OZOWlZDw8PLxzvKSRP7tzNmRQtLXykgQeHh7eJl6LydPo9QJEXp6IQgIeHh7eJl5+4K4MFqwMELSpfPQb4uHh4W3itUlwW/Cdpch5El/EIjw8PLxNvNkXzDZupcxRrxMPDw/vEd79H/5dYwQrG5ef/3h4eHh7eV/l1Sbiu14nW/PmUzw8PLwDvPXGVVvAzdtgsyIvHh4e3jO8/IhvE+U2Cc6LDnl7DA8PD+8crx0ISN6fNf7b8sQv24SHh4f3kbw2FW6X3paVX7Ml4uHh4R3mzYLErvJu0ULDw8PDO8bLixF5OSBpobVl4vwnwcPDwzvHa//wJ+FhJb1uy8ezZB0PDw9vxPsG9UA8GFB35uMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

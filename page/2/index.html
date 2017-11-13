@@ -153,11 +153,11 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
-            <article id="第四章-第四章 View的工作原理"
-  class="article-card article-type-第四章" itemprop="blogPost">
+            <article id="post-第十四章 解决问题的“第三者”——迭代器模式"
+  class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-25 19:14:45" datetime="2017-07-25T11:14:45.000Z"  itemprop="datePublished">2017-07-25</time>
+        <time class="post-time" title="2017-11-14 00:00:14" datetime="2017-11-13T16:00:14.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
@@ -171,7 +171,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/25/第四章 View的工作原理/">View的工作原理</a>
+      <a class="post-title-link" href="/2017/11/14/第十四章 解决问题的“第三者”——迭代器模式/">第十四章 解决问题的“第三者”——迭代器模式</a>
     </h3>
   
 
@@ -181,20 +181,26 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        4.1 ViewRoot和DecorView
-ViewRoot对应于ViewRootImpl类，它是连接WindowManager和DecorView的纽带，View的三大流程均是通过ViewRoot来完成的。
+        第十四章 解决问题的“第三者”——迭代器模式
+迭代器模式又称为游标模式，是行为型设计模式之一，提供一种方法顺序访问一个容器对象中的各个元素，而又不需要暴露该对象的内部表示
 
-View的绘制流程是从ViewRoot的performTraversals方法开始的，它会依次调用performMeasure、performLayout和performDraw三...
+迭代器模式的使用场景遍历一个容器对象的时候
+迭代器模式的UML类图
+                
+                    
+                    
+                
+...
     
 
-        <a href="/2017/07/25/第四章 View的工作原理/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第十四章 解决问题的“第三者”——迭代器模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -203,11 +209,11 @@ View的绘制流程是从ViewRoot的performTraversals方法开始的，它会依
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-第三章 View的事件体系"
+            <article id="post-第十三章 编程中的后悔药——备忘录模式"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-22 23:27:00" datetime="2017-07-22T15:27:00.000Z"  itemprop="datePublished">2017-07-22</time>
+        <time class="post-time" title="2017-11-14 00:00:13" datetime="2017-11-13T16:00:13.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
@@ -221,7 +227,7 @@ View的绘制流程是从ViewRoot的performTraversals方法开始的，它会依
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/22/第三章 View的事件体系/">第三章 View的事件体系</a>
+      <a class="post-title-link" href="/2017/11/14/第十三章 编程中的后悔药——备忘录模式/">第十三章 编程中的后悔药——备忘录模式</a>
     </h3>
   
 
@@ -231,23 +237,79 @@ View的绘制流程是从ViewRoot的performTraversals方法开始的，它会依
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        1. View的基础知识1.1 View的位置参数
-View的位置由其四个属性来决定，分别是top、left、right和bottom，并且View为它们提供了get/set方法，它们的坐标都是相对于父容器而言，因此是一种相对坐标。在Android中，x轴和y轴的正方向分别为右和下。
+        第十三章 编程中的后悔药——备忘录模式
+备忘录模式是一种行为模式，在不破坏封闭的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态，这样，以后就可将该对象恢复到原先保存的状态
+
+备忘录模式的使用场景
+需要保存一个对象在某一个时刻的状态或部分状态
+如果用一个接口来让其他对象得到这些状态，就会暴露对象的实现细节并破坏对象的封装性，一个对象不希望外界直接访问其内部状态，通过中间对象可以间接...
+    
+
+        <a href="/2017/11/14/第十三章 编程中的后悔药——备忘录模式/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-第十二章 解决、解耦的钥匙——观察者模式"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-11-14 00:00:12" datetime="2017-11-13T16:00:12.000Z"  itemprop="datePublished">2017-11-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
 
 
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2017/11/14/第十二章 解决、解耦的钥匙——观察者模式/">第十二章 解决、解耦的钥匙——观察者模式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        第十二章 解决、解耦的钥匙——观察者模式
+定义对象间一种一对多的依赖关系，使得没当一个对象改变状态，则所有依赖它的对象都会得到通知并自动更新
+
+观察者模式的使用场景
+关联行为场景，需要注意的是，关联行为是可拆分的，而不是“组合”关系
+事件多级触发场景
+跨系统的消息交换场景，如消息队列、时间总线的处理机制
+
+观察者模式的UML类图
                 
-                    
               ...
     
 
-        <a href="/2017/07/22/第三章 View的事件体系/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第十二章 解决、解耦的钥匙——观察者模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -256,11 +318,11 @@ View的位置由其四个属性来决定，分别是top、left、right和bottom�
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-第二章 IPC机制（Inter-Process Communication）"
+            <article id="post-第十一章 让程序畅通执行——命令模式"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-22 23:22:00" datetime="2017-07-22T15:22:00.000Z"  itemprop="datePublished">2017-07-22</time>
+        <time class="post-time" title="2017-11-14 00:00:11" datetime="2017-11-13T16:00:11.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
@@ -274,7 +336,7 @@ View的位置由其四个属性来决定，分别是top、left、right和bottom�
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/22/第二章 IPC机制（Inter-Process Communication）/">第二章 IPC机制（Inter-Process Communication）</a>
+      <a class="post-title-link" href="/2017/11/14/第十一章 让程序畅通执行——命令模式/">第十一章 让程序畅通执行——命令模式</a>
     </h3>
   
 
@@ -284,19 +346,23 @@ View的位置由其四个属性来决定，分别是top、left、right和bottom�
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        IPC基础概念介绍Serializable接口
-Serializable是Java提供的一个序列化接口，它是一个空接口，为对象提供标准的序列化和反序列化操作。
-想要一个对象序列化只需要这个类实现Serializable接口并声明一个serialVersionUID即可，实际上，不声明这个serialVersionUID同样可以实现序列化（因为系统会自动根据当前类结构生成hash值并赋值给se...
+        第十一章 让程序畅通执行——命令模式
+将一个请求封装成一个对象，从而让用户使用不同的请求把客户端参数化；对请求排队或者记录请求日志，以及支持可撤销的操作
+
+命令模式的使用场景
+需要抽象出待执行的动作，然后以参数的形式提供出来——类似于过程设计中的回调机制，而命令模式正是回调机制的一个面向对象的替代品
+在不同的时刻指定、排列和执行请求。一个命令队形可以有与初始请求无关的生存期
+需要支持取消操作...
     
 
-        <a href="/2017/07/22/第二章 IPC机制（Inter-Process Communication）/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第十一章 让程序畅通执行——命令模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -305,11 +371,11 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-第二章 Android中的多进程模式"
+            <article id="post-第十章 化繁为简的翻译机——解释器模式"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-22 23:20:00" datetime="2017-07-22T15:20:00.000Z"  itemprop="datePublished">2017-07-22</time>
+        <time class="post-time" title="2017-11-14 00:00:10" datetime="2017-11-13T16:00:10.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
@@ -323,7 +389,7 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/22/第二章 Android中的多进程模式/">第二章 Android中的多进程模式</a>
+      <a class="post-title-link" href="/2017/11/14/第十章 化繁为简的翻译机——解释器模式/">第十章 化繁为简的翻译机——解释器模式</a>
     </h3>
   
 
@@ -333,19 +399,22 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        Android中的多进程模式开启多进程模式
-通常情况下，在Android中的多进程指的是一个应用存在多个进程，而不是指的是两个应用之间的多进程通信。
-在Android中使用多进程只有一种方法，就是给四大组件（Activity、Service、Receiver、ContentProvider）在AndroidManifest中指定android:process属性，也就是说无法给一个线程或者一...
+        第十章 化繁为简的翻译机——解释器模式
+给定一个语言，定义它的文法的一种表示，并定义一个解释器，该解释器使用该表示来解释语言中的句子。
+
+解释器模式的使用场景
+如果某个简单的语言需要解释执行而且可以将该语言中的语句表示为一个抽象语法树时可以考虑使用解释器模式（例如简单的数学表达式）
+在某些特定的领域出现不断重复的问题时，可以将该领域的问题转化为一种语法规则下的语句，然后构建解释器来解释该语句...
     
 
-        <a href="/2017/07/22/第二章 Android中的多进程模式/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第十章 化繁为简的翻译机——解释器模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -354,11 +423,11 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-第一章 Activity的生命周期与启动模式"
+            <article id="post-第九章 使编程更有灵活性——责任链模式"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-22 23:14:00" datetime="2017-07-22T15:14:00.000Z"  itemprop="datePublished">2017-07-22</time>
+        <time class="post-time" title="2017-11-14 00:00:09" datetime="2017-11-13T16:00:09.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
@@ -372,7 +441,7 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/22/第一章 Activity的生命周期与启动模式/">第一章 Activity的生命周期与启动模式</a>
+      <a class="post-title-link" href="/2017/11/14/第九章 使编程更有灵活性——责任链模式/">第九章 使编程更有灵活性——责任链模式</a>
     </h3>
   
 
@@ -382,20 +451,26 @@ Serializable是Java提供的一个序列化接口，它是一个空接口，为�
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        生命周期典型情况下的生命周期分析
-onStart：此时表示Activity正在启动，可以理解为已经可见了，但是还没有出现在前台，还无法与用户交互，即其已经出现，只是用户还看不见。
-onResume：表示Activity已经出现在前台并开始活动。
-onPause：此时可以做一些停止动画，储存数据等工作，但是不能太耗时间，因为这会影响新Activity的显示，==旧Activity的onPaus...
+        第九章 使编程更有灵活性——责任链模式
+使多个对象都有机会处理请求，从而避免了请求的发送者和接收者之间的耦合关系。讲这些对象连成一条链，并沿着这条链传递该请求，直到有对象处理它位置
+
+责任链模式的使用场景
+多个对象处理同一请求，但具体由那个对象处理则在运行时动态决定
+在请求处理者不明确的情况下向多个对象中的一个提交一个请求
+需要动态指定一组对象处理请求
+
+责任链模式的UML类图
+      ...
     
 
-        <a href="/2017/07/22/第一章 Activity的生命周期与启动模式/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第九章 使编程更有灵活性——责任链模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android开发艺术探索/">Android开发艺术探索</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -404,13 +479,15 @@ onPause：此时可以做一些停止动画，储存数据等工作，但是不�
         </li>
     
         <li class="post-list-item fade">
-            <article id="post-UML类图几种关系总结"
+            <article id="post-第八章 随遇而安——状态模式"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2017-07-22 22:33:52" datetime="2017-07-22T14:33:52.000Z"  itemprop="datePublished">2017-07-22</time>
+        <time class="post-time" title="2017-11-14 00:00:08" datetime="2017-11-13T16:00:08.000Z"  itemprop="datePublished">2017-11-14</time>
 
         
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
 
 
     </div>
@@ -420,7 +497,7 @@ onPause：此时可以做一些停止动画，储存数据等工作，但是不�
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/07/22/UML类图几种关系总结/">UML类图几种关系总结</a>
+      <a class="post-title-link" href="/2017/11/14/第八章 随遇而安——状态模式/">第八章 随遇而安——状态模式</a>
     </h3>
   
 
@@ -430,20 +507,192 @@ onPause：此时可以做一些停止动画，储存数据等工作，但是不�
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        
-在UML类图中，常见的有以下几种关系：泛化（Generalization），实现（Realization），关联（Association），聚合（Aggregation），组合(Composition)，依赖(Dependency)
+        第八章 随遇而安——状态模式
+当一个对象的内在状态改变时允许改变其行为，这个对象看起来像是改变了其类。
 
-泛化（Generalization）【泛化关系】：是一种继承关系，它指定了子类如何特别化父类的所有特征和行为。例如：老虎是动物的一种。【箭头指向】：带三角箭...
+使用场景
+一个对象的行为取决于它的状态，并且它必须在运行时根据状态改变它的行为。
+代码中包含大量与状态有关的条件语句，例如，一个操作中含有庞大的多分支语句，且这些分支依赖于该对象的状态
+
+状态模式将每一个条件分支放入一个独立的类中，这使得你可以根据对象自身的情况将对象的状态作为一个对象，...
     
 
-        <a href="/2017/07/22/UML类图几种关系总结/" class="post-more waves-effect waves-button">
+        <a href="/2017/11/14/第八章 随遇而安——状态模式/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UML/">UML</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-第七章 时世造英雄——策略模式"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-11-14 00:00:07" datetime="2017-11-13T16:00:07.000Z"  itemprop="datePublished">2017-11-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2017/11/14/第七章 时世造英雄——策略模式/">第七章 时世造英雄——策略模式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        第七章 时世造英雄——策略模式
+策略模式定义了一系列的算法，并将每一个算法封装起来，而且使它们还可以相互替换。策略模式让算法独立于使用它的客户而独立变化
+
+策略模式的使用场景
+针对同一类型问题的多种处理方式，仅仅是具体行为有差别时。
+需要安全地封装多种同一类型的操作时。
+出现同一抽象类多个子类，而又需要使用if-else或者switch-case来选择具体子类时。
+
+策略模式的UML类图
+ ...
+    
+
+        <a href="/2017/11/14/第七章 时世造英雄——策略模式/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-第六章 创建型设计模式——抽象工厂模式"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-11-14 00:00:06" datetime="2017-11-13T16:00:06.000Z"  itemprop="datePublished">2017-11-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2017/11/14/第六章 创建型设计模式——抽象工厂模式/">第六章 创建型设计模式——抽象工厂模式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        第六章 创建型设计模式——抽象工厂模式
+为创建一组相关或者是相互依赖的对象提供一个接口，而不需要指定它们的具体类
+
+使用场景一个对象族有相同的约束时可以使用抽象工厂模式。
+抽象工厂模式的UML类图
+                
+                    
+                    
+                
+                抽象工厂模式...
+    
+
+        <a href="/2017/11/14/第六章 创建型设计模式——抽象工厂模式/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-第五章 应用最广泛的模式——工厂方法模式"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-11-14 00:00:05" datetime="2017-11-13T16:00:05.000Z"  itemprop="datePublished">2017-11-14</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2017/11/14/第五章 应用最广泛的模式——工厂方法模式/">第五章 应用最广泛的模式——工厂方法模式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        ﻿# 第五章 应用最广泛的模式——工厂方法模式
+
+定义一个用于创建对象的接口，让子类决定实例化那个类
+
+使用场景在任何需要生成复杂对象的地方，都可以使用工厂方法模式。复杂对象适合使用工厂模式，用new就可以完成创建的对象无需工厂模式。
+工厂模式的UML图
+                
+                    
+                    
+          ...
+    
+
+        <a href="/2017/11/14/第五章 应用最广泛的模式——工厂方法模式/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
 
     </div>
     
@@ -456,7 +705,7 @@ onPause：此时可以做一些停止动画，储存数据等工作，但是不�
     
 <nav id="page-nav">
     <div class="inner">
-    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
     </div>
 </nav>
 

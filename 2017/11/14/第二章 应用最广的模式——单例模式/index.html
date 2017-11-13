@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第二章 应用最广的模式——单例模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第二章 应用最广的模式——单例模式 确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例  UML图                                                                                             单例模式UML              实现单例模式几个关键点 构造函数不对外开放 通过一个静态方法">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二章 应用最广的模式——单例模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第二章 应用最广的模式——单例模式 确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例  UML图                                                                                             单例模式UML              实现单例模式几个关键点 构造函数不对外开放 通过一个静态方法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://i.imgur.com/qAjcNLz.jpg">
+<meta property="og:updated_time" content="2017-11-13T16:18:50.424Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二章 应用最广的模式——单例模式">
+<meta name="twitter:description" content="第二章 应用最广的模式——单例模式 确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例  UML图                                                                                             单例模式UML              实现单例模式几个关键点 构造函数不对外开放 通过一个静态方法">
+<meta name="twitter:image" content="http://i.imgur.com/qAjcNLz.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第二章 应用最广的模式——单例模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第二章 应用最广的模式——单例模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第二章-应用最广的模式——单例模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第二章 应用最广的模式——单例模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#UML图"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">UML图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现单例模式几个关键点"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">实现单例模式几个关键点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#几种实现单例模式的方式"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">几种实现单例模式的方式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-饿汉式"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">1. 饿汉式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-懒汉模式"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">2. 懒汉模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-静态内部类单例模式"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">4. 静态内部类单例模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-枚举单例"><span class="post-toc-number">1.3.4.</span> <span class="post-toc-text">5. 枚举单例</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-使用容器实现单例"><span class="post-toc-number">1.3.5.</span> <span class="post-toc-text">6. 使用容器实现单例</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第二章 应用最广的模式——单例模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第二章 应用最广的模式——单例模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:00" datetime="2017-11-13T16:00:00.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第二章-应用最广的模式——单例模式"><a href="#第二章-应用最广的模式——单例模式" class="headerlink" title="第二章 应用最广的模式——单例模式"></a>第二章 应用最广的模式——单例模式</h1><blockquote>
+<p>确保某一个类只有一个实例，而且自行实例化并向整个系统提供这个实例</p>
+</blockquote>
+<h2 id="UML图"><a href="#UML图" class="headerlink" title="UML图"></a>UML图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://i.imgur.com/qAjcNLz.jpg" alt="单例模式UML" title="">
+                </div>
+                <div class="image-caption">单例模式UML</div>
+            </figure>
+<h2 id="实现单例模式几个关键点"><a href="#实现单例模式几个关键点" class="headerlink" title="实现单例模式几个关键点"></a>实现单例模式几个关键点</h2><ol>
+<li>构造函数不对外开放</li>
+<li>通过一个静态方法或者枚举返回单例类对象</li>
+<li>确保单例类的对象有且只有一个，尤其在多线程环境下</li>
+<li>确保单例类对象在反序列化的时候不会重新构建对象</li>
+</ol>
+<h2 id="几种实现单例模式的方式"><a href="#几种实现单例模式的方式" class="headerlink" title="几种实现单例模式的方式"></a>几种实现单例模式的方式</h2><p>选择哪种取决项目本身，如是否是复杂的并发环境、JDK版本是够过低、单例对象的资源消耗等</p>
+<h3 id="1-饿汉式"><a href="#1-饿汉式" class="headerlink" title="1. 饿汉式"></a>1. 饿汉式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 声明类的时候，就进行初始化，保证了对象的唯一性</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">  <span class="comment">// 声明类并且是实例化</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton sInstance = <span class="keyword">new</span> Singleton();</div><div class="line">  <span class="comment">// 构造函数私有</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-懒汉模式"><a href="#2-懒汉模式" class="headerlink" title="2. 懒汉模式"></a>2. 懒汉模式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 声明类的时候，不进行初始化，当调用getInstance时进行初始化</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">  <span class="comment">// 仅仅声明类而已</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton sInstance = <span class="keyword">null</span>;</div><div class="line">  <span class="comment">// 构造函数私有</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// 只有使用的时候才被实例化，在一定程度上节约了资源，缺点是每次调用都要进行同步</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) &#123;</div><div class="line">      mInstance = <span class="keyword">new</span> Singleton();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>###　3. Double Check Lock(DCL)实现单例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 声明类的时候，不进行初始化，当调用getInstance时进行初始化</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">  <span class="comment">// 添加了volatile后，保证值从内存中读取，而不是线程临时栈（JDK1.5后可使用）</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton sInstance = <span class="keyword">null</span>;</div><div class="line">  <span class="comment">// 构造函数私有</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// DCL</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// 第一层判断是为了避免不必要的同步</span></div><div class="line">    <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="keyword">synchronized</span> &#123;</div><div class="line">        <span class="comment">// 第二层判断则是为了在null的情况下创建实例</span></div><div class="line">        <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) &#123;</div><div class="line">          sInstance = <span class="keyword">new</span> Singleton();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">     &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-静态内部类单例模式"><a href="#4-静态内部类单例模式" class="headerlink" title="4. 静态内部类单例模式"></a>4. 静态内部类单例模式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 声明类的时候，不进行初始化，当调用getInstance时进行初始化，由JVM保证了线程安全</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">  <span class="comment">// 构造函数私有</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> SingletonHolder.sInstance;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 静态内部类</div><div class="line">   */</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton sInstance = <span class="keyword">new</span> Singleton();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-枚举单例"><a href="#5-枚举单例" class="headerlink" title="5. 枚举单例"></a>5. 枚举单例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 实现方便，并且可以反序列化，但是占用内存，一开始就会进行实例化，其他几个实例为了反序列化必须重写</div><div class="line"> * readResolver()方法</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SingletonEnum &#123;</div><div class="line">  INSTANCE;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="6-使用容器实现单例"><a href="#6-使用容器实现单例" class="headerlink" title="6. 使用容器实现单例"></a>6. 使用容器实现单例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonManager</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Sting, Object&gt; objMap = <span class="keyword">new</span> HashMap&lt;Sting, Object&gt;();</div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">SingletonMavager</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerService</span><span class="params">(String key, Object instance)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!objMap.containKey(key) ) &#123;</div><div class="line">      objMap.put(key, instance);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getService</span><span class="params">(String key)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> objMap.get(key);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:18:50.424Z" itemprop="dateUpdated">2017-11-14 00:18:50</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第二章 应用最广的模式——单例模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&title=《第二章 应用最广的模式——单例模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&title=《第二章 应用最广的模式——单例模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二章 应用最广的模式——单例模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第三章 自由扩展你的项目——建造者模式（Builder模式）</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/09/12/编程珠玑课后习题答案/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">编程珠玑课后习题答案</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&title=《第二章 应用最广的模式——单例模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&title=《第二章 应用最广的模式——单例模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二章 应用最广的模式——单例模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二章 应用最广的模式——单例模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKElEQVR42u3aS24bQQwFwNz/0s42gSH5PVIOZKZmJYxG013tBc3Pr1/x9fHHldz5fG2eyffw4gsbGxv7h7A3202W/3w/eT7Z1ef357/CxsbGvsd+vt1Hn/Nv8809D0iP3pZbsLGxsbFnQSVPHtpnsLGxsbE3ASw/gn3ZKH8eGxsb+/9kJwtsij5taSmp7f+jWho2Njb227P3y7zP52/pb2NjY2O/MfujvNrG7aY1m5SQhgpsbGzsQ+w8AMxK9nl7eLOT4f6xsbGxT7BnwSBv3+aHNWsht0eDjY2NfY+dJwx54GnDWJ5sJEdZjAdhY2NjH2Xn4zXtEbxqrf2K2NjY2JfYr6pL5aFuMyS0Cb1fJCHY2NjYP5Y9I7UvnY3gtEc5OyBsbGzsG+xZCJmlCkX5PkhOhuUkbGxs7EPsfZEoTy3ywDZbK38zNjY29iV2G2D2paI8gM3eUMdtbGxs7HPsTcqRNBVm99sdRt9iY2Njn2AnIeRVoa79nCQeeQj863lsbGzsc+x9Y6BNcvIG82YQ89v7IdjY2NhvwJ41CfJCUj5k+dpQFymwsbGxD7GTBZLCTTtAmb9z32aomwTY2NjYP4Sdl2zqgZgFvh3EzAPkw6ISNjY29ml2vvVNS7gtbyW7engfGxsb+xy7rZ/n5aG8/DRrLbdBbjjjg42Njf3G7JY6CzltSShPe9qjfIjHxsbG/rHsWT+hDWCzQ8kPqA6o2NjY2IfYM17+//yskNS2e4erYGNjYx9it+3bWVhKwlt7oLPECRsbG/seezZ2kweSJOFpW7xtEeqLvzM2Njb2IXaL2bRmZ4M+edmr6IRgY2Njn2DP+sNtJ7ldqx3ZKZoQ2NjY2EfZ+Z3njH1R6btTIGxsbOwb7I/ympX1n4eTtsBUhKjn5SRsbGzsE+zZ4EtLmrVj89+2KRA2Njb2PXaeSLTFnTZM7oeBihIVNjY29jl22y7db70d69lnE9jY2NjYm5ymTUjacZ827GFjY2P/z+z8n/7NOE5ycG3owsbGxr7Nbgdu2lbBpmWbFLDatbCxsbEvsWeDjPu0ZFY2yg/0Zf1tbGxs7Pdl/waq77qWfDnOkwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

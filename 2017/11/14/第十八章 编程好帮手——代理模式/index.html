@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第十八章 编程好帮手——代理模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第十八章 编程好帮手——代理模式 代理模式也被称为委托模式，是结构型设计模式之一，不少设计模式都有它的影子。它的定义是：为其他对象提供一种代理以控制对这个对象的访问  代理模式的使用场景当无法或不想直接访问某个对象或访问某个对象存在困难时可以通过一个代理对象来简介访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口 代理模式的UML类图">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十八章 编程好帮手——代理模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第十八章 编程好帮手——代理模式 代理模式也被称为委托模式，是结构型设计模式之一，不少设计模式都有它的影子。它的定义是：为其他对象提供一种代理以控制对这个对象的访问  代理模式的使用场景当无法或不想直接访问某个对象或访问某个对象存在困难时可以通过一个代理对象来简介访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口 代理模式的UML类图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-12/36751211.jpg">
+<meta property="og:updated_time" content="2017-11-13T17:05:19.137Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十八章 编程好帮手——代理模式">
+<meta name="twitter:description" content="第十八章 编程好帮手——代理模式 代理模式也被称为委托模式，是结构型设计模式之一，不少设计模式都有它的影子。它的定义是：为其他对象提供一种代理以控制对这个对象的访问  代理模式的使用场景当无法或不想直接访问某个对象或访问某个对象存在困难时可以通过一个代理对象来简介访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口 代理模式的UML类图">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-12/36751211.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第十八章 编程好帮手——代理模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第十八章 编程好帮手——代理模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:18.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#第十八章-编程好帮手——代理模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第十八章 编程好帮手——代理模式</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代理模式的使用场景"><span class="post-toc-number">2.</span> <span class="post-toc-text">代理模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代理模式的UML类图"><span class="post-toc-number">3.</span> <span class="post-toc-text">代理模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第十八章 编程好帮手——代理模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第十八章 编程好帮手——代理模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:18" datetime="2017-11-13T16:00:18.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="第十八章-编程好帮手——代理模式"><a href="#第十八章-编程好帮手——代理模式" class="headerlink" title="第十八章 编程好帮手——代理模式"></a>第十八章 编程好帮手——代理模式</h2><blockquote>
+<p>代理模式也被称为委托模式，是结构型设计模式之一，不少设计模式都有它的影子。它的定义是：为其他对象提供一种代理以控制对这个对象的访问</p>
+</blockquote>
+<h2 id="代理模式的使用场景"><a href="#代理模式的使用场景" class="headerlink" title="代理模式的使用场景"></a>代理模式的使用场景</h2><p>当无法或不想直接访问某个对象或访问某个对象存在困难时可以通过一个代理对象来简介访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口</p>
+<h2 id="代理模式的UML类图"><a href="#代理模式的UML类图" class="headerlink" title="代理模式的UML类图"></a>代理模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-12/36751211.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><strong>代理模式的角色</strong>：</p>
+<ul>
+<li><p>Subject：抽象主题类</p>
+</li>
+<li><p>该类的主要职责是声明真实主题与代理的共同接口方法，该类既可以是一个抽象类，也可以是一个接口；</p>
+</li>
+<li><p>RealSubjct：真实主题类</p>
+</li>
+<li><p>该类也称为被委托类或被代理类，该类定义了代理所表示的真实对象，由其执行具体的业务逻辑方法，而客户端则通过代理类间接地调用真实主题类中定义的方法；</p>
+</li>
+<li><p>ProxySubject：代理类</p>
+</li>
+<li><p>该类也称为委托类或代理类，该类持有一个对真实主题类的引用，在其所实现的接口方法中调用真实主题类中对应的接口方法，以此起到代理的作用；</p>
+</li>
+<li><p>Client：客户类</p>
+<p>使用代理类的部分。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Subject</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">operation</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RealSubject</span> <span class="keyword">extends</span> <span class="title">Subject</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//the real operation</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxySubject</span> <span class="keyword">extends</span> <span class="title">Subject</span></span>&#123;</div><div class="line"></div><div class="line">  	<span class="comment">// 此处持有被代理的对象</span></div><div class="line">    <span class="keyword">private</span> Subject realSubject;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProxySubject</span><span class="params">(Subject realSubject)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.realSubject = realSubject;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (realSubject != <span class="keyword">null</span>) &#123;</div><div class="line">            realSubject.operation();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//do something else</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Client</span></div><div class="line">ProxySubject subject = <span class="keyword">new</span> ProxySubject(<span class="keyword">new</span> RealSubject());</div><div class="line">subject.operation();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>代理模式应用广泛，在其他结构型设计模式中，都能看到代理模式的影子。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T17:05:19.137Z" itemprop="dateUpdated">2017-11-14 01:05:19</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第十八章 编程好帮手——代理模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&title=《第十八章 编程好帮手——代理模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&title=《第十八章 编程好帮手——代理模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十八章 编程好帮手——代理模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第十九章 物以类聚——组合模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第十九章 物以类聚——组合模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第十七章 “和事佬”——中介者模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第十七章 “和事佬”——中介者模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&title=《第十八章 编程好帮手——代理模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&title=《第十八章 编程好帮手——代理模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十八章 编程好帮手——代理模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十八章 编程好帮手——代理模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADOklEQVR42u3aQW7jQAwEQP//097LHgJkJTfJCdZmak6B5Viq0aFBch6PeD2/rK+ffP/O1SdXV7//8tXde1dHCxsbG/tD2M/blbCvbnxFut+CfOOuvnNvwcbGxt7Kzn+uGiT3mzX/r+rWYGNjY2MnnydVQF6u5C8DGxsbG7saYEmkJY9VLWn+c25jY2NjvyU7aSr12vFJ0yePwyTADvfSsLGxsd+efap4eIe/f2S+jY2Njf3G7GdrVVtO+YBhEpCF58fGxsZexM5bP/Or922p/Gp+uAcbGxv797DnjfjqQ9/f8fDRnOQqNjY29gp2LxJ65cR9W79X3uTxho2Njb2PncdSdWT7E82j6sD48o7Y2NjYi9jV4zLJ1eqooHfHXh5hY2Nj72NXm/I5e1LGzKkvIhMbGxt7KbvcizoUY3mAzQ8PYWNjY29iVw/rzGOm1xI6NX7++zc2Njb2InavVMg35TFeSaA2YxIbGxt7ETuPgepItbdy9rxwwsbGxt7Hzn8oP6BTvZp/v1eiYGNjY29iJ4HRC5h5TOajgvKgFxsbG3sdu3zYJU6B6hi4yqvmUWHQi42Njf0h7OSYS3VT8uFx0lqaHOV88RqwsbGxV7B7jfXqYLi3lZOB7oviBxsbG/sXsPOCIS8JTpUT+aDiUoGNjY29iJ1HRXWEMGk55ZjesSFsbGzsTey8rZOUK/MS5eeGu5dTEWxsbOwPZ08CrDpgyIMn3+IDzS9sbGzsD2dPDtnMh75nG0nJph84W4SNjY39Zux5Oyl/iElz6tRI4B/vHBsbG/vD2dUme68BlB+1STbrwJEgbGxs7EXsvACoYvLWTx57kxcT1WHY2NjYH8jObxNFwqExQ+8Z8oM72NjY2JvYk5/IHzRpDPVKmkmJgo2Njb2D/SyuU6OCpOzpRVcUn9jY2NiL2NUW/OQR89ZVL/BGowJsbGzsD2cnoVUNqt6ooNqEyjfrxVQEGxsbewX7VKO/d3BnPpZIWkuPXh5iY2NjL2JPtqA6SJgc34lCERsbG/tXsu83otfBSkqg+RDiWG5jY2NjvzF7cvte/FRhSVDlLxIbGxt7E3vSmumVKPMCpjdUwMbGxl7H/gNL6ehMgMoD2wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

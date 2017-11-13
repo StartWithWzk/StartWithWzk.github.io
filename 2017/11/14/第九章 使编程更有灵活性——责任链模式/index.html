@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第九章 使编程更有灵活性——责任链模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第九章 使编程更有灵活性——责任链模式 使多个对象都有机会处理请求，从而避免了请求的发送者和接收者之间的耦合关系。讲这些对象连成一条链，并沿着这条链传递该请求，直到有对象处理它位置  责任链模式的使用场景 多个对象处理同一请求，但具体由那个对象处理则在运行时动态决定 在请求处理者不明确的情况下向多个对象中的一个提交一个请求 需要动态指定一组对象处理请求  责任链模式的UML类图">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第九章 使编程更有灵活性——责任链模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第九章 使编程更有灵活性——责任链模式 使多个对象都有机会处理请求，从而避免了请求的发送者和接收者之间的耦合关系。讲这些对象连成一条链，并沿着这条链传递该请求，直到有对象处理它位置  责任链模式的使用场景 多个对象处理同一请求，但具体由那个对象处理则在运行时动态决定 在请求处理者不明确的情况下向多个对象中的一个提交一个请求 需要动态指定一组对象处理请求  责任链模式的UML类图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/80881989.jpg">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/34688476.jpg">
+<meta property="og:updated_time" content="2017-11-13T16:41:46.672Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第九章 使编程更有灵活性——责任链模式">
+<meta name="twitter:description" content="第九章 使编程更有灵活性——责任链模式 使多个对象都有机会处理请求，从而避免了请求的发送者和接收者之间的耦合关系。讲这些对象连成一条链，并沿着这条链传递该请求，直到有对象处理它位置  责任链模式的使用场景 多个对象处理同一请求，但具体由那个对象处理则在运行时动态决定 在请求处理者不明确的情况下向多个对象中的一个提交一个请求 需要动态指定一组对象处理请求  责任链模式的UML类图">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-4/80881989.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第九章 使编程更有灵活性——责任链模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第九章 使编程更有灵活性——责任链模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:09.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第九章-使编程更有灵活性——责任链模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第九章 使编程更有灵活性——责任链模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#责任链模式的使用场景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">责任链模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#责任链模式的UML类图"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">责任链模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#责任链模式的简单实现"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">责任链模式的简单实现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第九章 使编程更有灵活性——责任链模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第九章 使编程更有灵活性——责任链模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:09" datetime="2017-11-13T16:00:09.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第九章-使编程更有灵活性——责任链模式"><a href="#第九章-使编程更有灵活性——责任链模式" class="headerlink" title="第九章 使编程更有灵活性——责任链模式"></a>第九章 使编程更有灵活性——责任链模式</h1><blockquote>
+<p>使多个对象都有机会处理请求，从而避免了请求的发送者和接收者之间的耦合关系。讲这些对象连成一条链，并沿着这条链传递该请求，直到有对象处理它位置</p>
+</blockquote>
+<h2 id="责任链模式的使用场景"><a href="#责任链模式的使用场景" class="headerlink" title="责任链模式的使用场景"></a>责任链模式的使用场景</h2><ul>
+<li>多个对象处理同一请求，但具体由那个对象处理则在运行时动态决定</li>
+<li>在请求处理者不明确的情况下向多个对象中的一个提交一个请求</li>
+<li>需要动态指定一组对象处理请求</li>
+</ul>
+<h2 id="责任链模式的UML类图"><a href="#责任链模式的UML类图" class="headerlink" title="责任链模式的UML类图"></a>责任链模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/80881989.jpg" alt="简化版" title="">
+                </div>
+                <div class="image-caption">简化版</div>
+            </figure>
+<p><strong>角色介绍</strong> ：</p>
+<ul>
+<li>Handler - 抽象处理者角色，声明一个请求处理的方法，并在其中保持一个对下一个处理节点Handler对象的引用</li>
+<li>ConcreteHandler - 具体处理者角色，对请求进行处理，如果不能处理者将该请求转发给下一个节点上的处理队形</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-4/34688476.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="责任链模式的简单实现"><a href="#责任链模式的简单实现" class="headerlink" title="责任链模式的简单实现"></a>责任链模式的简单实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 抽象领导者</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Leader</span> </span>&#123;</div><div class="line">    <span class="keyword">protected</span> Leader nextHandler; <span class="comment">// 上一级领导者</span></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理报账请求</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> money 能批复的报账额度</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(<span class="keyword">int</span> money)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (money &lt;= limit()) &#123;</div><div class="line">            handler(money);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != nextHandler) &#123;</div><div class="line">                nextHandler.handleRequest(money);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 自身能批复的额度权限</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> 额度</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">limit</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理保障行为</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> money 具体金额</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> money)</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GroupLeader</span> <span class="keyword">extends</span> <span class="title">Leader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">limit</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">1000</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> money)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"组长批复报销"</span> + money + <span class="string">"元"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Director</span> <span class="keyword">extends</span> <span class="title">Leader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">limit</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">5000</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> money)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"主管批复报销"</span> + money + <span class="string">"元"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Manager</span> <span class="keyword">extends</span> <span class="title">Leader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">limit</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">10000</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> money)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"经理批复报销"</span> + money + <span class="string">"元"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Boss</span> <span class="keyword">extends</span> <span class="title">Leader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">limit</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> Integer.MAX_VALUE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> money)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"老板批复报销"</span> + money + <span class="string">"元"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * client</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">employee</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="comment">// 构造各个领导对象</span></div><div class="line">        GroupLeader groupLeader = <span class="keyword">new</span> GroupLeader();</div><div class="line">        Director director = <span class="keyword">new</span> Director();</div><div class="line">        Manager manager = <span class="keyword">new</span> Manager();</div><div class="line">        Boss boss = <span class="keyword">new</span> Boss();</div><div class="line"></div><div class="line">        <span class="comment">// 设置上一级领导处理者对象</span></div><div class="line">        groupLeader.nextHandler = director;</div><div class="line">        director.nextHandler = manager;</div><div class="line">        manager.nextHandler = boss;</div><div class="line"></div><div class="line">        <span class="comment">// 发起报账请求</span></div><div class="line">        groupLeader.handler(<span class="number">50000</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>优点</strong>：对请求者解耦，提高代码的灵活性</p>
+<p><strong>缺点</strong>：对链中的请求处理者的遍历，如果处理者太多，遍历必定影响性能，特别是一些递归调用中</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:41:46.672Z" itemprop="dateUpdated">2017-11-14 00:41:46</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第九章 使编程更有灵活性——责任链模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&title=《第九章 使编程更有灵活性——责任链模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&title=《第九章 使编程更有灵活性——责任链模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第九章 使编程更有灵活性——责任链模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第十章 化繁为简的翻译机——解释器模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第十章 化繁为简的翻译机——解释器模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第八章 随遇而安——状态模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第八章 随遇而安——状态模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&title=《第九章 使编程更有灵活性——责任链模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&title=《第九章 使编程更有灵活性——责任链模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第九章 使编程更有灵活性——责任链模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第九章 使编程更有灵活性——责任链模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMklEQVR42u3awW7bQAwEUP//T7tA0UOB1M4MaRXx+u0piOVIb3WYkNzbLV733+vRz3+v5LvJ9Y+uuT9YtysWNjY29puw70/X80f/+ml+TU59tInJtj78m9jY2NjHsdvgaUmPtiMJyDZQk83CxsbG/kx2gtyzNyUQNjY2NvbscdtIa4uWNiCxsbGxP5OdFBtJ4372WM+3IN+US3pp2NjY2D+evR/0/pyf/+t8GxsbG/sHsO/l2uxuMgzOw3L2/H/+DjY2NvZB7LaJk5QoCTX/TXuIp3hJ2NjY2Aex82CYNetn17etq7Y5hY2NjX0GO+e1kdZu5dXjin8UIdjY2NhHsJO2+2tbP7MQetW4FxsbG/s8dhs/eRNnFlHtQZ/h4SFsbGzsg9h5AOybPrOo2/w+CktsbGzsI9jRAZdya66Iq1cVNtjY2NinsmetottizUqIZJAclUbY2NjYR7DzR8/HwLNtaiMw+TSah2BjY2O/OTvntew2ivLBw+a7UYMJGxsb+w3Z+/IjPy7ZFiR5CCVXYmNjY38Cu239txGYt/gv3zhsbGzsg9j7EmIz+k1CdFOifPPCsLGxsY9g30crH8TOyoZ8O9poxMbGxj6JPRyLjm6ZBFJbfgyP8mBjY2Mfym6PyLRlTN66mhU5RbBhY2NjH8duBwAtdTMMfr7FxVj3a4BhY2NjH8FO/nFvW0htsz6PyXxropeEjY2NfRB7c7NZUCWtpVknf1jwYGNjY785uwW0Lf6kVMgbUu2homK+jY2Njf2G7LzMyDdo01qaNaHq0QI2Njb2cexVk31UBrSD23aU+03IYWNjYx/Ebsers1pnU8xcV+RgY2Njn8HeN+X3zaZ80NsOnh9+FxsbG/s4dnscZzZOyAHtkLhe2NjY2MexNwVAvh1tLdC+nmKDsLGxsQ9i76Nu8+iz1n/b2Ir6atjY2Nhvzm5DaHZoZhZIm4NEq4IEGxsb+w3Zeai02Zhs04bdvlpsbGzsT2ZfEWDtMCAZS0TBho2Njf3x7PwITh5veZm0uSM2Njb2qez8OM6rmkf5hs6OAX1zd2xsbOyD2PtBb7I1yS03w912sIGNjY19BPsXKEVY3K5G10UAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

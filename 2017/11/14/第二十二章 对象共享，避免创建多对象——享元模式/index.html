@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第二十二章 对象共享，避免创建多对象——享元模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第二十二章 对象共享，避免创建多对象——享元模式 享元对象是对象池的一种实现，英文名称为Flyweight。使用享元对象可有效地支持大量的细粒度的对象。  享元模式的使用场景 系统中存在大量的相似对象 细粒度的对象都具备较接近的外部状态，而且内部状态与环境无关，也就是说对象没有特定身份 需要缓冲池的场景  享元模式的UML类图">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二十二章 对象共享，避免创建多对象——享元模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第二十二章 对象共享，避免创建多对象——享元模式 享元对象是对象池的一种实现，英文名称为Flyweight。使用享元对象可有效地支持大量的细粒度的对象。  享元模式的使用场景 系统中存在大量的相似对象 细粒度的对象都具备较接近的外部状态，而且内部状态与环境无关，也就是说对象没有特定身份 需要缓冲池的场景  享元模式的UML类图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-23/69150816.jpg">
+<meta property="og:updated_time" content="2017-11-13T17:07:56.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二十二章 对象共享，避免创建多对象——享元模式">
+<meta name="twitter:description" content="第二十二章 对象共享，避免创建多对象——享元模式 享元对象是对象池的一种实现，英文名称为Flyweight。使用享元对象可有效地支持大量的细粒度的对象。  享元模式的使用场景 系统中存在大量的相似对象 细粒度的对象都具备较接近的外部状态，而且内部状态与环境无关，也就是说对象没有特定身份 需要缓冲池的场景  享元模式的UML类图">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-23/69150816.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第二十二章 对象共享，避免创建多对象——享元模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第二十二章 对象共享，避免创建多对象——享元模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:22.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第二十二章-对象共享，避免创建多对象——享元模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第二十二章 对象共享，避免创建多对象——享元模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#享元模式的使用场景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">享元模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#享元模式的UML类图"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">享元模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第二十二章 对象共享，避免创建多对象——享元模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第二十二章 对象共享，避免创建多对象——享元模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:22" datetime="2017-11-13T16:00:22.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第二十二章-对象共享，避免创建多对象——享元模式"><a href="#第二十二章-对象共享，避免创建多对象——享元模式" class="headerlink" title="第二十二章 对象共享，避免创建多对象——享元模式"></a>第二十二章 对象共享，避免创建多对象——享元模式</h1><blockquote>
+<p>享元对象是对象池的一种实现，英文名称为Flyweight。使用享元对象可有效地支持大量的细粒度的对象。</p>
+</blockquote>
+<h2 id="享元模式的使用场景"><a href="#享元模式的使用场景" class="headerlink" title="享元模式的使用场景"></a>享元模式的使用场景</h2><ul>
+<li>系统中存在大量的相似对象</li>
+<li>细粒度的对象都具备较接近的外部状态，而且内部状态与环境无关，也就是说对象没有特定身份</li>
+<li>需要缓冲池的场景</li>
+</ul>
+<h2 id="享元模式的UML类图"><a href="#享元模式的UML类图" class="headerlink" title="享元模式的UML类图"></a>享元模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-23/69150816.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><strong>简单实现：</strong></p>
+<p>首先是形状类：Shape.java。它是抽象类，只有一个绘制图形的抽象方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Shape</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后是绘制圆形的具体类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">extends</span> <span class="title">Shape</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String color;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Circle</span><span class="params">(String color)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"画了一个"</span> + color +<span class="string">"的圆形"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再就是享元工厂类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span></span>&#123;</div><div class="line">    <span class="keyword">static</span> Map&lt;String, Shape&gt; shapes = <span class="keyword">new</span> HashMap&lt;String, Shape&gt;();</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Shape <span class="title">getShape</span><span class="params">(String key)</span></span>&#123;</div><div class="line">        Shape shape = shapes.get(key);</div><div class="line">        <span class="comment">//如果shape==null,表示不存在,则新建,并且保持到共享池中</span></div><div class="line">        <span class="keyword">if</span>(shape == <span class="keyword">null</span>)&#123;</div><div class="line">            shape = <span class="keyword">new</span> Circle(key);</div><div class="line">            shapes.put(key, shape);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> shape;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getSum</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> shapes.size();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>客户端程序：Client.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Shape shape1 = FlyweightFactory.getShape(<span class="string">"红色"</span>);</div><div class="line">        shape1.draw();</div><div class="line">        </div><div class="line">        Shape shape2 = FlyweightFactory.getShape(<span class="string">"灰色"</span>);</div><div class="line">        shape2.draw();</div><div class="line">        </div><div class="line">        Shape shape3 = FlyweightFactory.getShape(<span class="string">"绿色"</span>);</div><div class="line">        shape3.draw();</div><div class="line">        </div><div class="line">        Shape shape4 = FlyweightFactory.getShape(<span class="string">"红色"</span>);</div><div class="line">        shape4.draw();</div><div class="line">        </div><div class="line">        Shape shape5 = FlyweightFactory.getShape(<span class="string">"灰色"</span>);</div><div class="line">        shape5.draw();</div><div class="line">        </div><div class="line">        Shape shape6 = FlyweightFactory.getShape(<span class="string">"灰色"</span>);</div><div class="line">        shape6.draw();</div><div class="line">        </div><div class="line">        System.out.println(<span class="string">"一共绘制了"</span>+FlyweightFactory.getSum()+<span class="string">"中颜色的圆形"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>优点：</strong></p>
+<ul>
+<li>能大幅度地降低内存中对象的数量。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>使得系统更加复杂</li>
+<li>使享元对象的状态外部化，而读取外部状态使得运行时间稍微变长</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T17:07:56.798Z" itemprop="dateUpdated">2017-11-14 01:07:56</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&title=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&title=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第二十三章 统一编程接口——外观模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第二十三章 统一编程接口——外观模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第二十一章 装饰模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第二十一章 装饰模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&title=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&title=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二十二章 对象共享，避免创建多对象——享元模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第二十二章 对象共享，避免创建多对象——享元模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD5ElEQVR42u3a22ojMRAE0Pz/T3thn2JY21XdEsnC0VOYJBrpONDpy9dXvB5/1+bnvz95fFvvfybf4dWTrxsLBw4cOHAER3+18sPlb8kpX114RvP+jjhw4MCB4yxHe6w8Qs0u04bw2Z44cODAgeNnOWYJ0iNYLe574vYjxIEDBw4cP8XRlvaSa+cfQxJQceDAgQPH7+GYvTgPdW2xb/Zb7Xdx4MCBA8cNjlnw+7++vjjfgQMHDhw4yrLdPhzmb08GIPKQWd8LBw4cOHCsOdohtny8YNOsytFnBcQPZ8CBAwcOHAuOtjGTHC65dj58sAFtgzcOHDhw4NhztMW15KDtxTYjdC3fKtziwIEDB46AIw+0+3G3/GJJOXKT5r18jgMHDhw4DnHkjaW8pLgZfdsneMMWGg4cOHDgWHPMAmFbBLyx2n8Fcm4cOHDgwHGPY9Pa2SRaOeisTFnPaODAgQMHjviOyQv2IbAdaGuvnaR2UUjGgQMHDhxrjjbJiVKgRStoli4mEG1xEwcOHDhwnOJInudtqjys5qXGPDCvFg4cOHDgOLTaUDobGsiDbo44S/w+fAw4cODAgaPkSA69GRc4de08AG+e4MCBAweOPUdRLBulVbOxiQRxc/667YQDBw4cOI52WDbDB2dLhElLbDa+8PRdHDhw4MCx4GiHz9r2Un7tfRrZnvnl3wUOHDhw4FhwzAYX2nSubSMlITZJFGdjEzhw4MCBY8OxGTJrR9xm+w/nMuKdn96CAwcOHDjWHPeO1aZSCdwmUTzVEsOBAwcOHAnHfvhgM0KXQ9+g/Mdv4cCBAweOBccsZM5WXpTMk67ZznWrCQcOHDhwTN4YbZGnT8mAwiyg7ttaRVkQBw4cOHCUHO8vlqdbybFyuDZ8zgqRxdY4cODAgePaUMI+DZuRJUXA2Ujf0xMcOHDgwHGUY9POyUcHNk2pzeWjUWwcOHDgwHGIYxac8pJcWwpMmkx5uC0SRRw4cODAseaYXawNn0mQm5UI87PV5UgcOHDgwDHimB26SIri55tQmhBHDSocOHDgwHGIoy0LzsbaZgW7NvznHwkOHDhw4LjB0V57VrbL079ZU6rd+QMWDhw4cOBYcDzK9f7CbZkv2X9WoGyxcODAgQPHKY5ZZM6HG/J9ZoXItpWVlxFx4MCBA8eGYz+C0Bby9oFwM8RQZLQ4cODAgWPBMQuu9yJ8krbtUzscOHDgwPHbOGZpWxJuc4I2/DctORw4cODAcZdjlp7lIfZs6bAOsThw4MCB4yjHZgDubOidNZby5tOHDwYHDhw4cKw5ZgMNs4LgJmGb7blpXOHAgQMHjpLjD3jwUyU9cZTgAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

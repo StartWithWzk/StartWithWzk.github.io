@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第十五章 抓住问题核心——模板方法模式 | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="第十五章 抓住问题核心——模板方法模式 定义一个操作中的算法的框架，而将一些步骤延迟到之类中，使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤  模板方法的使用场景 多个子类有公有的方法，并且逻辑相同时 重要、复杂的算法，可以把核心算法设计为模板方法，周边相关细节功能则由各个子类实现 重构时，模板方法模式是一个经常使用的模式，把相同的代码抽取到父类中，然后通过钩子函数约束其行为  模">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十五章 抓住问题核心——模板方法模式">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="第十五章 抓住问题核心——模板方法模式 定义一个操作中的算法的框架，而将一些步骤延迟到之类中，使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤  模板方法的使用场景 多个子类有公有的方法，并且逻辑相同时 重要、复杂的算法，可以把核心算法设计为模板方法，周边相关细节功能则由各个子类实现 重构时，模板方法模式是一个经常使用的模式，把相同的代码抽取到父类中，然后通过钩子函数约束其行为  模">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://otxon7az6.bkt.clouddn.com/17-8-9/3643852.jpg">
+<meta property="og:updated_time" content="2017-11-13T16:57:19.365Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十五章 抓住问题核心——模板方法模式">
+<meta name="twitter:description" content="第十五章 抓住问题核心——模板方法模式 定义一个操作中的算法的框架，而将一些步骤延迟到之类中，使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤  模板方法的使用场景 多个子类有公有的方法，并且逻辑相同时 重要、复杂的算法，可以把核心算法设计为模板方法，周边相关细节功能则由各个子类实现 重构时，模板方法模式是一个经常使用的模式，把相同的代码抽取到父类中，然后通过钩子函数约束其行为  模">
+<meta name="twitter:image" content="http://otxon7az6.bkt.clouddn.com/17-8-9/3643852.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第十五章 抓住问题核心——模板方法模式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第十五章 抓住问题核心——模板方法模式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:15.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第十五章-抓住问题核心——模板方法模式"><span class="post-toc-number">1.</span> <span class="post-toc-text">第十五章 抓住问题核心——模板方法模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#模板方法的使用场景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">模板方法的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#模板方法模式的UML类图"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">模板方法模式的UML类图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第十五章 抓住问题核心——模板方法模式"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第十五章 抓住问题核心——模板方法模式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:15" datetime="2017-11-13T16:00:15.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第十五章-抓住问题核心——模板方法模式"><a href="#第十五章-抓住问题核心——模板方法模式" class="headerlink" title="第十五章 抓住问题核心——模板方法模式"></a>第十五章 抓住问题核心——模板方法模式</h1><blockquote>
+<p>定义一个操作中的算法的框架，而将一些步骤延迟到之类中，使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤</p>
+</blockquote>
+<h2 id="模板方法的使用场景"><a href="#模板方法的使用场景" class="headerlink" title="模板方法的使用场景"></a>模板方法的使用场景</h2><ul>
+<li>多个子类有公有的方法，并且逻辑相同时</li>
+<li>重要、复杂的算法，可以把核心算法设计为模板方法，周边相关细节功能则由各个子类实现</li>
+<li>重构时，模板方法模式是一个经常使用的模式，把相同的代码抽取到父类中，然后通过钩子函数约束其行为</li>
+</ul>
+<h2 id="模板方法模式的UML类图"><a href="#模板方法模式的UML类图" class="headerlink" title="模板方法模式的UML类图"></a>模板方法模式的UML类图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://otxon7az6.bkt.clouddn.com/17-8-9/3643852.jpg" alt="模板方法UML" title="">
+                </div>
+                <div class="image-caption">模板方法UML</div>
+            </figure>
+<p>android系统启动过程中，依次调用onCreate、onStart、onResume等生命周期的方法其实就是一种模板方法模式</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>模板方法模式用四个字概括就是“流程封装”。也就是把固定的流程封装到一个final函数中，并且让子类能够定制这个流程的某些或者所有步骤</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>封装不变部分，扩展可变部分</li>
+<li>提取公共部分代码，便于维护</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>模板方法会带来代码阅读的困难，会让用户觉得难以理解</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:57:19.365Z" itemprop="dateUpdated">2017-11-14 00:57:19</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第十五章 抓住问题核心——模板方法模式/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&title=《第十五章 抓住问题核心——模板方法模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&title=《第十五章 抓住问题核心——模板方法模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十五章 抓住问题核心——模板方法模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第十六章 访问者模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第十六章 访问者模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第十四章 解决问题的“第三者”——迭代器模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第十四章 解决问题的“第三者”——迭代器模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&title=《第十五章 抓住问题核心——模板方法模式》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&title=《第十五章 抓住问题核心——模板方法模式》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十五章 抓住问题核心——模板方法模式》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第十五章 抓住问题核心——模板方法模式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADOUlEQVR42u3aUY6jQAwFwNz/0pkDzECebUYKpvhaaYGmOtJ67devV3y9D67qPb/vz9c9eip5T/PCxsbGvgn7fXr9fvX5PZMPzVc/eltiwcbGxt7KPi8w+UfkRSjZoHPq5A3Y2NjYT2ZXy15SYKqrV+/ExsbGxs7HSdX2oHpnsq3Y2NjYz2RXP+ho4fmQaN4mXTxLw8bGxv56dp6Kfv+f/yXfxsbGxv5i9rt4TWLX6rrzo0KHz2JjY2MvYveO7CRNSB7Wzo9jVv8WGxsbex+797lJ6eq9ofrmasyAjY2NvYldHdNMwoDes0l7kzQnr97vg42NjX0TdhK19v5zX21gqgd0qiv+MUvDxsbGXsHuLZkXuWoPdO0xnT+ewsbGxn4YOw9Z8y3IW5deoxLlIdjY2NhL2ZNRzlVHdvKN662LjY2NvYmdNxWTFqLaVFwbMx9+GzY2NvYi9lVjozxa6AW6vTFT9JtjY2Nj35ydtxzVSDg/WNNrVJIyWTivhI2NjX1bdq9JmB/ByePhXnl7VXcIGxsb+4bsiwc0422tHtYZBb3Y2NjYK9jlyVPMnh/6qW53c6iEjY2NvYJ9/li+2Lyk9SLepO0pT9SwsbGxb8XOg9vzTekFA5PYoLcd2NjY2JvY50WruvwkcsgjhLxcfei9sLGxsRex54djegUm3/ReVBwFA9jY2Ng3Z0+GPpPmoRrT5oFBtVHBxsbG3sHOY4BJHJvjk2erxe9V/SBsbGzsW7F7DUNvbNR7Z1KcepEDNjY29g529R/9+ein1+pUB1vY2NjYT2P3SkL1I3rFplcIP4yrsLGxsRexq4ObXkg8aT+SsKH5U2FjY2OvYCek6tGca4tTtVEZlS5sbGzs27InG1HdrDwYzotfeRSFjY2NvYL9Ll69p/KydH5nfmTnQ5HGxsbGXsTOr+rIpnluqMWbHAzCxsbG3sHuFa1ebJC8Yb5idDwIGxsbex27Gs1Ww93qccley1EYMGFjY2M/mN0b0Odbc1WR+7Ct2NjY2A9m5xFvPoSqFrNq0TocKmFjY2MvYvfC3fzITh7l5qUov/+wgGFjY2OvYE+KQS98rR7lqbYf1R8DGxsb+7bsH009DDdYwpz6AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

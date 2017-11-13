@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>第三章 自由扩展你的项目——建造者模式（Builder模式） | 温治康 | nice man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,Android源码设计模式">
+    <meta name="description" content="# 第三章 自由扩展你的项目——建造者模式（Builder模式）  将一个复杂对象的构造与表示分离，使得同样的构建过程可以创建出不同的表示  UML图                                                                                             Builder模式UML              Build">
+<meta name="keywords" content="Android,Android源码设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章 自由扩展你的项目——建造者模式（Builder模式）">
+<meta property="og:url" content="https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/index.html">
+<meta property="og:site_name" content="温治康">
+<meta property="og:description" content="# 第三章 自由扩展你的项目——建造者模式（Builder模式）  将一个复杂对象的构造与表示分离，使得同样的构建过程可以创建出不同的表示  UML图                                                                                             Builder模式UML              Build">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://bigdatadecode.club/blogimgs/Builder%E6%A8%A1%E5%BC%8F/builderuml.png">
+<meta property="og:updated_time" content="2017-11-13T16:20:05.992Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第三章 自由扩展你的项目——建造者模式（Builder模式）">
+<meta name="twitter:description" content="# 第三章 自由扩展你的项目——建造者模式（Builder模式）  将一个复杂对象的构造与表示分离，使得同样的构建过程可以创建出不同的表示  UML图                                                                                             Builder模式UML              Build">
+<meta name="twitter:image" content="http://bigdatadecode.club/blogimgs/Builder%E6%A8%A1%E5%BC%8F/builderuml.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="温治康" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.10">
+    <script>window.lazyScripts=[]</script>
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">温治康</h5>
+          <a href="mailto:riccowzk@gmail.com" title="riccowzk@gmail.com" class="mail">riccowzk@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/StartWithWzk" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第三章 自由扩展你的项目——建造者模式（Builder模式）</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">第三章 自由扩展你的项目——建造者模式（Builder模式）</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-13T16:00:01.000Z" itemprop="datePublished" class="page-time">
+  2017-11-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#UML图"><span class="post-toc-number">1.</span> <span class="post-toc-text">UML图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Builder模式的使用场景"><span class="post-toc-number">2.</span> <span class="post-toc-text">Builder模式的使用场景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#两种实现Builder模式的方式"><span class="post-toc-number">3.</span> <span class="post-toc-text">两种实现Builder模式的方式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-经典架构"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1. 经典架构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-Builder架构变形"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2. Builder架构变形</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-第三章 自由扩展你的项目——建造者模式（Builder模式）"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第三章 自由扩展你的项目——建造者模式（Builder模式）</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-14 00:00:01" datetime="2017-11-13T16:00:01.000Z"  itemprop="datePublished">2017-11-14</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/读书笔记/">读书笔记</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>﻿# 第三章 自由扩展你的项目——建造者模式（Builder模式）</p>
+<blockquote>
+<p>将一个复杂对象的构造与表示分离，使得同样的构建过程可以创建出不同的表示</p>
+</blockquote>
+<h2 id="UML图"><a href="#UML图" class="headerlink" title="UML图"></a>UML图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://bigdatadecode.club/blogimgs/Builder%E6%A8%A1%E5%BC%8F/builderuml.png" alt="Builder模式UML" title="">
+                </div>
+                <div class="image-caption">Builder模式UML</div>
+            </figure>
+<h2 id="Builder模式的使用场景"><a href="#Builder模式的使用场景" class="headerlink" title="Builder模式的使用场景"></a>Builder模式的使用场景</h2><ol>
+<li>相同方法，不同的执行顺序，产生不同的事件结果时</li>
+<li>多个部件或零件，都可以装配到一个对象中，但是产生的运行结果又不相同的时候</li>
+<li>产品类非常复杂，或者产品类中的调用顺序不同产生了不同的作用，这个时候使用建造者模式非常合适</li>
+<li>当初始化一个对象特别复杂，如参数多，且很多参数都具有默认值</li>
+</ol>
+<h2 id="两种实现Builder模式的方式"><a href="#两种实现Builder模式的方式" class="headerlink" title="两种实现Builder模式的方式"></a>两种实现Builder模式的方式</h2><h3 id="1-经典架构"><a href="#1-经典架构" class="headerlink" title="1. 经典架构"></a>1. 经典架构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Builder</span> </span>&#123;</div><div class="line"></div><div class="line">　　<span class="comment">//创建部件A　　比如创建汽车车轮</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">buildPartA</span><span class="params">()</span></span>; </div><div class="line">　　<span class="comment">//创建部件B   比如创建汽车方向盘</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">buildPartB</span><span class="params">()</span></span>; </div><div class="line">　　<span class="comment">//创建部件C   比如创建汽车发动机</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">buildPartC</span><span class="params">()</span></span>;</div><div class="line">　　<span class="comment">//返回最后组装成品结果 (返回最后装配好的汽车)</span></div><div class="line">    <span class="function">Product <span class="title">getResult</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Director 类，负责制造</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Director</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Builder builder;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Director</span><span class="params">(Builder builder)</span> </span>&#123; </div><div class="line">　　　　<span class="keyword">this</span>.builder = builder; </div><div class="line">　　&#125;</div><div class="line">    <span class="comment">// 将部件partA partB partC最后组成复杂对象</span></div><div class="line">    <span class="comment">// 这里是将车轮 方向盘和发动机组装成汽车的过程</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span> </span>&#123; </div><div class="line">　　　　builder.buildPartA();</div><div class="line">　　　　builder.buildPartB();</div><div class="line">　　　　builder.buildPartC();</div><div class="line">　　&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteBuilder</span> <span class="keyword">implements</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    Part partA, partB, partC;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPartA</span><span class="params">()</span> </span>&#123;</div><div class="line">　　　　<span class="comment">//这里是具体如何构建partA的代码</span></div><div class="line">　　&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPartB</span><span class="params">()</span> </span>&#123;</div><div class="line">　　　　<span class="comment">//这里是具体如何构建partB的代码</span></div><div class="line">　　&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPartC</span><span class="params">()</span> </span>&#123; </div><div class="line">　　　　<span class="comment">//这里是具体如何构建partB的代码</span></div><div class="line">　　&#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">getResult</span><span class="params">()</span> </span>&#123; </div><div class="line">　　　　<span class="comment">//返回最后组装成品结果</span></div><div class="line">　　&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Product</span> </span>&#123;</div><div class="line">&#125;<span class="comment">// 产品</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Part</span> </span>&#123;</div><div class="line">&#125;<span class="comment">// 部件</span></div><div class="line">    </div><div class="line"><span class="comment">// 调用</span></div><div class="line">ConcreteBuilder builder = <span class="keyword">new</span> ConcreteBuilder();</div><div class="line">Director director = <span class="keyword">new</span> Director(builder);</div><div class="line">director.construct();</div><div class="line">Product product=builder.getResult();</div></pre></td></tr></table></figure>
+<h3 id="2-Builder架构变形"><a href="#2-Builder架构变形" class="headerlink" title="2. Builder架构变形"></a>2. Builder架构变形</h3><blockquote>
+<p>这里的Builder同时扮演了Builder、ConcreteBuilder、Director的角色，简化了Builder的设计，并且实现了链式调用，Android源码中AlertDialog也有此应用</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> Config mConfig;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Config confing)</span> </span>&#123;</div><div class="line">    mConfig = config;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 配置类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Config</span> </span>&#123;</div><div class="line">  <span class="comment">// 需要配置的属性们</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">int</span> b;</div><div class="line">  <span class="keyword">int</span> c;</div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Config</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 配置类的Builder</div><div class="line">   */</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> a;</div><div class="line">  	<span class="keyword">int</span> b;</div><div class="line">  	<span class="keyword">int</span> c;</div><div class="line">    <span class="keyword">public</span> Builder setA&#123;<span class="keyword">int</span> a&#125; &#123;</div><div class="line">      <span class="keyword">this</span>.a = a;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">public</span> Builder setB&#123;<span class="keyword">int</span> b&#125; &#123;</div><div class="line">      <span class="keyword">this</span>.b = b;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">public</span> Builder setC&#123;<span class="keyword">int</span> c&#125; &#123;</div><div class="line">      <span class="keyword">this</span>.c = c;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applyConfig</span><span class="params">(Config config)</span> </span>&#123;</div><div class="line">      config.a = <span class="keyword">this</span>.a;</div><div class="line">      config.b = <span class="keyword">this</span>.b;</div><div class="line">      config.c = <span class="keyword">this</span>.c;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Config <span class="title">create</span><span class="params">()</span> </span>&#123;</div><div class="line">      Config config = <span class="keyword">new</span> Config();</div><div class="line">      <span class="comment">// 应用配置</span></div><div class="line">      applyConfig(config);</div><div class="line">      <span class="keyword">return</span> config;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>优点<ol>
+<li>良好的封装性，使用Builder模式可以使客户端不必知道产品内部组成的细节</li>
+<li>建造者独立，容易拓展</li>
+</ol>
+</li>
+<li><strong>缺点</strong><ol>
+<li>会产生多余的Builder对象以及Director对象，消耗内存</li>
+</ol>
+</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-11-13T16:20:05.992Z" itemprop="dateUpdated">2017-11-14 00:20:05</time>
+</span><br>
+
+
+        
+        如需转发请与我联系，获得允许之后请注明出处：<a href="/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" target="_blank" rel="external">https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/</a>
+        
+    </div>
+    <footer>
+        <a href="https://startwithwzk.github.io">
+            <img src="/img/avatar.jpg" alt="温治康">
+            温治康
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android源码设计模式/">Android源码设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&title=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&title=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/14/第四章 使程序运行更高校——原型模式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第四章 使程序运行更高校——原型模式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/14/第二章 应用最广的模式——单例模式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第二章 应用最广的模式——单例模式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>温治康 &copy; 2015 - 2017</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&title=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&pic=https://startwithwzk.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&title=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&source=Java、 Android、 Python、 JavaScript" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第三章 自由扩展你的项目——建造者模式（Builder模式）》 — 温治康&url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/&via=https://startwithwzk.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://startwithwzk.github.io/2017/11/14/第三章 自由扩展你的项目——建造者模式（Builder模式）/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD9ElEQVR42u3awY6cQAwE0Pn/n06kXCOgym5GG+VxWo0GaB4r1djtzyc+fv05/v4kP66uc3W1+7sn596ftTpw4MCBA0fwqPljnHrgq2tenZWsP/nknh4HDhw4cJziuA/XBKiN4T1Ty5H8gMCBAwcOHN/kyGMsedQ8OHP0ZP04cODAgePncGxun7fqZi3C/HXiwIEDB47vcMwKraSoSxp/eRHYtv9e7JXiwIEDB460hipC61/5+8X5Dhw4cODAcWjcbTPKsPl8H6uX5+LAgQMHjjVH28hLFt1+M2rYBcGZ8z1cDQcOHDhwrDnaRZwdX2jPvV9PHsOfU+8EBw4cOHAsCPJzZ1duUfY/CHDgwIEDx1mOvBDKb5wsKy+62nLxlejFgQMHDhwlR17t7dXzkbhZ6Ti7b/GGceDAgQNHWvUUN2sLqtkG0n5LKV/z5f8IDhw4cOAoOb4fim20z8rFvKQ8cAMcOHDgwDG68Wa8YDMeMds6al9VsTuHAwcOHDhuOZJmX3KzzTZVHoftiEOOiwMHDhw43uBoA2+2lE3E5gHcvs6iQsWBAwcOHAFHPhawKfbahmMevW3oXq4HBw4cOHCsOfbDAfnw3KnwbsO1fs04cODAgWPN0R6z5t0+vNtIPvXjAAcOHDhw5BzJ8NmmeZe38NptqjzOi/ePAwcOHDgOceRDAG2JlV9zX0bu148DBw4cOE5xtAGZh/d+oCFvOObjDjhw4MCB4z2OfERgX+nkrO0m1qzreflNHDhw4MBxlKONq7zoSraj2t2w9jVEz4UDBw4cONYcp26QP+RsnqLdcGqvgAMHDhw4znK04wunPp+F7uanQPR6cODAgQPHmiOPxnyj6HBBVYbugZjHgQMHDhzrHEkWmpdt+YLyAiwfxai3nXDgwIEDxwsc9zdom3H5tMBsaK9tTT48KQ4cOHDgWHPMyqTZeEHbIsxLx9lRD1LgwIEDB45gDW2kJTE52yjKFz0rDpNXhQMHDhw49hxtsOXFTxvSs5IyLxGLFiEOHDhw4FhwtC2/JG7zUNxsRM3agg9PigMHDhw4DnG0YZmPQawWd1tStmMZ0Tdx4MCBA8eaIy+cNsXVbPQhj9u2UHwoUHHgwIEDx4JjMwSQR2YSkHlst9tLRczjwIEDB441xyzwZt9PWNvRh/aHQs6NAwcOHDg2HLNwTZp3bYtwxpcXeMWbxIEDBw4ca47Z2Nxm7GDWFszjczY8gQMHDhw4vsmRk7UFVd40zEcWhm1BHDhw4MDxAzjyx2s3rmYxvGpl4sCBAweOQxxtROVks/jMhyE27c6HyUEcOHDgwDGfWzuwF9PGartplJeI+QMfHpXDgQMHjv+d4zf8CocpDx1MqwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.10"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.10" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
