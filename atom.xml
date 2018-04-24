@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://startwithwzk.github.io/"/>
-  <updated>2017-11-13T17:09:08.950Z</updated>
+  <updated>2018-04-24T16:10:11.624Z</updated>
   <id>https://startwithwzk.github.io/</id>
   
   <author>
@@ -14,6 +14,258 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2018春招总结</title>
+    <link href="https://startwithwzk.github.io/2018/04/25/2018%E6%98%A5%E6%8B%9B%E6%80%BB%E7%BB%93/"/>
+    <id>https://startwithwzk.github.io/2018/04/25/2018春招总结/</id>
+    <published>2018-04-24T16:09:00.000Z</published>
+    <updated>2018-04-24T16:10:11.624Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="2018春招总结"><a href="#2018春招总结" class="headerlink" title="2018春招总结"></a>2018春招总结</h1><p>2018.2.27正式投的第一份简历开始计算，到今天是2018.4.24，到现在算下来大概两个月，随着确认了腾讯的录用通知函，漫长的春招终于告一段落，虽然京东、华为的offer没有确认，但是这已经不是能改变我意向的事情了。下面总结一下这段时间来的面试吧。这里只写有面试经历的公司，只笔试过的不算。这里时间不一定按照公司顺序</p>
+<h2 id="阿里巴巴-蚂蚁金服（内推，已凉）"><a href="#阿里巴巴-蚂蚁金服（内推，已凉）" class="headerlink" title="阿里巴巴-蚂蚁金服（内推，已凉）"></a>阿里巴巴-蚂蚁金服（内推，已凉）</h2><p>首先2月27号开始拜托师兄内推了阿里支付宝部门，没想到的时候阿里的效率这么快，3月2日下午阿里就打电话过来了，当时我在成都旅游过程中，遗憾的是第一个电话我没有接到，还以为是诈骗电话：），结果百度查了查，发现这是面试电话，好吧错过就错过，接下来吃串串过程中，又一次打了过来，但是当时人很嘈杂，还是没有接到。。。最后第三次打过来的时候，终于接到了，然后约了第二天，结果面试官鸽了我（报应啊），最后3月5日终于打了过来，当时我在重庆的地铁上面，马上火急的跑了出来，然后就是一场一个半小时的面试，接着马上第二天晚上又来了电话，由于当时我在火车上面，三个电话我都没有接到，不过3月6日早上大概9点多还是给我打来了电话，二面大概持续了半个多小时，经过大概一段时间等待后，也就是3月16日接到三面电话，不过我最终也是倒在了这。下面是阿里面经：</p>
+<p><strong>一面（3.5）（一个半小时）：</strong></p>
+<ol>
+<li>介绍一下项目</li>
+<li>项目中怎么优化网络传输</li>
+<li>tcp协议，滑动窗口，拥塞、流量控制</li>
+<li>https握手过程</li>
+<li>证书内容</li>
+<li>rxjava底层实现、切换线程源码</li>
+<li>服务的两种启动方式</li>
+<li>app的启动源码</li>
+<li>广播涉及的小知识</li>
+<li>讲一下app之间有几种交互方式</li>
+</ol>
+<p><strong>二面（3.6）（半个小时）：</strong></p>
+<ol>
+<li>介绍一下自己</li>
+<li>介绍一下最近的一个项目</li>
+<li>讲一下内存泄漏怎么优化的</li>
+<li>android两种虚拟机ART和Dalvik</li>
+<li>讲一下ipc有几种形式</li>
+<li>讲一下view的事件体制</li>
+<li>讲下reactnative</li>
+<li>讲一下热修复</li>
+<li>讲一下组件化开发</li>
+<li>讲一下红黑树</li>
+</ol>
+<p><strong>三面（3.16）（20分钟）：</strong></p>
+<ol>
+<li>先自我介绍一下吧</li>
+<li>介绍一下做过的项目</li>
+<li>蓝牙的连接过程</li>
+<li>wifi怎么处理多连接设备</li>
+<li>tcp\ip是基于java还是底层调用</li>
+<li>长连接和短连接的差别</li>
+<li>tcp\ip七层模型（三面就是死在这里，面试官也很惊讶我竟然不会。。。其实不是不会，而是这里我没听清，其实面试官想问的是OSI七层，但是我没听清。。。想着tcp怎么也有七层了，傻了，就回答不知道）</li>
+<li>怎么处理LIstView过程中的Item复用，能具体到实现原理方面说嘛？</li>
+<li>有什么问题想问的吗（我问了他们的具体业务，还有对我的面试做一个评价）</li>
+</ol>
+<h2 id="今日头条（内推，已凉）"><a href="#今日头条（内推，已凉）" class="headerlink" title="今日头条（内推，已凉）"></a>今日头条（内推，已凉）</h2><p>经过了阿里的面试之后，在面试头条过程中，我已经没有阿里那时候的紧张了，这里的面试机会是在牛客网上面一些人分享的内推码得到的，因为是视频面试，面试过程中，面试官在一间小屋子里面，只露出了半张脸，给人非常有压迫感，这场面试给了我非常大的打击，一些很简单的问题，却不能很好的回答出来，以为自己掌握的很好，其实想不到的弱。只有一面就凉了，下面是面经：</p>
+<p><strong>一面（3.14 ）（50分钟）：</strong></p>
+<ol>
+<li><p>public <t> T method(Class<t> class)，的三个T</t></t></p>
+<p><strong>泛型类语法：</strong></p>
+<p>使用<t>来声明一个类型持有者名称，然后就可以把T当作一个类型代表来声明成员、参数和返回值类型。当然T仅仅是个名字，这个名字可以自行定义。</t></p>
+<p>静态方法无法访问类上定义的泛型；如果静态方法操作的引用数据类型不确定的时候，必须要将泛型定义在方法上。也就是说上面这个是泛型方法</p>
+<p>类型参数<t>主要用于声明泛型类或泛型方法；无界通配符&lt;?&gt;主要用于使用泛型类或泛型方法，主要拿来使用定义好的泛型。</t></p>
+<p>PECS（Producer Extends Consumer Super）原则</p>
+<p><a href="https://blog.csdn.net/briblue/article/details/76736356" target="_blank" rel="external">Java泛型，泛型擦除的概念</a></p>
+</li>
+<li><p>hashMap数组实现，讲讲当节点数小于8的时候，红黑树会退化成链表吗？</p>
+<p>大于8的时候会进化为红黑树，小于6的时候会退化为链表</p>
+</li>
+<li><p>volatile、synchronize</p>
+</li>
+<li><p>内部类，为什么局部变量要设置为final</p>
+<p>因为编译的时候，Java会把在内部类使用的变量，在构造函数那里复制一份，注意这里是值的复制，如果外部类修改了值，内部类却不会修改，Java为了避免数据不同步的问题，做出了匿名内部类只可以访问final的局部变量的限制</p>
+<p>这个链接讲的不错：<a href="http://cuipengfei.me/blog/2013/06/22/why-does-it-have-to-be-final/" target="_blank" rel="external">内部访问外部类变量为什么需要final修饰</a></p>
+</li>
+<li><p>activity的flag，new_task，有什么作用</p>
+</li>
+<li><p>android中英寸和dp的关系</p>
+<p>首先像素密度 dpi = 对角线像素点（px） / 屏幕尺寸（英寸），而dp = dpi / 160</p>
+</li>
+<li><p>fragment的声明周期，当被强制关闭的时候，fragment的detchView会调用吗？</p>
+</li>
+<li><p>算法题，1~100个随机数，取出5个随机数</p>
+<p>可以生成一个数组，放了1~100的数值，然后随机索引，然后取出随机值后与最后一项交换，循环</p>
+</li>
+<li><p>有什么想问的吗</p>
+</li>
+</ol>
+<h2 id="美图（春招，offer）"><a href="#美图（春招，offer）" class="headerlink" title="美图（春招，offer）"></a>美图（春招，offer）</h2><p>经过头条一役，我心里面开始慌了，开始对自己不自信，所以我开始了疯狂投简历，感觉投了有20、30家吧，然后美图公司这里给了我信心，让我捡回自信去面试接下来的公司，最后也给了我offer，但是抱歉了，真的很感谢。美图虽然有笔试，但是我当晚选择做了携程的笔试（至今没电话。。。），反而没做笔试的美图给了我电话，美图只有一面，下面是面经：</p>
+<p><strong>一面（4-2）（40分钟）</strong></p>
+<ol>
+<li>面向对象有什么特性</li>
+<li>封装继承多态拓展讲下去</li>
+<li>抽象和接口说一下</li>
+<li>Android中有什么设计模式</li>
+<li>String可以被继承吗？</li>
+<li>讲一下项目</li>
+<li>TCP/IP四层</li>
+<li>有什么想问的吗</li>
+</ol>
+<p><strong>HR面（4-16）</strong></p>
+<ol>
+<li>谈工作地点</li>
+<li>发offer</li>
+</ol>
+<h2 id="腾讯（春招，offer）"><a href="#腾讯（春招，offer）" class="headerlink" title="腾讯（春招，offer）"></a>腾讯（春招，offer）</h2><p>腾讯最开始，我是通过师兄内推的，但是可能简历没被HR看上吧，最后还是选择的春招通道，所以是在广州现场面试的，也是我第一次现场面试，腾讯很土豪的包下了一间5星级酒店，好了接下来讲一下面试吧，我总共经历了三轮技术面，其中两轮现场面试，一轮技术面试，最后一轮HR面试，在两轮现场面试完之后，我还以为我凉了，结果又加了一轮总监面（可能是我乌鸦嘴问了面试官会不会有加面），面完之后面试官直接告诉我下午有hr面试，接下来是面经：</p>
+<p><strong>一面（4-11）（70分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>介绍工作室团队</li>
+<li>当小组长的经历</li>
+<li>tcp握手挥手，为什么</li>
+<li>线程的生命周期</li>
+<li>io原理</li>
+<li>集合相关hashmap,set,hashtable,arraylish,sparsearray</li>
+<li>算法快拍冒泡时间复杂度</li>
+<li>rxjava原理以及使用</li>
+<li>项目难题</li>
+<li>自我缺点和优点</li>
+<li>有什么问题想问 </li>
+</ol>
+<p><strong>二面（4-13）（40分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>打印机项目中，在其中发挥什么作用</li>
+<li>路线匹配问题，怎么匹配的</li>
+<li>dtw算法</li>
+<li>Activity、Service生命周期</li>
+<li>wifi功能怎么工作的</li>
+<li>wifi万能钥匙有什么看法，功能怎么实现的</li>
+<li>家里在哪里</li>
+<li>有什么问题想问</li>
+</ol>
+<p><strong>三面（4-16）（25分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>介绍各个项目</li>
+<li>tcp协议</li>
+<li>蓝牙协议</li>
+<li>WiFi协议</li>
+<li>职业规划</li>
+</ol>
+<p><strong>HR（4-16）（20分钟）</strong></p>
+<ol>
+<li>自我接收</li>
+<li>介绍一下工作室</li>
+<li>工作室的招新过程</li>
+<li>在工作室招新过程中，我是怎么准备的</li>
+<li>一天的规划</li>
+<li>怎么学习的</li>
+<li>BAT为什么选择腾讯</li>
+<li>未来3-5年职业规划</li>
+<li>有没有女朋友</li>
+<li>家里情况</li>
+<li>为什么选择Android这个方向</li>
+<li>为什么选择腾讯的mig部门</li>
+<li>有什么问题要问我</li>
+</ol>
+<h2 id="华为（春招）"><a href="#华为（春招）" class="headerlink" title="华为（春招）"></a>华为（春招）</h2><p>接下来是华为的面试，华为的面试也是现场面试，相比于腾讯，华为就吝啬很多，也有点不专业，别人都是一间一间房间，华为竟然是把大堂分为两半。。。一边技术面试一边综合面试，然后像课室课桌一样摆放面试桌子，，就像菜市场一样，无法吐槽。面试也是想不到的水，目前是进入华为offer资源池状态，等捞中。。。</p>
+<p><strong>一面（4.12）（20分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>介绍三个项目</li>
+<li>讲一下git的工作原理以及使用</li>
+<li>辩论队的经历</li>
+</ol>
+<p><strong>二面（4.12）（30分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>数据报格式</li>
+<li>传输过程中出现的问题</li>
+<li>处理了什么异常</li>
+<li>心跳保活</li>
+<li>辩论队经历</li>
+<li>android版本特性</li>
+<li>apk签名2.0版本</li>
+<li>有什么问题要问的</li>
+</ol>
+<h2 id="京东（春招）"><a href="#京东（春招）" class="headerlink" title="京东（春招）"></a>京东（春招）</h2><p>然后接着京东的面试，京东的是电话面试，京东的面试感觉像是快问快答，一面面试官问的非常快，然后要求我马上回答，不会就问下一题，还好面试官问的都在我知识范围内，没有让他跳过题，而二面面试官就是综合考虑你的实例，这里主要探究你的知识深度和广度。目前是等待offer阶段，下面是面经：</p>
+<p><strong>一面（4-21）（30分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>Activity中onCreate可不可以获取view的高度</li>
+<li>讲一下为什么不可以获取view的原理</li>
+<li>Android中dpi、尺寸、dp、px的关系</li>
+<li>RecycleView缓存机制，有一些什么设计模式</li>
+<li>怎么解决图片复用</li>
+<li>滑动过程的图片的快速闪烁怎么解决</li>
+<li>自定义view需要注意一些什么问题</li>
+<li>onMeasure需要注意一些什么问题</li>
+<li>MeasureSpec这个参数代表什么</li>
+<li>在onDraw中可以创建对象吗？</li>
+<li>介绍一下mvp架构</li>
+<li>内存抖动什么原因造成，怎么解决</li>
+<li>子线程和主线程有哪些通信方式</li>
+<li>handler的looper机制</li>
+<li>所了解的锁机制</li>
+<li>线程池有哪些</li>
+<li>java里面的泛型</li>
+<li>有什么问题问我</li>
+</ol>
+<p><strong>二面（4.22）（20分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>平时怎么学习Android技术</li>
+<li>讲一下你理解的底层实现</li>
+<li>项目总数据报怎么制定的</li>
+<li>组件化开发主要需要注意一些什么东西</li>
+<li>RN的开发有哪些注意点，或者哪些特色的东西</li>
+<li>有什么问题问我。</li>
+</ol>
+<p><strong>HR（4.23）（20分钟）</strong></p>
+<ol>
+<li>自我介绍</li>
+<li>工作室状况</li>
+<li>遇到的最大挫折</li>
+<li>优点缺点</li>
+<li>职业规划</li>
+<li>压力大的时候怎么排解</li>
+</ol>
+<h2 id="今日头条"><a href="#今日头条" class="headerlink" title="今日头条"></a>今日头条</h2><p>因为头条我既投了内推也投了春招，所以又获得了一次面试机会，但是尴尬的是，京东二面和头条面试就相差了半个小时，当时想放弃头条面试了，不过还是改了下头条面试时间，还是熟悉的房间，熟悉的挂人。。。面试的内容让人看不透，反正从来没看过问这些的。好吧，头条再次凉了，头条算我告辞，下面是面经：</p>
+<p><strong>一面（4.22）（50分钟）</strong></p>
+<ol>
+<li>翻转字符串（算法）</li>
+<li>图灵机</li>
+<li>冯诺依曼结构</li>
+<li>状态机</li>
+<li>快排了解吗，稳定吗，怎么让它稳定</li>
+<li>树的4种遍历方式，前中后，广度优先</li>
+<li>图了解吗？能讲一下最短路径算法吗？</li>
+<li>堆的topK</li>
+<li>快排可以实现topK吗？</li>
+<li>进程管理</li>
+<li>进程声明周期</li>
+<li>段页式存储</li>
+<li>进程内存的管理形式</li>
+<li>java里面有多少种数据类型</li>
+<li>int是多少字节（32位）</li>
+<li>char多少字节（16位）</li>
+<li>大小写转换怎么设计的，不局限于英文，包括法文等等</li>
+<li>java泛型</li>
+<li>java为什么要采取泛型擦除这种方式实现泛型</li>
+<li>java作者是谁</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从大二开始，觉得招聘对于我来说太远，结果大三春节还没开始，已经有各大公司开始内推呀，其实这个时候春招已经拉开帷幕，在这过程中，经历过失落开心，经历过了，即使最后失败也不觉得后悔，最后我的春招终于结束了！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;2018春招总结&quot;&gt;&lt;a href=&quot;#2018春招总结&quot; class=&quot;headerlink&quot; title=&quot;2018春招总结&quot;&gt;&lt;/a&gt;2018春招总结&lt;/h1&gt;&lt;p&gt;2018.2.27正式投的第一份简历开始计算，到今天是2018.4.24，到现在算下来大概两
+    
+    </summary>
+    
+      <category term="面试杂谈" scheme="https://startwithwzk.github.io/categories/%E9%9D%A2%E8%AF%95%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
+    
+  </entry>
   
   <entry>
     <title>第二十四章 连接两地的交通枢纽——桥接模式</title>
@@ -1000,48 +1252,6 @@
     <summary type="html">
     
       &lt;h1 id=&quot;第六章-创建型设计模式——抽象工厂模式&quot;&gt;&lt;a href=&quot;#第六章-创建型设计模式——抽象工厂模式&quot; class=&quot;headerlink&quot; title=&quot;第六章 创建型设计模式——抽象工厂模式&quot;&gt;&lt;/a&gt;第六章 创建型设计模式——抽象工厂模式&lt;/h1&gt;&lt;bloc
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://startwithwzk.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Android" scheme="https://startwithwzk.github.io/tags/Android/"/>
-    
-      <category term="Android源码设计模式" scheme="https://startwithwzk.github.io/tags/Android%E6%BA%90%E7%A0%81%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>第五章 应用最广泛的模式——工厂方法模式</title>
-    <link href="https://startwithwzk.github.io/2017/11/14/%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E5%BA%94%E7%94%A8%E6%9C%80%E5%B9%BF%E6%B3%9B%E7%9A%84%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/"/>
-    <id>https://startwithwzk.github.io/2017/11/14/第五章 应用最广泛的模式——工厂方法模式/</id>
-    <published>2017-11-13T16:00:05.000Z</published>
-    <updated>2017-11-13T16:34:13.744Z</updated>
-    
-    <content type="html"><![CDATA[<p>﻿# 第五章 应用最广泛的模式——工厂方法模式</p>
-<blockquote>
-<p>定义一个用于创建对象的接口，让子类决定实例化那个类</p>
-</blockquote>
-<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>在任何需要生成复杂对象的地方，都可以使用工厂方法模式。复杂对象适合使用工厂模式，用new就可以完成创建的对象无需工厂模式。</p>
-<h2 id="工厂模式的UML图"><a href="#工厂模式的UML图" class="headerlink" title="工厂模式的UML图"></a>工厂模式的UML图</h2><h2 id=""><a href="#" class="headerlink" title=""></a><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://otxon7az6.bkt.clouddn.com/17-7-31/88382328.jpg" alt="工厂模式UML" title="">
-                </div>
-                <div class="image-caption">工厂模式UML</div>
-            </figure></h2><h2 id="工厂模式的几种实现方式"><a href="#工厂模式的几种实现方式" class="headerlink" title="工厂模式的几种实现方式"></a>工厂模式的几种实现方式</h2><h3 id="经典方式"><a href="#经典方式" class="headerlink" title="经典方式"></a>经典方式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 产品类的抽象方法</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Factory</span> </span>&#123;</div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 抽象工厂类方法</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Product <span class="title">createProduct</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 调用</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String...args)</span> </span>&#123;</div><div class="line">    Factory factory = <span class="keyword">new</span> ConcreteFactory();</div><div class="line">    Product p = factory.createProduct();</div><div class="line">    p.method();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>###　利用反射的方式实现</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Factory</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> &lt;T extentds Product&gt; <span class="function">T <span class="title">createProduct</span><span class="params">(Class&lt;T&gt; clz)</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 具体工厂类</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteFactory</span> <span class="keyword">extends</span> <span class="title">Factory</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> &lt;T extentds Product&gt; <span class="function">T <span class="title">createProduct</span><span class="params">(class&lt;T&gt; clz)</span> </span>&#123;</div><div class="line">    Product p = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      p = (Product) Class.forName(clz.getName()).newInstance();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">      E.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (T) p;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;﻿# 第五章 应用最广泛的模式——工厂方法模式&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;定义一个用于创建对象的接口，让子类决定实例化那个类&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;使用场景&quot;&gt;&lt;a href=&quot;#使用场景&quot; class=&quot;headerlink&quot; 
     
     </summary>
     
